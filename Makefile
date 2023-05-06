@@ -269,8 +269,8 @@ BUILD_DIR_BASE := build
 # BUILD_DIR is the location where all build artifacts are placed
 BUILD_DIR      := $(BUILD_DIR_BASE)/$(VERSION)_$(CONSOLE)
 
-COMPRESS ?= yaz0
-$(eval $(call validate-option,COMPRESS,mio0 yaz0 gzip rnc1 rnc2 uncomp))
+COMPRESS ?= lz4
+$(eval $(call validate-option,COMPRESS,mio0 yaz0 lz4 gzip rnc1 rnc2 uncomp))
 ifeq ($(COMPRESS),gzip)
   DEFINES += GZIP=1
 else ifeq ($(COMPRESS),rnc1)
@@ -281,6 +281,8 @@ else ifeq ($(COMPRESS),yaz0)
   DEFINES += YAZ0=1
 else ifeq ($(COMPRESS),mio0)
   DEFINES += MIO0=1
+else ifeq ($(COMPRESS),lz4)
+  DEFINES += LZ4=1
 else ifeq ($(COMPRESS),uncomp)
   DEFINES += UNCOMPRESSED=1
 endif
@@ -528,6 +530,7 @@ CPPFLAGS := -P -Wno-trigraphs $(DEF_INC_CFLAGS)
 YAZ0TOOL              := $(TOOLS_DIR)/slienc
 MIO0TOOL              := $(TOOLS_DIR)/mio0
 RNCPACK               := $(TOOLS_DIR)/rncpack
+LZ4PACK               := $(TOOLS_DIR)/lz4pack
 FILESIZER             := $(TOOLS_DIR)/filesizer
 N64CKSUM              := $(TOOLS_DIR)/n64cksum
 N64GRAPHICS           := $(TOOLS_DIR)/n64graphics
@@ -739,6 +742,8 @@ else ifeq ($(COMPRESS),yaz0)
 include compression/yaz0rules.mk
 else ifeq ($(COMPRESS),mio0)
 include compression/mio0rules.mk
+else ifeq ($(COMPRESS),lz4)
+include compression/lz4rules.mk
 else ifeq ($(COMPRESS),uncomp)
 include compression/uncomprules.mk
 endif
