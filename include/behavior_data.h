@@ -541,4 +541,7 @@ extern const BehaviorScript bhvEndBirds2[];
 extern const BehaviorScript bhvIntroScene[];
 extern const BehaviorScript bhvUnusedFakeStar[];
 
+#define bhvLargeFishGroup bhvFishGroup
+extern const BehaviorScript RM_Scroll_Texture[];
+
 #endif // BEHAVIOR_DATA_H
