@@ -98,7 +98,9 @@ extern uintptr_t sSegmentTable[32];
 struct MemoryPool *gEffectsMemoryPool;
 
 
+
 uintptr_t sSegmentTable[32];
+uintptr_t sSegmentROMTable[32];
 #ifndef MAIN_POOL_SINGLE_REGION
 static struct MainPoolContext sMainPool;
 struct MainPoolRegion* gMainPoolCurrentRegion;
@@ -466,13 +468,13 @@ void *load_segment(s32 segment, u8 *srcStart, u8 *srcEnd, u8 *bssStart, u8 *bssE
         addr = dynamic_dma_read(srcStart, srcEnd, TLB_PAGE_SIZE, ((uintptr_t)bssEnd - (uintptr_t)bssStart));
         if (addr != NULL) {
             u8 *realAddr = (u8 *)ALIGN(addr, TLB_PAGE_SIZE);
-            set_segment_base_addr(segment, realAddr);
+            set_segment_base_addr(segment, realAddr); sSegmentROMTable[segment] = (uintptr_t) srcStart;
             mapTLBPages((segment << 24), VIRTUAL_TO_PHYSICAL(realAddr), ((srcEnd - srcStart) + ((uintptr_t)bssEnd - (uintptr_t)bssStart)), segment);
         }
     } else {
         addr = dynamic_dma_read(srcStart, srcEnd, 0, 0);
         if (addr != NULL) {
-            set_segment_base_addr(segment, addr);
+            set_segment_base_addr(segment, addr); sSegmentROMTable[segment] = (uintptr_t) srcStart;
         }
     }
 #ifdef PUPPYPRINT_DEBUG
@@ -551,7 +553,7 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             decompress(compressed, dest);
 #endif
             osSyncPrintf("end decompress\n");
-            set_segment_base_addr(segment, dest);
+            set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;
             main_pool_free(compressed);
         }
     }
