@@ -79,7 +79,7 @@ u16 *gCurrAnimAttribute;
 s16 *gCurrAnimData;
 
 /* Rendermode settings for cycle 1 for all 8 or 13 layers. */
-struct RenderModeContainer renderModeTable_1Cycle[2] = { 
+static const struct RenderModeContainer renderModeTable_1Cycle[2] = { 
     [RENDER_NO_ZB] = { {
         [LAYER_FORCE] = G_RM_OPA_SURF,
         [LAYER_CORKBOX] = G_RM_AA_OPA_SURF,
@@ -133,7 +133,7 @@ struct RenderModeContainer renderModeTable_1Cycle[2] = {
     } } };
 
 /* Rendermode settings for cycle 2 for all 13 layers. */
-struct RenderModeContainer renderModeTable_2Cycle[2] = {
+static const struct RenderModeContainer renderModeTable_2Cycle[2] = {
     [RENDER_NO_ZB] = { {
         [LAYER_FORCE] = G_RM_OPA_SURF2,
         [LAYER_CORKBOX] = G_RM_AA_OPA_SURF2,
@@ -231,7 +231,7 @@ struct RenderPhase {
     u8 endLayer;
 };
 
-static struct RenderPhase sRenderPhases[] = {
+static const struct RenderPhase sRenderPhases[] = {
 #if SILHOUETTE
     [RENDER_PHASE_ZEX_BEFORE_SILHOUETTE]   = {
         .startLayer = LAYER_FIRST,
@@ -271,7 +271,7 @@ extern const Gfx init_rsp[];
 #define LOWER_FIXED(x) ((int)((unsigned int)((x) * 0x10000) & 0xFFFF))
 
 // Fixed-point identity matrix with the inverse of world scale
-Mtx identityMatrixWorldScale = {{
+static const Mtx identityMatrixWorldScale = {{
     {UPPER_FIXED(1.0f / WORLD_SCALE) << 16, 0x00000000,
      UPPER_FIXED(1.0f / WORLD_SCALE) <<  0, 0x00000000},
     {0x00000000,                            UPPER_FIXED(1.0f / WORLD_SCALE) << 16,
@@ -331,7 +331,7 @@ extern const Gfx breakable_box_seg8_dl_cork_box_end[];
  */
 
 void geo_process_master_list_sub(struct GraphNodeMasterList *node) {
-    struct RenderPhase *renderPhase;
+    const struct RenderPhase *renderPhase;
     struct DisplayListNode *currList;
     s32 currLayer     = LAYER_FIRST;
     s32 startLayer    = LAYER_FIRST;
@@ -339,8 +339,8 @@ void geo_process_master_list_sub(struct GraphNodeMasterList *node) {
     s32 phaseIndex    = RENDER_PHASE_FIRST;
     s32 enableZBuffer = (node->node.flags & GRAPH_RENDER_Z_BUFFER) != 0;
     s32 finalPhase    = enableZBuffer ? RENDER_PHASE_END : 1;
-    struct RenderModeContainer *mode1List = &renderModeTable_1Cycle[enableZBuffer];
-    struct RenderModeContainer *mode2List = &renderModeTable_2Cycle[enableZBuffer];
+    const struct RenderModeContainer *mode1List = &renderModeTable_1Cycle[enableZBuffer];
+    const struct RenderModeContainer *mode2List = &renderModeTable_2Cycle[enableZBuffer];
     Gfx *tempGfxHead = gDisplayListHead;
     int frame = gGlobalTimer % 8;
     u32 curMode1 = 0, curMode2 = 0;
