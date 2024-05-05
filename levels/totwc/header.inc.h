@@ -1,11 +1,9 @@
-// geo
-extern const GeoLayout totwc_geo_000160[];
-extern const GeoLayout totwc_geo_000188[];
-
-// leveldata
-extern const Gfx totwc_seg7_dl_07005D28[];
-extern const Gfx totwc_seg7_dl_07007048[];
-extern const Gfx totwc_seg7_dl_070078B8[];
-extern const Gfx totwc_seg7_dl_070079A8[];
-extern const Collision totwc_seg7_collision[];
-extern const MacroObject totwc_seg7_macro_objs[];
+extern const GeoLayout totwc_area_1_geo[];
+extern const GeoLayout totwc_area_1[];
+extern const Collision totwc_area_1_collision[];
+extern const MacroObject totwc_area_1_macro_objs[];
+extern Lights1 totwc_dl_f3dlite_material_lights;
+extern Vtx totwc_dl_Plane_mesh_layer_1_vtx_0[4];
+extern Gfx totwc_dl_Plane_mesh_layer_1_tri_0[];
+extern Gfx mat_totwc_dl_f3dlite_material[];
+extern Gfx totwc_dl_Plane_mesh_layer_1[];
