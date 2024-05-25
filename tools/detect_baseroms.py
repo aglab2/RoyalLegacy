@@ -50,6 +50,8 @@ def get_rom_candidates():
                     foundVersions[k] = "/tmp/baserom.%s.swapped.z64" % k
         except Exception as e:
             continue
+
+    foundVersions['rl'] = 'baserom.rl.z64'
     return foundVersions
 
 
