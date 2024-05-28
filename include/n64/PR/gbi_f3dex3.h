@@ -6,6 +6,7 @@
 #define F3DEX3_H
 
 #define F3DEX_GBI_2 1
+#define F3DEX_GBI_3 1
 
 #ifdef REQUIRE_SEMICOLONS_AFTER_GBI_COMMANDS
 /* OoT style, semicolons required after using macros, cleaner code. If modding
@@ -1189,6 +1190,16 @@ typedef struct {
     short kz;
     short kc;
 } OcclusionPlane_t;
+
+typedef struct {
+    /* Four vertices of a quad, XYZ components in world space */
+    struct {
+        short x;
+        short y;
+        short z;
+    } v[4];
+    float weight; /* Higher if there's a lot of stuff behind it */
+} OcclusionPlaneCandidate;
 
 typedef union {
     Light_t l;
