@@ -11,11 +11,7 @@
 #else /* Use one of the F3DEX series grucodes. */
     #ifndef F3DZEX_GBI_2
       #if F3DEX_GBI_3 == 1
-            lib/PR/f3dex3/fifo/gspF3DEX3.fifo.o(.data);
-      #elif F3DEX_GBI_3 == 2
-            lib/PR/f3dex3/fifo/gspF3DEX3.glck.fifo.o(.data);      /* GLCK profiling */
-      #elif F3DEX_GBI_3 == 3
-            lib/PR/f3dex3/fifo/gspF3DEX3.debug.fifo.o(.data);     /* Normals debugger + GLCK profiling */
+          BUILD_DIR/lib/gspF3DEX3.o(.data);
       #elif F3DEX2PL_GBI == 1
           BUILD_DIR/lib/gspF3DEX2_PosLight.fifo.o(.data);
       #elif F3DEX_GBI_2 == 1

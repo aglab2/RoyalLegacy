@@ -102,7 +102,7 @@ TARGET := sm64
 #   super3d - Extremely experimental version of Fast3D lacking many features and simplified routines for speed.
 #   f3dex3  - Upgraded F3DEX2. Great performance, but as of February 4th, 2024, it is only supported across LLE emulators and real hardware.
 
-GRUCODE ?= f3dzex
+GRUCODE ?= f3dex3
 $(eval $(call validate-option,GRUCODE,f3dex f3dex2 l3dex2 f3dex2pl f3dzex super3d f3dex3))
 
 ifeq ($(GRUCODE),f3dex) # F3DEX
