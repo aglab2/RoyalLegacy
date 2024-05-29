@@ -116,7 +116,6 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(0, 4379, -2773, -4932, 0, 0, 0, 0xc0000, bhvWarp),
 		OBJECT(22, 909, 0, 1968, 0, 0, 0, 0x70000, bhvWarpPipe),
 		OBJECT(0, 303, 904, 1139, 0, 0, 0, 0x0, bhvWaterfallSoundLoop),
-		OBJECT(0, -3142, -99, 1776, 0, 0, 20, 5, RM_Scroll_Texture),
 		OBJECT(MODEL_NONE, -273, 283, -1253, 0, 0, 0, 0x000A0000, bhvSpinAirborneWarp),
 		MARIO_POS(0x01, 0, -273, 283, -1253),
 		TERRAIN(bob_area_1_collision),

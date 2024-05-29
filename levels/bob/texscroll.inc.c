@@ -21,7 +21,7 @@ void scroll_bob_dl_bwater_mesh_layer_1_vtx_0() {
 
 void scroll_bob_dl_water_texture_mesh_layer_5_vtx_0() {
 	int i = 0;
-	int count = 71;
+	int count = 63;
 	int width = 32 * 0x20;
 
 	static int currentX = 0;
