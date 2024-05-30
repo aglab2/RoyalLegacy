@@ -2686,11 +2686,10 @@ _DW({                                                        \
 /*
  * Moveword commands
  */
-/* not strictly a moveword command anymore */
-#define gSPSegment(pkt, segment, base)              \
-    gDma1p((pkt), G_RELSEGMENT, (base), ((segment) * 4) & 0xFFF, G_MW_SEGMENT)
-#define gsSPSegment(segment, base)                  \
-    gsDma1p(      G_RELSEGMENT, (base), ((segment) * 4) & 0xFFF, G_MW_SEGMENT)
+#define gSPSegment(pkt, segment, base)					\
+	gMoveWd(pkt, G_MW_SEGMENT, (segment)*4, base)
+#define gsSPSegment(segment, base)					\
+	gsMoveWd(    G_MW_SEGMENT, (segment)*4, base)
 
 #define gSPPerspNormalize(pkt, s)   gMoveHalfwd(pkt, G_MW_FX, G_MWO_PERSPNORM, (s))
 #define gsSPPerspNormalize(s)       gsMoveHalfwd(    G_MW_FX, G_MWO_PERSPNORM, (s))
@@ -3827,6 +3826,8 @@ _DW({                                                   \
 
 #define G_TX_LOADTILE   7
 #define G_TX_RENDERTILE 0
+
+#define NO_SYNCS_IN_TEXTURE_LOADS
 
 /*
  * Define this to remove syncs from texture loading multi-command macros.
