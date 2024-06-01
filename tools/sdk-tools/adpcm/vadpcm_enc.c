@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <unistd.h>
 #include "vadpcm.h"
 
 static char usage[] = "[-t -l min_loop_length] -c codebook aifcfile compressedfile";
@@ -74,10 +75,27 @@ int main(int argc, char **argv)
         case 'c':
             if (sscanf(optarg, "%s", filename) == 1)
             {
-                if ((fhandle = fopen(filename, "r")) == NULL)
+                while (1)
                 {
-                    fprintf(stderr, "Codebook file %s could not be opened\n", filename);
-                    exit(1);
+                    if ((fhandle = fopen(filename, "r")) == NULL)
+                    {
+                        fprintf(stderr, "Codebook file %s could not be opened\n", filename);
+                        exit(1);
+                    }
+                    fseek(fhandle, 0L, SEEK_END);
+                    size_t filesize = ftell(fhandle);
+                    rewind(fhandle);
+                    if (0 == filesize)
+                    {
+                        // because of some internal make caching, we have to wait for file to stop becoming empty
+                        fprintf(stderr, "Codebook file %s is empty\n", filename);
+                        fclose(fhandle);
+                        usleep(10000);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 if (readcodebook(fhandle, &coefTable, &order, &npredictors) != 0)
                 {
