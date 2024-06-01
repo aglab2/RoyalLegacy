@@ -4,6 +4,7 @@
 #include "src/game/texscroll/bob_texscroll.inc.h"
 #include "src/game/texscroll/castle_grounds_texscroll.inc.h"
 #include "src/game/texscroll/jrb_texscroll.inc.h"
+#include "src/game/texscroll/bits_texscroll.inc.h"
 extern void scroll_textures();
 
 #endif
