@@ -68,7 +68,7 @@ const GeoLayout wf_area_1_geo[] = {
 		GEO_OPEN_NODE(),
 			GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_zWinterLevel_2020version_007_mesh_layer_1),
 		GEO_CLOSE_NODE(),
-		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 2830, 0, -9, wf_dl_zzWinterLevel_2020version_013_mesh_layer_1),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_FORCE, 2830, 0, -9, wf_dl_zzWinterLevel_2020version_013_mesh_layer_0),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };

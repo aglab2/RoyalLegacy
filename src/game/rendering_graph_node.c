@@ -670,9 +670,12 @@ void geo_process_cull(struct GraphNodeCull* node)
         active = node->x0 < gMarioStates->pos[0] && gMarioStates->pos[0] < node->x1
                 && node->y0 < gMarioStates->pos[1] && gMarioStates->pos[1] < node->y1
                 && node->z0 < gMarioStates->pos[2] && gMarioStates->pos[2] < node->z1;
+
+        if ((node->style & 2) && gMarioStates->floor && (gMarioStates->floor->type == SURFACE_HARD))
+            return;
     }
 
-    if ((active ^ node->style) && node->node.children != 0) {
+    if ((active ^ (1 & node->style)) && node->node.children != 0) {
         geo_process_node_and_siblings(node->node.children);
     }
 }
