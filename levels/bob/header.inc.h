@@ -193,7 +193,7 @@ extern Vtx bob_dl_h_mesh_layer_4_vtx_cull[8];
 extern Vtx bob_dl_h_mesh_layer_4_vtx_0[10];
 extern Vtx bob_dl_h_mesh_layer_4_vtx_1[136];
 extern Vtx bob_dl_h_001_mesh_layer_4_vtx_cull[8];
-extern Vtx bob_dl_h_001_mesh_layer_4_vtx_0[130];
+extern Vtx bob_dl_h_001_mesh_layer_4_vtx_0[128];
 extern Vtx bob_dl_h_001_mesh_layer_1_vtx_cull[8];
 extern Vtx bob_dl_h_001_mesh_layer_1_vtx_0[28];
 extern Vtx bob_dl_h_001_mesh_layer_1_vtx_1[12];
