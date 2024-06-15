@@ -1,4 +1,6 @@
-extern void scroll_gfx_mat_jrb_dl_LavaPools__noflow__001_f3d();
-extern void scroll_gfx_mat_jrb_dl_Flowing_Lava_001_f3d();
-extern void scroll_gfx_mat_jrb_dl_AlsoFlowingLava_001_f3d();
+extern void scroll_jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_34();
+extern void scroll_jrb_dl_Brimstone_Banks_Definitive_Edition_011_mesh_layer_1_vtx_3();
+extern void scroll_gfx_mat_jrb_dl_LavaPools__noflow__001_f3d_001();
+extern void scroll_gfx_mat_jrb_dl_AlsoFlowingLava_001_f3d_001();
+extern void scroll_gfx_mat_jrb_dl_f3dlite_material_layer1();
 extern void scroll_jrb();
