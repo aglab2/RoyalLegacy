@@ -13,6 +13,7 @@
 #include "klepto/anims/table.inc.c"
 UNUSED static const u64 binid_0 = 0;
 
+#include "eyerok/collision.inc.c"
 #include "eyerok/model.inc.c"
 #include "eyerok/anims/data.inc.c"
 #include "eyerok/anims/table.inc.c"

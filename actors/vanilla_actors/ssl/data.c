@@ -25,4 +25,3 @@
 #include "actors/vanilla_actors/ssl/spindel/collision.inc.c"
 #include "actors/vanilla_actors/ssl/moving_pyramid_wall/collision.inc.c"
 #include "actors/vanilla_actors/ssl/pyramid_elevator/collision.inc.c"
-#include "actors/vanilla_actors/ssl/eyerok_col/collision.inc.c"
