@@ -1,13 +1,18 @@
 #include "src/game/envfx_snow.h"
 
-const GeoLayout bbh_area_1_geo[] = {
+const GeoLayout bbh_area_6_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
-		GEO_ROTATION_NODE_WITH_DL(LAYER_OPAQUE, 90, 0, 0, bbh_dl_DL_bbh_1_0xe00e560_Obj_mesh_layer_1),
+		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, -3486, 0, 3882, 90, 0, 0, bbh_dl_DL_bbh_6_0xe044ab0_Obj_mesh_layer_1),
+		GEO_OPEN_NODE(),
+			GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bbh_dl_DL_bbh_6_0xe044ab0_Obj_mesh_layer_5),
+		GEO_CLOSE_NODE(),
+		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_ALPHA, -3486, 0, 3882, 90, 0, 0, bbh_dl_DL_bbh_6_0xe050770_Obj_mesh_layer_4),
+		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_ALPHA, -3486, 0, 3882, 90, 0, 0, bbh_dl_DL_bbh_6_0xe0509e8_Obj_mesh_layer_4),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
-const GeoLayout bbh_area_1[] = {
+const GeoLayout bbh_area_6[] = {
 	GEO_NODE_SCREEN_AREA(10, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
 	GEO_OPEN_NODE(),
 		GEO_ZBUFFER(0),
@@ -23,7 +28,7 @@ const GeoLayout bbh_area_1[] = {
 			GEO_OPEN_NODE(),
 				GEO_CAMERA(1, 0, 0, 0, 0, -100, 0, geo_camera_main),
 				GEO_OPEN_NODE(),
-					GEO_BRANCH(1, bbh_area_1_geo),
+					GEO_BRANCH(1, bbh_area_6_geo),
 					GEO_RENDER_OBJ(),
 					GEO_ASM(ENVFX_MODE_NONE, geo_envfx_main),
 				GEO_CLOSE_NODE(),
