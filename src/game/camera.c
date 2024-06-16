@@ -2989,19 +2989,19 @@ void update_camera(struct Camera *c) {
                     break;
 
                 case CAMERA_MODE_RADIAL:
-                    mode_radial_camera(c);
+                    // mode_radial_camera(c);
                     break;
 
                 case CAMERA_MODE_OUTWARD_RADIAL:
-                    mode_outward_radial_camera(c);
+                    // mode_outward_radial_camera(c);
                     break;
 
                 case CAMERA_MODE_CLOSE:
-                    mode_lakitu_camera(c);
+                    // mode_lakitu_camera(c);
                     break;
 
                 case CAMERA_MODE_FREE_ROAM:
-                    mode_lakitu_camera(c);
+                    // mode_lakitu_camera(c);
                     break;
 
                 case CAMERA_MODE_BOSS_FIGHT:
@@ -3009,11 +3009,11 @@ void update_camera(struct Camera *c) {
                     break;
 
                 case CAMERA_MODE_PARALLEL_TRACKING:
-                    mode_parallel_tracking_camera(c);
+                    // mode_parallel_tracking_camera(c);
                     break;
 
                 case CAMERA_MODE_SLIDE_HOOT:
-                    mode_slide_camera(c);
+                    // mode_slide_camera(c);
                     break;
 
                 case CAMERA_MODE_FIXED:
@@ -3021,7 +3021,7 @@ void update_camera(struct Camera *c) {
                     break;
 
                 case CAMERA_MODE_SPIRAL_STAIRS:
-                    mode_spiral_stairs_camera(c);
+                    // mode_spiral_stairs_camera(c);
                     break;
             }
         }
