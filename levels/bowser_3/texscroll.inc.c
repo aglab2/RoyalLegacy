@@ -40,6 +40,27 @@ void scroll_bowser_3_dl_Bowser_Fight_mesh_layer_1_vtx_11() {
 	currentX += deltaX;
 }
 
+void scroll_bowser_3_dl_Bowser_Fight_mesh_layer_5_vtx_0() {
+	int i = 0;
+	int count = 14;
+	int width = 32 * 0x20;
+
+	static int currentX = 0;
+	int deltaX;
+	Vtx *vertices = segmented_to_virtual(bowser_3_dl_Bowser_Fight_mesh_layer_5_vtx_0);
+
+	deltaX = (int)(0.12999999523162842 * 0x20) % width;
+
+	if (absi(currentX) > width) {
+		deltaX -= (int)(absi(currentX) / width) * width * signum_positive(deltaX);
+	}
+
+	for (i = 0; i < count; i++) {
+		vertices[i].n.tc[0] += deltaX;
+	}
+	currentX += deltaX;
+}
+
 void scroll_gfx_mat_bowser_3_dl__9_f3d_layer1() {
 	Gfx *mat = segmented_to_virtual(mat_bowser_3_dl__9_f3d_layer1);
 
@@ -52,5 +73,6 @@ void scroll_gfx_mat_bowser_3_dl__9_f3d_layer1() {
 void scroll_bowser_3() {
 	scroll_bowser_3_dl_Bowser_Fight_mesh_layer_1_vtx_0();
 	scroll_bowser_3_dl_Bowser_Fight_mesh_layer_1_vtx_11();
+	scroll_bowser_3_dl_Bowser_Fight_mesh_layer_5_vtx_0();
 	scroll_gfx_mat_bowser_3_dl__9_f3d_layer1();
 };

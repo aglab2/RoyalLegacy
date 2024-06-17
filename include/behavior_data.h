@@ -545,5 +545,6 @@ extern const BehaviorScript bhvUnusedFakeStar[];
 extern const BehaviorScript RM_Scroll_Texture[];
 
 extern const BehaviorScript bhvFightSpawner[];
+extern const BehaviorScript bhvCS[];
 
 #endif // BEHAVIOR_DATA_H

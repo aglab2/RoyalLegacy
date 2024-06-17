@@ -6089,3 +6089,13 @@ const BehaviorScript bhvFightSpawner[] = {
         CALL_NATIVE(bhv_fight_spawner_loop),
     END_LOOP(),
 };
+
+extern void bhv_cs_init();
+extern void bhv_cs_loop();
+const BehaviorScript bhvCS[] = {
+    BEGIN(OBJ_LIST_SPAWNER),
+    CALL_NATIVE(bhv_cs_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_cs_loop),
+    END_LOOP(),
+};

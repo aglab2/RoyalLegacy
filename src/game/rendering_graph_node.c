@@ -660,12 +660,14 @@ void geo_process_level_of_detail(struct GraphNodeLevelOfDetail *node) {
     }
 }
 
+extern char gIsCs;
 void geo_process_cull(struct GraphNodeCull* node)
 {
     s16 active = TRUE;
 #ifdef AUTO_LOD
     // if (!__unlikely(!gIsConsole))
 #endif
+    if (!gIsCs)
     {
         active = node->x0 < gMarioStates->pos[0] && gMarioStates->pos[0] < node->x1
                 && node->y0 < gMarioStates->pos[1] && gMarioStates->pos[1] < node->y1

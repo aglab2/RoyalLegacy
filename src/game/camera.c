@@ -3364,7 +3364,7 @@ void zoom_out_if_paused_and_outside(struct GraphNodeCamera *camera) {
     }
     if (gCameraMovementFlags & CAM_MOVE_PAUSE_SCREEN) {
         if (sFramesPaused >= 2) {
-            if (sZoomOutAreaMasks[areaMaskIndex] & areaBit) {
+            if (0) {
 
                 camera->focus[0] = gCamera->areaCenX;
                 camera->focus[1] = (sMarioCamState->pos[1] + gCamera->areaCenY) / 2;
@@ -10284,6 +10284,42 @@ struct Cutscene sCutsceneReadMessage[] = {
     { cutscene_read_message_end, 0 }
 };
 
+struct CutsceneSplinePoint gCSAglab1Pos[] = {
+    { 0, 100, { -4039, 2437, 1903 } }, 
+    { 1, 100, { -4039, 2437, 1903 } }, 
+    { 2, 100, { -4039, 2437, 1903 } }, 
+    { 3, 100, { -207, 2437, 2530 } },
+    { 4, 100, { -619, 3397, -221 } },
+    { 5, 100, { 3178, 4357, -899 } },
+    { 6, 100, { 5042, 4181, -4112 } },
+    { 7, 100, { 3004, 4181, -6358 } },
+    { 8, 100, { -1593, 4181, -6786 } },
+    { -1, 0, { -1593, 4181, -6786 } },
+};
+
+struct CutsceneSplinePoint gCSAglab1Focus[] = {
+    { 0, 100, { -2474, 1945, 2006 } },
+    { 1, 100, { -2474, 1945, 2006 } },
+    { 2, 100, { -2474, 1945, 2006 } },
+    { 3, 100, { -230, 2676, -699 } },
+    { 4, 100, { 4282, 3396, -1333 } },
+    { 5, 100, { 4278, 3396, -5000 } },
+    { 6, 100, { 1168, 3396, -6544  } },
+    { 7, 100, { -2146, 3524, -5462 } },
+    { 8, 100, { -2146, 3524, -5462 } },
+    { -1, 100, { -2146, 3524, -5462  } },
+};
+
+void cutscene_c1(struct Camera *c) {
+    cutscene_event(cutscene_end_waving_start, c, 0, 0);
+    move_point_along_spline(c->pos, gCSAglab1Pos, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+    move_point_along_spline(c->focus, gCSAglab1Focus, &sCutsceneSplineSegment, &sCutsceneSplineSegmentProgress);
+}
+
+struct Cutscene sCutsceneC1[] = {
+    { cutscene_c1, CUTSCENE_LOOP }
+};
+
 /* TODO:
  * The next two arrays are both related to levels, and they look generated.
  * These should be split into their own file.
@@ -10745,6 +10781,8 @@ void play_cutscene(struct Camera *c) {
         CUTSCENE(CUTSCENE_RACE_DIALOG,          sCutsceneDialog)
         CUTSCENE(CUTSCENE_ENTER_PYRAMID_TOP,    sCutsceneEnterPyramidTop)
         CUTSCENE(CUTSCENE_SSL_PYRAMID_EXPLODE,  sCutscenePyramidTopExplode)
+        
+        CUTSCENE(CUTSCENE_C1,                   sCutsceneC1)
     }
 
 #undef CUTSCENE
