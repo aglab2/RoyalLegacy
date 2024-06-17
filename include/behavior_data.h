@@ -544,4 +544,6 @@ extern const BehaviorScript bhvUnusedFakeStar[];
 #define bhvLargeFishGroup bhvFishGroup
 extern const BehaviorScript RM_Scroll_Texture[];
 
+extern const BehaviorScript bhvFightSpawner[];
+
 #endif // BEHAVIOR_DATA_H

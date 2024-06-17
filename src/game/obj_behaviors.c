@@ -776,3 +776,8 @@ void bhv_murder()
 {
     o->activeFlags = 0;
 }
+
+void bhv_fight_spawner_loop()
+{
+
+}

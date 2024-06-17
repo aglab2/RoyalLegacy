@@ -6081,3 +6081,11 @@ const BehaviorScript RM_Scroll_Texture[] = {
         CALL_NATIVE(bhv_murder),
     END_LOOP(),
 };
+
+extern void bhv_fight_spawner_loop();
+const BehaviorScript bhvFightSpawner[] = {
+    BEGIN(OBJ_LIST_SPAWNER),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_fight_spawner_loop),
+    END_LOOP(),
+};
