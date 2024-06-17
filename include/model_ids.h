@@ -406,7 +406,7 @@
 
 // group 14
 #define MODEL_PIRANHA_PLANT               0x64        // piranha_plant_geo
-#define MODEL_WHOMP                       0x67        // whomp_geo
+#define MODEL_WHOMP                       0xf0        // whomp_geo
 #define MODEL_KOOPA_WITH_SHELL            0x68        // koopa_with_shell_geo
 #define MODEL_METALLIC_BALL               0x65        // metallic_ball_geo
 #define MODEL_CHAIN_CHOMP                 0x66        // chain_chomp

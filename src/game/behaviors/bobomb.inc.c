@@ -26,6 +26,18 @@ void bobomb_spawn_coin(void) {
     }
 }
 
+static int bobomb_respawn_radius()
+{
+    if (gCurrLevelNum == LEVEL_BOWSER_3)
+    {
+        return 500;
+    }
+    else
+    {
+        return 3000;
+    }
+}
+
 void bobomb_act_explode(void) {
     if (o->oTimer < 5) {
         cur_obj_scale(1.0f + ((f32) o->oTimer / 5.0f));
@@ -34,7 +46,7 @@ void bobomb_act_explode(void) {
         explosion->oGraphYOffset += 100.0f;
 
         bobomb_spawn_coin();
-        create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
+        create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, bobomb_respawn_radius());
 
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
@@ -117,13 +129,13 @@ void generic_bobomb_free_loop(void) {
 
         case OBJ_ACT_LAVA_DEATH:
             if (obj_lava_death()) {
-                create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
+                create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, bobomb_respawn_radius());
             }
             break;
 
         case OBJ_ACT_DEATH_PLANE_DEATH:
             o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-            create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
+            create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, bobomb_respawn_radius());
             break;
     }
 
@@ -146,13 +158,13 @@ void stationary_bobomb_free_loop(void) {
 
         case OBJ_ACT_LAVA_DEATH:
             if (obj_lava_death()) {
-                create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
+                create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, bobomb_respawn_radius());
             }
             break;
 
         case OBJ_ACT_DEATH_PLANE_DEATH:
             o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
-            create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, 3000);
+            create_respawner(MODEL_BLACK_BOBOMB, bhvBobomb, bobomb_respawn_radius());
             break;
     }
 
@@ -164,7 +176,7 @@ void stationary_bobomb_free_loop(void) {
 }
 
 void bobomb_free_loop(void) {
-    if (o->oBehParams2ndByte == BOBOMB_BP_STYPE_GENERIC) {
+    if (o->oBehParams2ndByte == BOBOMB_BP_STYPE_GENERIC && gCurrLevelNum != LEVEL_BOWSER_3) {
         generic_bobomb_free_loop();
     } else {
         stationary_bobomb_free_loop();
@@ -256,6 +268,13 @@ void bhv_bobomb_loop(void) {
         curr_obj_random_blink(&o->oBobombBlinkTimer);
 
         if (o->oBobombFuseLit) {
+            if (gCurrLevelNum == LEVEL_BOWSER_3 && o->oHeldState == HELD_HELD)
+            {
+                if (o->oBobombFuseTimer > 120) {
+                    o->oBobombFuseTimer = 90;
+                }
+            }
+
             if (o->oBobombFuseTimer > 120) {
                 dustPeriodMinus1 = 1;
             } else {

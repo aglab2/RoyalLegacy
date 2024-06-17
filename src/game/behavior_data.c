@@ -1928,7 +1928,7 @@ const BehaviorScript bhvBowserKey[] = {
 const BehaviorScript bhvGrandStar[] = {
     BEGIN(OBJ_LIST_LEVEL),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
-    SET_INTERACT_TYPE(INTERACT_STAR_OR_KEY),
+    SET_INTERACT_TYPE(INTERACT_WARP),
     SET_INT(oInteractionSubtype, INT_SUBTYPE_GRAND_STAR),
     SET_HITBOX(/*Radius*/ 160, /*Height*/ 100),
     SET_HOME(),
@@ -1988,7 +1988,7 @@ const BehaviorScript bhvWhitePuffSmoke[] = {
 
 const BehaviorScript bhvBowserTailAnchor[] = {
     BEGIN(OBJ_LIST_GENACTOR),
-    SET_HITBOX_WITH_OFFSET(/*Radius*/ 100, /*Height*/ 50, /*Downwards offset*/ -50),
+    SET_HITBOX_WITH_OFFSET(/*Radius*/ 100, /*Height*/ 100, /*Downwards offset*/ 50),
     SET_INT(oIntangibleTimer, 0),
     DISABLE_RENDERING(),
     BEGIN_LOOP(),

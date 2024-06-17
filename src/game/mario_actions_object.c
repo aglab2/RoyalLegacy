@@ -342,10 +342,24 @@ s32 act_picking_up_bowser(struct MarioState *m) {
     return FALSE;
 }
 
+extern const BehaviorScript bhvBowserBomb[];
+static int sIsFastFrames = 0;
 s32 act_holding_bowser(struct MarioState *m) {
     s16 spin;
 
-    if (m->input & INPUT_B_PRESSED) {
+    struct Object* bomb = cur_obj_nearest_object_with_behavior(bhvBowserBomb);
+    s16 angleDiff = obj_angle_to_object(bomb, m->marioObj) - m->faceAngle[1] + 0x8000;
+    if (abss(m->angleVel[1]) > 0x1900)
+    {
+        sIsFastFrames++;
+    }
+    else
+    {
+        sIsFastFrames = 0;
+    }
+
+    if ((-0x1800 < angleDiff && angleDiff < 0x1800) && (sIsFastFrames > 30)) {
+        m->faceAngle[1] = 0x8000 + obj_angle_to_object(bomb, m->marioObj);
         if (m->angleVel[1] <= -0xE00 || m->angleVel[1] >= 0xE00) {
             play_sound(SOUND_MARIO_SO_LONGA_BOWSER, m->marioObj->header.gfx.cameraToObject);
         } else {
@@ -355,10 +369,6 @@ s32 act_holding_bowser(struct MarioState *m) {
     }
 
     if (m->angleVel[1] == 0) {
-        if (m->actionTimer++ > 120) {
-            return set_mario_action(m, ACT_RELEASING_BOWSER, 1);
-        }
-
         set_mario_animation(m, MARIO_ANIM_HOLDING_BOWSER);
     } else {
         m->actionTimer = 0;
@@ -378,7 +388,7 @@ s32 act_holding_bowser(struct MarioState *m) {
             m->twirlYaw = m->intendedYaw;
             m->angleVel[1] += spin;
 
-            m->angleVel[1] = CLAMP(m->angleVel[1], -0x1000, 0x1000);
+            m->angleVel[1] = CLAMP(m->angleVel[1], -0x1A00, 0x1A00);
         }
     } else {
         m->actionArg = 0;

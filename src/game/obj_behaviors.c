@@ -779,5 +779,9 @@ void bhv_murder()
 
 void bhv_fight_spawner_loop()
 {
-
+    struct Object* whomp = cur_obj_nearest_object_with_behavior(bhvSmallWhomp);
+    if (whomp)
+        return;
+    
+    whomp = spawn_object(o, MODEL_WHOMP, bhvSmallWhomp);
 }

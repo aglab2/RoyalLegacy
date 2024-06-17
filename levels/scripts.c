@@ -303,6 +303,7 @@ const LevelScript script_func_global_13[] = {
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_FLAMES,           bowser_flames_geo),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_WAVE,             invisible_bowser_accessory_geo),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_NO_SHADOW,        bowser_geo_no_shadow),
+    LOAD_MODEL_FROM_GEO(MODEL_WHOMP,                   whomp_geo),
     RETURN(),
 };
 
@@ -320,7 +321,6 @@ const LevelScript script_func_global_14[] = {
 
 const LevelScript script_func_global_15[] = {
     LOAD_MODEL_FROM_GEO(MODEL_PIRANHA_PLANT,           piranha_plant_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_WHOMP,                   whomp_geo),
     LOAD_MODEL_FROM_GEO(MODEL_KOOPA_WITH_SHELL,        koopa_with_shell_geo),
     LOAD_MODEL_FROM_GEO(MODEL_KOOPA_WITHOUT_SHELL,     koopa_without_shell_geo),
     LOAD_MODEL_FROM_GEO(MODEL_METALLIC_BALL,           metallic_ball_geo),

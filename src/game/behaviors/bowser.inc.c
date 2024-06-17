@@ -70,6 +70,11 @@ void bhv_bowser_tail_anchor_loop(void) {
         o->parentObj->oIntangibleTimer = -1;
     }
 
+    if (o->parentObj->oHealth != 1)
+        o->parentObj->oIntangibleTimer = -1;
+    else
+        o->parentObj->oIntangibleTimer = 0;
+
     o->oInteractStatus = INT_STATUS_NONE;
 }
 
@@ -365,6 +370,11 @@ void bowser_bitfs_actions(void) {
  * List of actions (and attacks) for "Bowser in the Sky"
  */
 void bowser_bits_action_list(void) {
+#if 0
+    o->oAction = BOWSER_ACT_HIT_MINE;
+    o->oHealth = 1;
+    return;
+#endif
     f32 rand = random_float();
     if (o->oBowserStatus & BOWSER_STATUS_ANGLE_MARIO) {
         if (o->oDistanceToMario < 1000.0f) { // nearby
@@ -376,13 +386,13 @@ void bowser_bits_action_list(void) {
                 o->oAction = BOWSER_ACT_BREATH_FIRE;
             } // far away
         } else if (rand < 0.5f) {
-            o->oAction = BOWSER_ACT_BIG_JUMP; // 50% chance
+            o->oAction = BOWSER_ACT_SPIT_FIRE_INTO_SKY; // 50% chance
         } else {
-            o->oAction = BOWSER_ACT_CHARGE_MARIO;
+            o->oAction = BOWSER_ACT_SPIT_FIRE_ONTO_FLOOR;
         }
     } else {
         // Keep walking
-        o->oAction = BOWSER_ACT_WALK_TO_MARIO;
+        o->oAction = BOWSER_ACT_SPIT_FIRE_ONTO_FLOOR;
     }
 }
 
@@ -483,19 +493,7 @@ void bowser_act_walk_to_mario(void) {
     s16 turnSpeed;
     s16 angleFromMario = abs_angle_diff(o->oMoveAngleYaw, o->oAngleToMario);
 
-    // Set turning speed depending of the health
-    // Also special case for BitFS
-    if (o->oBehParams2ndByte == BOWSER_BP_BITFS) {
-        turnSpeed = 0x400;
-    } else { // BOWSER_BP_BitDW or BOWSER_BP_BitS
-        if (o->oHealth >= 3) {
-            turnSpeed = 0x400;
-        } else if (o->oHealth == 2) {
-            turnSpeed = 0x300;
-        } else { // 1 health
-            turnSpeed = 0x200;
-        }
-    }
+    turnSpeed = 0x500;
 
     cur_obj_rotate_yaw_toward(o->oAngleToMario, turnSpeed);
 
@@ -525,6 +523,82 @@ void bowser_act_walk_to_mario(void) {
     }
 }
 
+static void puffAt(struct Object* obj, float size, int numParticles)
+{
+    f32 sizeBase = size;
+    f32 sizeRange = size / 20.f;
+    f32 forwardVelBase = 40.f;
+    f32 forwardVelRange = 5.f;
+    f32 velYBase = 70.f;
+    f32 velYRange = 20.f;
+
+    for (int i = 0; i < numParticles; i++) {
+        f32 scale = random_float() * (sizeRange * 0.1f) + sizeBase * 0.1f;
+        struct Object* particle;
+        if (i % 2)
+        {
+            particle = spawn_object(obj, MODEL_SMOKE, bhvWhitePuff2);
+        }
+        else
+        {
+            scale *= 10.f;
+            particle = spawn_object(obj, MODEL_MIST, bhvWhitePuff1);
+        }
+
+        particle->oBehParams2ndByte = 2;
+        particle->oMoveAngleYaw = random_u16();
+        particle->oGravity = 2.52f;
+        particle->oDragStrength = 1.0f;
+        particle->oForwardVel = random_float() * forwardVelRange + forwardVelBase;
+        particle->oPosX = obj->oPosX;
+        particle->oPosY = obj->oPosY;
+        particle->oPosZ = obj->oPosZ;
+        particle->oVelX = 0.f;
+        particle->oVelY = random_float() * velYRange + velYBase;
+        particle->oVelZ = 0.f;
+
+        obj_scale(particle, scale);
+    }
+}
+
+static void puffAt2(struct Object* obj, f32 x, f32 y, f32 z, f32 vx, f32 vz, float size, int numParticles)
+{
+    f32 sizeBase = size;
+    f32 sizeRange = size / 20.f;
+    f32 forwardVelBase = 40.f;
+    f32 forwardVelRange = 5.f;
+    f32 velYBase = 10.f;
+    f32 velYRange = 20.f;
+
+    for (int i = 0; i < numParticles; i++) {
+        f32 scale = random_float() * (sizeRange * 0.1f) + sizeBase * 0.1f;
+        struct Object* particle;
+        if (i % 2)
+        {
+            particle = spawn_object(obj, MODEL_SMOKE, bhvWhitePuff2);
+        }
+        else
+        {
+            scale *= 10.f;
+            particle = spawn_object(obj, MODEL_MIST, bhvWhitePuff1);
+        }
+
+        particle->oBehParams2ndByte = 2;
+        particle->oMoveAngleYaw = random_u16();
+        particle->oGravity = 2.52f;
+        particle->oDragStrength = 1.0f;
+        particle->oForwardVel = random_float() * forwardVelRange + forwardVelBase;
+        particle->oPosX = x;
+        particle->oPosY = y + 50.f;
+        particle->oPosZ = z;
+        particle->oVelX = vx;
+        particle->oVelY = random_float() * velYRange + velYBase;
+        particle->oVelZ = vz;
+
+        obj_scale(particle, scale);
+    }
+}
+
 /**
  * Makes Bowser teleport while invisible
  */
@@ -538,12 +612,19 @@ void bowser_act_teleport(void) {
             // Play sound effect
             if (o->oTimer == 0) {
                 cur_obj_play_sound_2(SOUND_OBJ2_BOWSER_TELEPORT);
+                puffAt(o, 30.f, 50);
+            }
+            o->oOpacity = 0;
+            if (10 == o->oTimer)
+            {
+                o->oMoveAngleYaw = o->oAngleToMario; // update angle
+                o->oSubAction = BOWSER_SUB_ACT_TELEPORT_STOP;
             }
             // Bowser is invisible, move angle to face Mario
-            if (o->oOpacity == 0) {
-                o->oSubAction++;
-                o->oMoveAngleYaw = o->oAngleToMario;
-            }
+            // if (o->oOpacity == 0) {
+            //     o->oSubAction++;
+            //     o->oMoveAngleYaw = o->oAngleToMario;
+            // }
             break;
 
         case BOWSER_SUB_ACT_TELEPORT_MOVE:
@@ -603,12 +684,46 @@ void bowser_act_spit_fire_into_sky(void) {
     o->oBowserStatus |= BOWSER_STATUS_FIRE_SKY;
 }
 
+static void despawn_cutely(struct Object* flame)
+{
+    spawn_object_with_scale(flame, MODEL_NONE, bhvBlackSmokeUpward, 1.0f);
+    if (random_float() < 0.1f) {
+        spawn_object(flame, MODEL_YELLOW_COIN, bhvTemporaryYellowCoin);
+    }
+
+    flame->activeFlags = 0;
+}
+
+static void despawn_all_cutely(const BehaviorScript* scr)
+{
+    while (1)
+    {
+        struct Object* flame = cur_obj_nearest_object_with_behavior(scr);
+        if (!flame)
+            break;
+
+        despawn_cutely(flame);
+    }
+}
+
 /**
  * Flips Bowser back on stage if he hits a mine with more than 1 health
  */
 void bowser_act_hit_mine(void) {
     // Similar vel values from bowser_fly_back_dead
     if (o->oTimer == 0) {
+        if (1 == o->oHealth) {
+            despawn_all_cutely(bhvFlameMovingForwardGrowing);
+            despawn_all_cutely(bhvFlameBowser);
+            despawn_all_cutely(bhvFlameLargeBurningOut);
+            despawn_all_cutely(bhvBlueFlamesGroup);
+            despawn_all_cutely(bhvFlameFloatingLanding);
+            despawn_all_cutely(bhvFlameBouncing);
+            despawn_all_cutely(bhvBlueBowserFlame);
+            despawn_all_cutely(bhvMovingFlame);
+        }
+
+        o->oDragStrength = 10.0f;
         o->oForwardVel = -400.0f;
         o->oVelY = 100.0f;
         o->oMoveAngleYaw = o->oBowserAngleToCenter + 0x8000;
@@ -624,6 +739,10 @@ void bowser_act_hit_mine(void) {
         cur_obj_init_animation_with_sound(BOWSER_ANIM_FLIP);
         cur_obj_extend_animation_if_at_end();
         bowser_bounce_effects(&o->oBowserTimer);
+
+        if (o->oHealth == 1)
+            return;
+
         // Reset vel and stand up
         if (o->oBowserTimer > 2) {
             cur_obj_init_animation_with_sound(BOWSER_ANIM_STAND_UP_FROM_FLIP);
@@ -1113,7 +1232,8 @@ void bowser_fly_back_dead(void) {
     } else {
         o->oForwardVel = -200.0f;
     }
-    o->oVelY = 100.0f;
+    o->oDragStrength = 4.1f;
+    o->oVelY = 60.0f;
     o->oMoveAngleYaw = o->oBowserAngleToCenter + 0x8000;
     o->oBowserTimer = 0;
     o->oSubAction++; // BOWSER_SUB_ACT_DEAD_BOUNCE
@@ -1509,6 +1629,8 @@ s8 sBowserHealth[] = { 1, 1, 3 };
 /**
  * Update Bowser's actions when he's hands free
  */
+static char sHitByBomb = 0;
+static char sHitByWhomp = 0;
 void bowser_free_update(void) {
     struct Object *platform = o->platform;
 
@@ -1516,6 +1638,17 @@ void bowser_free_update(void) {
         s16 tempYaw = (s16) o->oFaceAngleYaw;
         apply_platform_displacement(&sBowserDisplacementInfo, &o->oPosVec, &tempYaw, platform);
         o->oFaceAngleYaw = tempYaw;
+    }
+    
+    if (o->oAction != BOWSER_ACT_HIT_MINE)
+    if (o->oHealth > 1)
+    if (o->oBowserStatus & BOWSER_STATUS_DIST_MARIO)
+    {
+        s16 angleFromMario = abs_angle_diff(o->oMoveAngleYaw, o->oAngleToMario);
+        if (angleFromMario > 0x7000)
+        {
+            o->oAction = BOWSER_ACT_TELEPORT;
+        }
     }
 
     // Reset grabbed status
@@ -1536,12 +1669,77 @@ void bowser_free_update(void) {
     }
     // Sound states for Bowser Animations
     exec_anim_sound_state(sBowserSoundStates);
+
+    if (o->oAction != BOWSER_ACT_THROWN
+     && o->oAction != BOWSER_ACT_JUMP_ONTO_STAGE
+     && o->oAction != BOWSER_ACT_DEAD
+     && o->oAction != BOWSER_ACT_INTRO_WALK)
+    {
+        o->oPosX = -63.f;
+        o->oPosZ = 0;
+    }
+
+    if (BOWSER_ACT_HIT_MINE != o->oAction)
+    {
+        if (!sHitByBomb)
+        {
+            struct Object* expl = cur_obj_nearest_object_with_behavior(bhvExplosion);
+            if (expl)
+            {
+                if (dist_between_objects(o, expl) < 500.f)
+                {
+                    sHitByBomb = 1;
+                    o->oHealth--;
+                    o->oAction = BOWSER_ACT_HIT_MINE;
+                    struct Object* respawner = cur_obj_nearest_object_with_behavior(bhvRespawner);
+                    if (respawner)
+                        respawner->activeFlags = 0;
+
+                    struct Object* bobomb = cur_obj_nearest_object_with_behavior(bhvBobomb);
+                    if (bobomb)
+                        bobomb->activeFlags = 0;
+                }
+            }
+        }
+
+        if (!sHitByWhomp)
+        {
+            struct Object* whomp = cur_obj_nearest_object_with_behavior(bhvSmallWhomp);
+            if (whomp)
+            {
+                if (dist_between_objects(o, whomp) < 700.f && whomp->oAction == 5)
+                {
+                    sHitByWhomp = 1;
+                    o->oHealth--;
+                    o->oAction = BOWSER_ACT_HIT_MINE;
+                    struct Object* respawner = cur_obj_nearest_object_with_behavior(bhvFightSpawner);
+                    if (respawner)
+                        respawner->activeFlags = 0;
+                }
+            }
+        }
+    }
 }
 
 /**
  * Update Bowser's actions when he's getting held
  */
 void bowser_held_update(void) {
+    {
+        struct MarioState* m = gMarioStates;  
+        if (abss(m->angleVel[1]) > 0xF00)
+        {
+            int particleCount = (abss(m->angleVel[1]) - 0xe00) / 0x100;
+            puffAt2(o
+                , m->pos[0] + sins(m->faceAngle[1]) * 400.f
+                , m->pos[1] + 100.f
+                , m->pos[2] + coss(m->faceAngle[1]) * 400.f
+                , coss(m->faceAngle[1]) * 30.f
+                , sins(m->faceAngle[1]) * 30.f
+                , 20.f
+                , particleCount);
+        }
+    }
     // Reset fire sky status and make him intangible
     o->oBowserStatus &= ~BOWSER_STATUS_FIRE_SKY;
     cur_obj_become_intangible();
@@ -1592,8 +1790,9 @@ void bowser_thrown_dropped_update(void) {
         swingSpd *= 2.5f;
     }
     // Set distance speed when throwing
+    o->oDragStrength = 1.0f;
     o->oForwardVel = coss(o->oBowserHeldAnglePitch) * swingSpd;
-    o->oVelY = -sins(o->oBowserHeldAnglePitch) * swingSpd;
+    o->oVelY = -sins(o->oBowserHeldAnglePitch) * swingSpd / 2.f;
     cur_obj_become_intangible();
 
     // Reset timer and subactions
@@ -1705,6 +1904,8 @@ void bhv_bowser_init(void) {
     // Set eyes status
     o->oBowserEyesTimer = 0;
     o->oBowserEyesShut = FALSE;
+    sHitByBomb = 0;
+    sHitByWhomp = 0;
 }
 
 Gfx *geo_update_body_rot_from_parent(s32 callContext, UNUSED struct GraphNode *node, Mat4 mtx) {

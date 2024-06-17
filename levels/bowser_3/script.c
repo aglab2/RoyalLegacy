@@ -57,13 +57,14 @@ const LevelScript level_bowser_3_entry[] = {
 		WARP_NODE(0xf1, LEVEL_BITS, 0x01, 39, WARP_NO_CHECKPOINT),
 		WARP_NODE(0, LEVEL_ENDING, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_BOWSER, -63, 0, 49, 0, 0, 0, 0x00000000, bhvBowser),
+		OBJECT(MODEL_BOWSER_BOMB, -87, 185, 5329, 0, 0, 0, 0x00000000, bhvBowserBomb),
 		MARIO_POS(0x01, 0, -63, 0, -977),
-		OBJECT(MODEL_NONE, -71, 716, -973, 0, 0, 0, 0x00000000, bhvAirborneWarp),
+		OBJECT(MODEL_NONE, -71, 716, -973, 0, 0, 0, (0xa << 16), bhvAirborneWarp),
 		OBJECT(MODEL_NONE, 2795, 0, -5765, 0, 0, 0, 0x00000000, bhvFightSpawner),
 		OBJECT(MODEL_BLACK_BOBOMB, -2952, 0, -5765, 0, 0, 0, (1 << 16), bhvBobomb),
 		TERRAIN(bowser_3_area_1_collision),
 		MACRO_OBJECTS(bowser_3_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
+		SET_BACKGROUND_MUSIC(0, 0x27),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
