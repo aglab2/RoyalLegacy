@@ -1,4 +1,4 @@
-extern void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_1_vtx_19();
-extern void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_5_vtx_1();
-extern void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5();
+extern void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_008_mesh_layer_1_vtx_8();
+extern void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_019_mesh_layer_5_vtx_0();
+extern void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_6();
 extern void scroll_ccm();

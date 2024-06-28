@@ -1,11 +1,11 @@
-void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_1_vtx_19() {
+void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_008_mesh_layer_1_vtx_8() {
 	int i = 0;
-	int count = 330;
+	int count = 244;
 	int height = 64 * 0x20;
 
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_1_vtx_19);
+	Vtx *vertices = segmented_to_virtual(ccm_dl_Desert_Ruins_Definitive_Edition_008_mesh_layer_1_vtx_8);
 
 	deltaY = (int)(0.1600000262260437 * 0x20) % height;
 
@@ -19,14 +19,14 @@ void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_1_vtx_19() {
 	currentY += deltaY;
 }
 
-void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_5_vtx_1() {
+void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_019_mesh_layer_5_vtx_0() {
 	int i = 0;
 	int count = 7;
 	int width = 64 * 0x20;
 
 	static int currentX = 0;
 	int deltaX;
-	Vtx *vertices = segmented_to_virtual(ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_5_vtx_1);
+	Vtx *vertices = segmented_to_virtual(ccm_dl_Desert_Ruins_Definitive_Edition_019_mesh_layer_5_vtx_0);
 
 	deltaX = (int)(0.2200000286102295 * 0x20) % width;
 
@@ -40,14 +40,14 @@ void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_5_vtx_1() {
 	currentX += deltaX;
 }
 
-void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5() {
+void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_6() {
 	int i = 0;
-	int count = 497;
+	int count = 340;
 	int width = 64 * 0x20;
 
 	static int currentX = 0;
 	int deltaX;
-	Vtx *vertices = segmented_to_virtual(ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5);
+	Vtx *vertices = segmented_to_virtual(ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_6);
 
 	deltaX = (int)(0.2200000286102295 * 0x20) % width;
 
@@ -62,7 +62,7 @@ void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5() {
 }
 
 void scroll_ccm() {
-	scroll_ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_1_vtx_19();
-	scroll_ccm_dl_Desert_Ruins_Definitive_Edition_mesh_layer_5_vtx_1();
-	scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5();
+	scroll_ccm_dl_Desert_Ruins_Definitive_Edition_008_mesh_layer_1_vtx_8();
+	scroll_ccm_dl_Desert_Ruins_Definitive_Edition_019_mesh_layer_5_vtx_0();
+	scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_6();
 };
