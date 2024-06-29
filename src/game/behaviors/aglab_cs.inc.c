@@ -47,7 +47,21 @@ void bhv_cs_loop()
     gMarioStates->controller->buttonDown = 0;
     gMarioStates->controller->buttonPressed = 0;
 
-    gCamera->cutscene = CUTSCENE_C1;
+   switch (gCurrCourseNum)
+    {
+        case COURSE_BOB:
+            gCamera->cutscene = CUTSCENE_C1;
+            break;
+        case COURSE_WF:
+            gCamera->cutscene = CUTSCENE_C2;
+            break;
+        case COURSE_JRB:
+            gCamera->cutscene = CUTSCENE_C3;
+            break;
+        case COURSE_CCM:
+            gCamera->cutscene = CUTSCENE_C4;
+            break;
+    }
     if (gBorderHeight < 33)
         gBorderHeight++;
 
