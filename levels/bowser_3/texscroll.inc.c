@@ -65,8 +65,8 @@ void scroll_gfx_mat_bowser_3_dl__9_f3d_layer1() {
 	Gfx *mat = segmented_to_virtual(mat_bowser_3_dl__9_f3d_layer1);
 
 
-	shift_t(mat, 17, PACK_TILESIZE(0, 1));
-	shift_s(mat, 19, PACK_TILESIZE(0, 1));
+	shift_t(mat, 14, PACK_TILESIZE(0, 1));
+	shift_s(mat, 16, PACK_TILESIZE(0, 1));
 
 };
 

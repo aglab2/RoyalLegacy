@@ -11,7 +11,6 @@
 
 
 
-
 Gfx bowser_3_dl___rgba16_aligner[] = {gsSPEndDisplayList()};
 u8 bowser_3_dl___rgba16[] = {
 	0xf8, 0x41, 0xf8, 0x41, 0xf8, 0x41, 0xf8, 0x41, 
@@ -5903,15 +5902,13 @@ Gfx mat_revert_bowser_3_dl__6_f3d[] = {
 };
 
 Gfx mat_bowser_3_dl__9_f3d_layer1[] = {
-    gsSPLightColor(LIGHT_1, 0xffffffff),
-    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(TEXEL0, TEXEL1, PRIMITIVE_ALPHA, TEXEL1, 0, 0, 0, ENVIRONMENT, COMBINED, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT),
+	gsDPSetCombineLERP(TEXEL1, TEXEL0, PRIMITIVE_ALPHA, TEXEL0, 0, 0, 0, ENVIRONMENT, NOISE, 0, PRIMITIVE, COMBINED, 0, 0, 0, ENVIRONMENT),
 	gsDPSetTextureLUT(G_TT_RGBA16),
 	gsDPSetCycleType(G_CYC_2CYCLE),
 	gsDPSetRenderMode(G_RM_PASS, G_RM_AA_ZB_OPA_SURF2),
 	gsSPTexture(65535, 65535, 0, 0, 1),
-	gsDPSetPrimColor(0, 0, 255, 255, 255, 139),
+	gsDPSetPrimColor(0, 0, 68, 53, 8, 139),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bowser_3_dl__9_x__9_pal_rgba16),
 	gsDPSetTile(0, 0, 0, 256, 5, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadTLUTCmd(5, 15),

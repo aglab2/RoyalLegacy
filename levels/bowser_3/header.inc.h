@@ -7,7 +7,6 @@ extern Lights1 bowser_3_dl__4_f3d_lights;
 extern Lights1 bowser_3_dl__5_f3d_lights;
 extern Lights1 bowser_3_dl__8_f3d_layer4_area1_lights;
 extern Lights1 bowser_3_dl__6_f3d_lights;
-extern Lights1 bowser_3_dl__9_f3d_layer1_lights;
 extern Lights1 bowser_3_dl__10_f3d_lights;
 extern Lights1 bowser_3_dl__2_f3d_lights;
 extern Lights1 bowser_3_dl__11_f3d_lights;
