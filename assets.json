@@ -1121,7 +1121,6 @@
 "sound/sequences/us/13_event_merry_go_round.m64": [1657,{"us":[8143216]}],
 "sound/sequences/us/14_event_race.m64": [197,{"us":[8144880]}],
 "sound/sequences/us/15_cutscene_star_spawn.m64": [644,{"us":[8145088]}],
-"sound/sequences/us/16_event_boss.m64": [3435,{"us":[8145744]}],
 "sound/sequences/us/17_cutscene_collect_key.m64": [671,{"us":[8149184]}],
 "sound/sequences/us/18_event_endless_stairs.m64": [1777,{"us":[8149856]}],
 "sound/sequences/us/19_level_boss_koopa_final.m64": [3515,{"us":[8151648]}],
