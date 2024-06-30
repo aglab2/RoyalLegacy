@@ -818,3 +818,4 @@ void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 sca
 #include "behaviors/bubba.inc.c"
 
 #include "behaviors/aglab_cs.inc.c"
+#include "behaviors/aglab_redcoinradar.inc.c"

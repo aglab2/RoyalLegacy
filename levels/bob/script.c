@@ -37,7 +37,7 @@ const LevelScript level_bob_entry[] = {
 	JUMP_LINK(script_func_global_1), 
 	JUMP_LINK(script_func_global_5), 
 	JUMP_LINK(script_func_global_18), 
-	LOAD_MODEL_FROM_GEO(0xf1, c1_leaf_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_C1_LEAF, c1_leaf_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -94,7 +94,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(0xf1, -3289, 2366, -14, 0, -13, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0xf1, -3361, 2088, 293, 0, -13, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0xf1, -3430, 1822, 574, 0, -13, 0, (1 << 16), bhvHiddenObject),
-		OBJECT(0xf1, -3006, 3022, -1055, 0, -19, 0, (1 << 16), bhvHiddenObject),
+		OBJECT(0xf1, -3006, 3022, -1055, 0, -19, 0, 0x0, bhvHiddenObject),
 		OBJECT(0, 3588, 169, -5280, 0, -6, 179, 0x3000000, bhvHiddenRedCoinStar),
 		OBJECT(190, 1332, -3472, -5898, 0, 0, 0, 0x0, bhvKoopaShellUnderwater),
 		OBJECT(0, 200, -2753, 1047, 0, 0, 0, 0x0, bhvLargeFishGroup),
@@ -121,6 +121,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(0, 4379, -2773, -4932, 0, 0, 0, 0xc0000, bhvWarp),
 		OBJECT(22, 909, 0, 1968, 0, 0, 0, 0x70000, bhvWarpPipe),
 		OBJECT(0, 303, 904, 1139, 0, 0, 0, 0x0, bhvWaterfallSoundLoop),
+		OBJECT(MODEL_RED_COIN_ARROW, -1104, 2173, 1386, 0, 0, 0, (4 << 16), bhvRedCoinRadar),
 		OBJECT(MODEL_NONE, -273, 283, -1253, 0, 0, 0, 0x000A0000, bhvSpinAirborneWarp),
 		MARIO_POS(0x01, 0, -273, 283, -1253),
 		TERRAIN(bob_area_1_collision),

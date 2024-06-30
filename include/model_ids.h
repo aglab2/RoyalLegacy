@@ -572,4 +572,7 @@
 #define MODEL_VCUTM_WARP_PIPE                     MODEL_LEVEL_GEOMETRY_16   // warp_pipe_geo
 #define MODEL_CASTLE_GROUNDS_WARP_PIPE            MODEL_LEVEL_GEOMETRY_16   // warp_pipe_geo
 
+#define MODEL_C1_LEAF 0xf1
+#define MODEL_RED_COIN_ARROW 0xf2
+
 #endif // MODEL_IDS_H

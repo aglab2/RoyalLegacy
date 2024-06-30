@@ -547,4 +547,6 @@ extern const BehaviorScript RM_Scroll_Texture[];
 extern const BehaviorScript bhvFightSpawner[];
 extern const BehaviorScript bhvCS[];
 
+extern const BehaviorScript bhvRedCoinRadar[];
+
 #endif // BEHAVIOR_DATA_H

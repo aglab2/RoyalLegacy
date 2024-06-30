@@ -173,6 +173,7 @@ static const LevelScript script_exec_ ## folder [] = { \
 #undef STUB_LEVEL
 #undef DEFINE_LEVEL
 
+extern const GeoLayout redcoinradar_geo[];
 const LevelScript script_func_global_1[] = {
     LOAD_MODEL_FROM_GEO(MODEL_BLUE_COIN_SWITCH,        blue_coin_switch_geo),
     LOAD_MODEL_FROM_GEO(MODEL_AMP,                     dAmpGeo),
@@ -198,6 +199,7 @@ const LevelScript script_func_global_1[] = {
     LOAD_MODEL_FROM_GEO(MODEL_CHUCKYA,                 chuckya_geo),
     LOAD_MODEL_FROM_GEO(MODEL_TRAJECTORY_MARKER_BALL,      bowling_ball_track_geo),
 	LOAD_MODEL_FROM_GEO(MODEL_THI_WARP_PIPE, warp_pipe_geo),
+    LOAD_MODEL_FROM_GEO(MODEL_RED_COIN_ARROW,            redcoinradar_geo),
     RETURN(),
 };
 
