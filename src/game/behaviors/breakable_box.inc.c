@@ -46,7 +46,8 @@ void hidden_breakable_box_actions(void) {
             break;
         case BREAKABLE_BOX_ACT_ACTIVE:
             cur_obj_become_tangible();
-            if (cur_obj_wait_then_blink(360, 20)) o->oAction = BREAKABLE_BOX_ACT_HIDDEN;
+            int time = gCurrCourseNum == COURSE_JRB ? 600 : 400;
+            if (cur_obj_wait_then_blink(time - 40, 20)) o->oAction = BREAKABLE_BOX_ACT_HIDDEN;
             if (cur_obj_was_attacked_or_ground_pounded()) {
                 spawn_mist_particles();
                 spawn_triangle_break_particles(30, MODEL_DIRT_ANIMATION, 3.0f, TINY_DIRT_PARTICLE_ANIM_STATE_YELLOW);
@@ -68,13 +69,20 @@ void hidden_breakable_box_actions(void) {
 }
 
 extern const Collision c1_leaf_collision[];
+extern const Collision c3_spin_collision[];
+extern const Collision c3_spin_burn_collision[];
 static const void * kCollisions[] = {
     c1_leaf_collision,
+    c3_spin_collision,
 };
 
 void hidden_unbreakable_box_actions(void) {
     struct Object *switchObj;
-    obj_set_collision_data(o, kCollisions[o->oBehParams2ndByte - 1]);
+    if (o->oOpacity != 0)
+        obj_set_collision_data(o, kCollisions[o->oBehParams2ndByte - 1]);
+    else
+        obj_set_collision_data(o, c3_spin_burn_collision);
+
     switch (o->oAction) {
         case BREAKABLE_BOX_ACT_HIDDEN:
             cur_obj_disable_rendering();
@@ -91,7 +99,8 @@ void hidden_unbreakable_box_actions(void) {
             break;
         case BREAKABLE_BOX_ACT_ACTIVE:
             cur_obj_become_tangible();
-            if (cur_obj_wait_then_blink(360, 20)) o->oAction = BREAKABLE_BOX_ACT_HIDDEN;
+            int time = gCurrCourseNum == COURSE_JRB ? 600 : 400;
+            if (cur_obj_wait_then_blink(time - 40, 20)) o->oAction = BREAKABLE_BOX_ACT_HIDDEN;
             load_object_collision_model();
             break;
     }
@@ -99,6 +108,7 @@ void hidden_unbreakable_box_actions(void) {
 
 void bhv_hidden_object_init()
 {
+    o->oOpacity = 255;
     if (1 == o->oBehParams2ndByte)
     {
         o->oFaceAnglePitch = 0x623;
@@ -114,6 +124,19 @@ void bhv_hidden_object_loop(void) {
         if (1 == o->oBehParams2ndByte)
         {
             o->oMoveAngleYaw += 0x99;
+        }
+        if (2 == o->oBehParams2ndByte)
+        {
+            o->oMoveAngleYaw += 0x69;
+            f32 amt;
+            if (o->oPosY < 2000.f)
+                amt = CLAMP(2 * sins(o->oMoveAngleYaw), 0, 1.f);
+            else
+                amt = CLAMP(-2 * sins(o->oMoveAngleYaw), 0, 1.f);
+
+            o->oOpacity = 255 * amt;
+            //o->oFaceAngleRoll = -0x4000 * (1.f - amt);
+            //obj_scale_xyz(o, amt, 1.f, 1.f);
         }
         hidden_unbreakable_box_actions();
     }

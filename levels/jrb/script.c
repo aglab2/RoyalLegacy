@@ -37,6 +37,7 @@ const LevelScript level_jrb_entry[] = {
 	JUMP_LINK(script_func_global_1), 
 	JUMP_LINK(script_func_global_3), 
 	JUMP_LINK(script_func_global_15), 
+	LOAD_MODEL_FROM_GEO(MODEL_C3_SPIN, c3_spin_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -117,8 +118,6 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(118, 8345, -310, 1883, 0, 8, 0, 0x0, bhvHiddenBlueCoin),
 		OBJECT(118, 8020, -263, 1811, 0, 0, 0, 0x0, bhvHiddenBlueCoin),
 		OBJECT(118, 7834, -229, 2109, 0, 4, 0, 0x0, bhvHiddenBlueCoin),
-		OBJECT(129, -7317, 1278, -9995, 0, 10, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, -7081, 2100, -8523, 0, 9, 0, 0x0, bhvHiddenObject),
 		OBJECT(0, -7238, 62, -443, 0, 0, 0, 0x3000000, bhvHiddenRedCoinStar),
 		OBJECT(0, 3354, 2641, 7317, 0, 0, 0, 0x5000000, bhvHiddenStar),
 		OBJECT(0, -6148, 5029, 2021, 0, 0, 0, 0x0, bhvHiddenStarTrigger),
@@ -171,7 +170,12 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(0, -7229, -94, -452, 0, 0, 0, 0xa0000, bhvSpinAirborneWarp),
 		OBJECT_WITH_ACTS(122, -8568, 3984, 5076, 0, 0, 0, 0x0, bhvStar, ACT_1),
 		OBJECT(122, 9468, 4692, -516, 0, 0, 0, 0x2000000, bhvStar),
-		OBJECT(122, -7188, 2735, -9108, 0, 0, 0, 0x1000000, bhvStar),
+		OBJECT(MODEL_C3_SPIN, -7188, 1294, -9108, 0, 0, 0, (2 << 16), bhvHiddenObject),
+		OBJECT(MODEL_C3_SPIN, -7188, 1294, -9108, 0, -120, 0, (2 << 16), bhvHiddenObject),
+		OBJECT(MODEL_C3_SPIN, -7188, 1294, -9108, 0, 120, 0, (2 << 16), bhvHiddenObject),
+		OBJECT(MODEL_C3_SPIN, -7188, 2169, -9108, 0, 0, 0, (2 << 16), bhvHiddenObject),
+		OBJECT(MODEL_C3_SPIN, -7188, 2169, -9108, 0, 120, 0, (2 << 16), bhvHiddenObject),
+		OBJECT(MODEL_C3_SPIN, -7188, 2169, -9108, 0, -120, 0, (2 << 16), bhvHiddenObject),
 		TERRAIN(jrb_area_1_collision),
 		MACRO_OBJECTS(jrb_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, 40),

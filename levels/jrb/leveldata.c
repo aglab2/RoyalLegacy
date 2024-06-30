@@ -10,3 +10,7 @@
 #include "levels/jrb/areas/2/movtext.inc.c"
 
 #include "levels/jrb/leveldata.inc.c"
+
+#include "levels/jrb/c3_spin/collision.inc.c"
+#include "levels/jrb/c3_spin/model.inc.c"
+#include "levels/jrb/c3_spin_burn/collision.inc.c"
