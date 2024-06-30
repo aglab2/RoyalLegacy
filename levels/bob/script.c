@@ -37,6 +37,7 @@ const LevelScript level_bob_entry[] = {
 	JUMP_LINK(script_func_global_1), 
 	JUMP_LINK(script_func_global_5), 
 	JUMP_LINK(script_func_global_18), 
+	LOAD_MODEL_FROM_GEO(0xf1, c1_leaf_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -90,10 +91,10 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(118, -600, 2342, 2406, 0, 0, 0, 0x0, bhvHiddenBlueCoin),
 		OBJECT(118, -2054, 2342, 1320, 0, 0, 0, 0x0, bhvHiddenBlueCoin),
 		OBJECT(118, -3194, 2342, 2035, 0, 0, 0, 0x0, bhvHiddenBlueCoin),
-		OBJECT(129, -3289, 2366, -14, 0, -13, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, -3361, 2088, 293, 0, -13, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, -3430, 1822, 574, 0, -13, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, -3006, 3022, -1055, 0, -19, 0, 0x0, bhvHiddenObject),
+		OBJECT(0xf1, -3289, 2366, -14, 0, -13, 0, (1 << 16), bhvHiddenObject),
+		OBJECT(0xf1, -3361, 2088, 293, 0, -13, 0, (1 << 16), bhvHiddenObject),
+		OBJECT(0xf1, -3430, 1822, 574, 0, -13, 0, (1 << 16), bhvHiddenObject),
+		OBJECT(0xf1, -3006, 3022, -1055, 0, -19, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0, 3588, 169, -5280, 0, -6, 179, 0x3000000, bhvHiddenRedCoinStar),
 		OBJECT(190, 1332, -3472, -5898, 0, 0, 0, 0x0, bhvKoopaShellUnderwater),
 		OBJECT(0, 200, -2753, 1047, 0, 0, 0, 0x0, bhvLargeFishGroup),

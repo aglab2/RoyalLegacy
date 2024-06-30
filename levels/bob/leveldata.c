@@ -8,3 +8,6 @@
 #include "levels/bob/areas/1/trajectory.inc.c"
 
 #include "levels/bob/leveldata.inc.c"
+
+#include "levels/bob/c1_leaf/collision.inc.c"
+#include "levels/bob/c1_leaf/model.inc.c"

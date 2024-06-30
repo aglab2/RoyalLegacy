@@ -67,9 +67,14 @@ void hidden_breakable_box_actions(void) {
     }
 }
 
+extern const Collision c1_leaf_collision[];
+static const void * kCollisions[] = {
+    c1_leaf_collision,
+};
+
 void hidden_unbreakable_box_actions(void) {
     struct Object *switchObj;
-    obj_set_collision_data(o, wdw_seg7_collision_hidden_platform);
+    obj_set_collision_data(o, kCollisions[o->oBehParams2ndByte - 1]);
     switch (o->oAction) {
         case BREAKABLE_BOX_ACT_HIDDEN:
             cur_obj_disable_rendering();
@@ -92,10 +97,24 @@ void hidden_unbreakable_box_actions(void) {
     }
 }
 
+void bhv_hidden_object_init()
+{
+    if (1 == o->oBehParams2ndByte)
+    {
+        o->oFaceAnglePitch = 0x623;
+        o->oMoveAngleYaw = 1111 * (o->oPosZ + o->oPosY + o->oPosX);
+        obj_scale(o, 0.9f);
+    }
+}
+
 void bhv_hidden_object_loop(void) {
     if (o->oBehParams2ndByte == BREAKABLE_BOX_BP_NO_COINS) {
         hidden_breakable_box_actions();
     } else {
+        if (1 == o->oBehParams2ndByte)
+        {
+            o->oMoveAngleYaw += 0x99;
+        }
         hidden_unbreakable_box_actions();
     }
 }

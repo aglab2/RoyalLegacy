@@ -43,7 +43,7 @@ void scroll_bob_dl_water_texture_mesh_layer_5_vtx_0() {
 void scroll_gfx_bob_dl_bwater_mesh_layer_1() {
 	Gfx *mat = segmented_to_virtual(bob_dl_bwater_mesh_layer_1);
 
-	shift_s_down(mat, 14, PACK_TILESIZE(0, 2));
+	shift_s_down(mat, 13, PACK_TILESIZE(0, 2));
 
 };
 

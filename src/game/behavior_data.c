@@ -1777,11 +1777,13 @@ const BehaviorScript bhvFloorSwitchHiddenObjects[] = {
     GOTO(bhvFloorSwitchHardcodedModel + 1),
 };
 
+extern void bhv_hidden_object_init();
 const BehaviorScript bhvHiddenObject[] = {
     BEGIN(OBJ_LIST_SURFACE),
-    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW)),
     LOAD_COLLISION_DATA(breakable_box_seg8_collision),
     SET_FLOAT(oCollisionDistance, 300),
+    CALL_NATIVE(bhv_hidden_object_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_hidden_object_loop),
     END_LOOP(),
