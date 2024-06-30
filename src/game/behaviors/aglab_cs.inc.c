@@ -16,6 +16,8 @@ static void disableHud()
     gIsCs = 1;
 }
 
+static char sCsShown[4] = {};
+
 void bhv_cs_init()
 {
     if (gCurrCourseNum == COURSE_NONE)
@@ -23,6 +25,26 @@ void bhv_cs_init()
         resetFlags();
         o->activeFlags = 0;
         return;        
+    }
+    
+    int idx = gCurrCourseNum - 1;
+    int flags = save_file_get_star_flags(gCurrSaveFileNum - 1, idx);
+    if (flags)
+    {
+        resetFlags();
+        o->activeFlags = 0;
+        return;
+    }
+
+    if (sCsShown[idx])
+    {
+        resetFlags();
+        o->activeFlags = 0;
+        return;
+    }
+    else
+    {
+        sCsShown[idx] = 1;
     }
 
     disableHud();
@@ -47,7 +69,7 @@ void bhv_cs_loop()
     gMarioStates->controller->buttonDown = 0;
     gMarioStates->controller->buttonPressed = 0;
 
-   switch (gCurrCourseNum)
+    switch (gCurrCourseNum)
     {
         case COURSE_BOB:
             gCamera->cutscene = CUTSCENE_C1;
@@ -62,6 +84,7 @@ void bhv_cs_loop()
             gCamera->cutscene = CUTSCENE_C4;
             break;
     }
+
     if (gBorderHeight < 33)
         gBorderHeight++;
 

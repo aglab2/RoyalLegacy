@@ -677,6 +677,14 @@ void geo_process_cull(struct GraphNodeCull* node)
             return;
     }
 
+    if (node->style & (8 | 4))
+    {
+        if (gMarioStates->pos[1] > 2000.f && (1000.f < gMarioStates->pos[0] && gMarioStates->pos[0] < 10000.f))
+        {
+            active =  !!(node->style & 4);
+        }
+    }
+
     if ((active ^ (1 & node->style)) && node->node.children != 0) {
         geo_process_node_and_siblings(node->node.children);
     }
