@@ -176,6 +176,7 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(MODEL_C3_SPIN, -7188, 2169, -9108, 0, 0, 0, (2 << 16), bhvHiddenObject),
 		OBJECT(MODEL_C3_SPIN, -7188, 2169, -9108, 0, 120, 0, (2 << 16), bhvHiddenObject),
 		OBJECT(MODEL_C3_SPIN, -7188, 2169, -9108, 0, -120, 0, (2 << 16), bhvHiddenObject),
+		OBJECT(MODEL_STAR, -7188, 2672, -9108, 0, -120, 0, (1 << 24), bhvStar),
 		TERRAIN(jrb_area_1_collision),
 		MACRO_OBJECTS(jrb_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, 40),
