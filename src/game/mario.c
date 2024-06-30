@@ -589,7 +589,7 @@ s32 mario_floor_is_steep(struct MarioState *m) {
         return TRUE;
 
 #ifdef JUMP_KICK_FIX
-    if (m->floor->type == SURFACE_NOT_SLIPPERY) {
+    if (m->floor->type == SURFACE_NOT_SLIPPERY || m->floor->type == SURFACE_HARD_NOT_SLIPPERY) {
         return FALSE;
     }
 #endif

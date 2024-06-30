@@ -14,3 +14,5 @@
 #include "levels/wf/header.h"
 
 #include "levels/wf/geo.inc.c"
+
+#include "levels/wf/c2_ladders/geo.inc.c"

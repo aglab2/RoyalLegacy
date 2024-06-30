@@ -6112,3 +6112,13 @@ const BehaviorScript bhvRedCoinRadar[] = {
         CALL_NATIVE(bhv_red_coin_radar_loop),
     END_LOOP(),
 };
+
+extern const Collision c2_ladders_collision[];
+const BehaviorScript bhvC2Stairs[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    OR_INT(oFlags, (OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    SET_FLOAT(oDrawingDistance, 20000),
+    LOAD_COLLISION_DATA(c2_ladders_collision),
+    CALL_NATIVE(load_object_static_model),
+    BREAK(),
+};

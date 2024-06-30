@@ -8,3 +8,6 @@
 #include "levels/wf/areas/1/movtext.inc.c"
 
 #include "levels/wf/leveldata.inc.c"
+
+#include "levels/wf/c2_ladders/collision.inc.c"
+#include "levels/wf/c2_ladders/model.inc.c"

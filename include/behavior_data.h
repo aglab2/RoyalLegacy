@@ -548,5 +548,6 @@ extern const BehaviorScript bhvFightSpawner[];
 extern const BehaviorScript bhvCS[];
 
 extern const BehaviorScript bhvRedCoinRadar[];
+extern const BehaviorScript bhvC2Stairs[];
 
 #endif // BEHAVIOR_DATA_H
