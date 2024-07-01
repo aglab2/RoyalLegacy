@@ -37,7 +37,7 @@ u8 sClearAllCells;
  * The static surface pool is resized to be exactly the amount of memory needed for the level geometry.
  * The dynamic surface pool is set at a fixed length and cleared every frame.
  */
-void *gDynamicSurfacePool;
+char gDynamicSurfacePool[DYNAMIC_SURFACE_POOL_SIZE];
 
 /**
  * The end of the data currently allocated to the surface pools.
@@ -430,7 +430,6 @@ static void load_environmental_regions(TerrainData **data) {
  * Allocate the dynamic surface pool for object collision.
  */
 void alloc_surface_pools(void) {
-    gDynamicSurfacePool = main_pool_alloc(DYNAMIC_SURFACE_POOL_SIZE);
     gDynamicSurfacePoolEnd = gDynamicSurfacePool;
 
     gCCMEnteredSlide = FALSE;

@@ -35,7 +35,7 @@ typedef struct SurfaceNode *SpatialPartitionCell[NUM_SPATIAL_PARTITIONS];
 
 extern SpatialPartitionCell gStaticSurfacePartition[NUM_CELLS][NUM_CELLS];
 extern SpatialPartitionCell gDynamicSurfacePartition[NUM_CELLS][NUM_CELLS];
-extern void *gDynamicSurfacePool;
+extern char gDynamicSurfacePool[DYNAMIC_SURFACE_POOL_SIZE];
 extern void *gDynamicSurfacePoolEnd;
 extern u32 gTotalStaticSurfaceData;
 
