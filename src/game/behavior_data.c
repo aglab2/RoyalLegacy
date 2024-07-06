@@ -6124,3 +6124,15 @@ const BehaviorScript bhvC2Stairs[] = {
     CALL_NATIVE(load_object_static_model),
     BREAK(),
 };
+
+extern void bhv_zipline_init();
+extern void bhv_zipline_step();
+const BehaviorScript bhvZipline[] = {
+    BEGIN(OBJ_LIST_POLELIKE),
+    SET_INT(oInteractType, INTERACT_HOOT),
+    SET_HITBOX(/*Radius*/ 75, /*Height*/ 75),
+    CALL_NATIVE(bhv_zipline_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_zipline_step),
+    END_LOOP(),
+};

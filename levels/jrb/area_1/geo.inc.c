@@ -31,6 +31,7 @@ const GeoLayout jrb_area_1_geo[] = {
 			GEO_CLOSE_NODE(),
 		GEO_CLOSE_NODE(),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, jrb_dl_Brimstone_Banks_Definitive_Edition_006_mesh_layer_1),
+		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, -7724, 0, 6952, 90, 0, 0, jrb_dl_Brimstone_Banks_Definitive_Edition_007_mesh_layer_1),
 		GEO_TRANSLATE_NODE(LAYER_OPAQUE, -7723, 0, 6950),
 		GEO_OPEN_NODE(),
 			GEO_CULL(3000, 32000, -32000, 32000, -32000, -4500, 0),

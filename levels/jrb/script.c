@@ -178,6 +178,8 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(MODEL_C3_SPIN, -7188, 2169, -9108, 0, 120, 0, (2 << 16), bhvHiddenObject),
 		OBJECT(MODEL_C3_SPIN, -7188, 2169, -9108, 0, -120, 0, (2 << 16), bhvHiddenObject),
 		OBJECT(MODEL_STAR, -7188, 2672, -9108, 0, -120, 0, (0 << 24), bhvStar),
+		OBJECT(MODEL_NONE, 7870, 2455, -8467, 0, -120, 0, 0, bhvZipline),
+		MARIO_POS(0x01, -120, 8024, 1896, -8575),
 		TERRAIN(jrb_area_1_collision),
 		MACRO_OBJECTS(jrb_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, 40),
@@ -187,7 +189,7 @@ const LevelScript level_jrb_entry[] = {
 	END_AREA(),
 
 	FREE_LEVEL_POOL(),
-	MARIO_POS(1, 0, 0, 0, 0),
+	MARIO_POS(0x01, -120, 8024, 1896, -8575),
 	CALL(0, lvl_init_or_update),
 	CALL_LOOP(1, lvl_init_or_update),
 	CLEAR_LEVEL(),
