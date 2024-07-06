@@ -43,3 +43,5 @@
  * 2 - 24.08 FPS / RDP 123% / RSP 88%
  * 3 - 25.02 FPS / RDP 119% / RSP 86%
  */
+
+#define GFX_FIFO_POOL_SIZE (0x6000 * 8)

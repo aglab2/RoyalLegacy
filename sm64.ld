@@ -115,7 +115,7 @@ SECTIONS
    END_SEG(boot)
 
    . = (RAM_START + 0x400);
-#if MEMORY_FRAGMENTATION_NO_FRAGMENTATION == MEMORY_FRAGMENTATION_LEVEL
+#if MEMORY_FRAGMENTATION_ZBUFFER_AND_EACH_FRAMEBUFFER != MEMORY_FRAGMENTATION_LEVEL
    BEGIN_NOLOAD(zbuffer)
    {
       BUILD_DIR/src/buffers/zbuffer.o(.bss*);
@@ -133,9 +133,16 @@ SECTIONS
       BUILD_DIR/src/audio/data.o(.bss*);
       BUILD_DIR/src/audio*.o(.bss*);
       . = ALIGN(0x10);
-      BUILD_DIR/src/buffers/gfx_output_buffer.o(.bss*);
    }
    END_NOLOAD(buffers)
+
+#if MEMORY_FRAGMENTATION_NO_FRAGMENTATION == MEMORY_FRAGMENTATION_LEVEL
+   BEGIN_NOLOAD(gfxfifo)
+   {
+      BUILD_DIR/src/buffers/gfx_output_buffer.o(.bss*);
+   }
+   END_NOLOAD(gfxfifo)
+#endif
 
    . = _buffersSegmentBssEnd;
 
@@ -317,6 +324,15 @@ SECTIONS
    END_NOLOAD(sbss)
 
    _poolStart = .;
+
+#if MEMORY_FRAGMENTATION_ZBUFFER_AND_EACH_FRAMEBUFFER == MEMORY_FRAGMENTATION_LEVEL
+   . = GFXFIFO_START;
+   BEGIN_NOLOAD(gfxfifo)
+   {
+      BUILD_DIR/src/buffers/gfx_output_buffer.o(.bss*);
+   }
+   END_NOLOAD(gfxfifo)
+#endif
 
 #if MEMORY_FRAGMENTATION_NO_FRAGMENTATION == MEMORY_FRAGMENTATION_LEVEL
    BEGIN_NOLOAD(framebuffer0)

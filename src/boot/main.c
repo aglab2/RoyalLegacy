@@ -566,7 +566,9 @@ void thread1_idle(UNUSED void *arg) {
 
 // Clear RAM on boot
 void ClearRAM(void) {
-    bzero(_mainSegmentEnd, (size_t)osMemSize - (size_t)OS_K0_TO_PHYSICAL(_mainSegmentEnd));
+    size_t start = (size_t)OS_K0_TO_PHYSICAL(_mainSegmentEnd);
+    size_t end = (size_t)OS_K0_TO_PHYSICAL(GFXFIFO_START);
+    bzero(_mainSegmentEnd, end - start);
 }
 
 #ifdef ISVPRINT

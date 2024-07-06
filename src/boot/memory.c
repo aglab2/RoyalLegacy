@@ -209,7 +209,7 @@ void main_pool_init() {
 
 #if MEMORY_FRAGMENTATION_ZBUFFER_AND_EACH_FRAMEBUFFER == MEMORY_FRAGMENTATION_LEVEL
     // Region before zbuffer, between fb0/fb1, after fb2
-    SET_REGION(0, _poolStart, ZBUFFER_START);
+    SET_REGION(0, _poolStart, GFXFIFO_START);
 #ifndef MAIN_POOL_SINGLE_REGION
     SET_REGION(1, FRAMEBUFFER0_END, FRAMEBUFFER1_START);
     SET_REGION(2, FRAMEBUFFER2_END, _goddardSegmentStart);
