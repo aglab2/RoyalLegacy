@@ -93,7 +93,6 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(137, 8160, 104, 6878, 0, 27, 0, 0x30000, bhvExclamationBox),
 		OBJECT(137, 6664, 4139, -1302, 0, -1, 0, 0x30000, bhvExclamationBox),
 		OBJECT(137, -8525, 0, 6506, 0, 21, 0, 0x30000, bhvExclamationBox),
-		OBJECT(137, 7583, 2424, -8364, 0, -54, 0, 0x30000, bhvExclamationBox),
 		OBJECT(137, 8272, -83, 2911, 0, 7, 0, 0x30000, bhvExclamationBox),
 		OBJECT(0, -993, -30, -9884, 0, 14, 0, 0x50000, bhvFadingWarp),
 		OBJECT(0, 8177, 527, -6659, 0, 37, 0, 0x60000, bhvFadingWarp),
