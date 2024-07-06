@@ -44,5 +44,7 @@
     "29_Seq_rl_custom": ["25"],
     "2A_c1": ["26_c1"],
     "2B_castle": ["27_castle"],
-    "2C_bowser": ["2A_bowser"]
+    "2C_bowser": ["2A_bowser"],
+    "2D_c2": ["2B_c2"],
+    "2E_c4": ["2C_c4"]
 }
