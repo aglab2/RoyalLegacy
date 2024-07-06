@@ -154,7 +154,7 @@ const LevelScript level_ccm_entry[] = {
 		OBJECT(22, -13571, 4742, 2104, 0, 0, 0, 0x180000, bhvWarpPipe),
 		TERRAIN(ccm_area_1_collision),
 		MACRO_OBJECTS(ccm_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, 41),
+		SET_BACKGROUND_MUSIC(0x00, 0x2E),
 		TERRAIN_TYPE(TERRAIN_SAND),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
