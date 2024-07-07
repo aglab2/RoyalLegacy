@@ -34,6 +34,7 @@ const LevelScript level_bowser_3_entry[] = {
 	LOAD_MIO0(0xa, _bits_skybox_mio0SegmentRomStart, _bits_skybox_mio0SegmentRomEnd), 
 	ALLOC_LEVEL_POOL(),
 	MARIO(MODEL_MARIO, 0x00000001, bhvMario), 
+	LOAD_MODEL_FROM_GEO(MODEL_B3_CROWN,        b3_crown_geo),
 	JUMP_LINK(script_func_global_1), 
 	JUMP_LINK(script_func_global_13), 
 
