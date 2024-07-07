@@ -42,7 +42,7 @@ void scroll_ccm_dl_Desert_Ruins_Definitive_Edition_019_mesh_layer_5_vtx_0() {
 
 void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5() {
 	int i = 0;
-	int count = 169;
+	int count = 205;
 	int width = 64 * 0x20;
 
 	static int currentX = 0;
@@ -63,7 +63,7 @@ void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5() {
 
 void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_19() {
 	int i = 0;
-	int count = 209;
+	int count = 201;
 	int width = 64 * 0x20;
 
 	static int currentX = 0;
