@@ -42,6 +42,7 @@ const GeoLayout ccm_area_1_geo[] = {
 		GEO_OPEN_NODE(),
 			GEO_DISPLAY_LIST(LAYER_OPAQUE, ccm_dl_Desert_Ruins_Definitive_Edition_005_mesh_layer_1),
 			GEO_DISPLAY_LIST(LAYER_TRANSPARENT, ccm_dl_Desert_Ruins_Definitive_Edition_005_mesh_layer_5),
+			GEO_DISPLAY_LIST(LAYER_ALPHA, ccm_dl_Desert_Ruins_Definitive_Edition_005_mesh_layer_4),
 		GEO_CLOSE_NODE(),
 		GEO_CULL(-32000, 6000, -32000, 32000, -6500, 32000, 8),
 		GEO_OPEN_NODE(),

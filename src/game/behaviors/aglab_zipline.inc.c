@@ -43,18 +43,17 @@ void bhv_zipline_step()
     {
         Vec3f Q = { gMarioStates->pos[0], gMarioStates->pos[1], gMarioStates->pos[2] };
         f32 minDist = 2000.f;
-        Vec3f closestPoint;
-        f32 minT;
-        int minPoint;
+        Vec3f closestPoint = {0, 0, 0};
+        f32 minT = 0;
+        int minPoint = 0;
         
         for (int i = 0; i < 2; i++)
         {
-            float min_distance = 50000.f;
             Vec3f trajCurPoint = {traj[i*4 + 1], traj[i*4 + 2], traj[i*4 + 3]};
             Vec3f trajNextPoint = {traj[i*4 + 5], traj[i*4 + 6], traj[i*4 + 7]};
 
             Vec3f tmpClosestPoint;
-            f32 tmpT;
+            f32 tmpT = 0;
             float tmpDist = point_to_segment_distance(Q, trajCurPoint, trajNextPoint, tmpClosestPoint, &tmpT);
             if (tmpDist < minDist)
             {
@@ -65,7 +64,7 @@ void bhv_zipline_step()
             }
         }
     
-        if (minDist < 1000)
+        if (minDist < 1000.f)
         {
             o->oPosX = closestPoint[0];
             o->oPosY = closestPoint[1];
