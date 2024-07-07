@@ -40,6 +40,7 @@ const LevelScript level_ccm_entry[] = {
 	JUMP_LINK(script_func_global_18), 
 	JUMP_LINK(script_func_vo_bob), 
 	LOAD_MODEL_FROM_GEO(MODEL_SSL_PALM_TREE, palm_tree_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_C4_RIPPLE, c4_ripple_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -164,6 +165,7 @@ const LevelScript level_ccm_entry[] = {
 		WARP_NODE(240, LEVEL_CASTLE_GROUNDS, 1, 31, WARP_NO_CHECKPOINT),
 		WARP_NODE(18, LEVEL_CCM, 1, 19, WARP_CHECKPOINT),
 		WARP_NODE(10, LEVEL_CCM, 2, 0, WARP_NO_CHECKPOINT),
+		MARIO_POS(2, 0, 959, -6151, -9799),
 		OBJECT(188, 1184, -1816, 614, 0, 0, 0, 0x0, bhvBobomb),
 		OBJECT(188, -347, -1816, 2295, 0, 0, 0, 0x0, bhvBobomb),
 		OBJECT(223, 3650, -1772, 5531, 0, 0, 0, 0x0, bhvChuckya),
@@ -206,7 +208,7 @@ const LevelScript level_ccm_entry[] = {
 	END_AREA(),
 
 	FREE_LEVEL_POOL(),
-	MARIO_POS(1, 0, 0, 0, 0),
+	MARIO_POS(2, 0, 959, -6151, -9799),
 	CALL(0, lvl_init_or_update),
 	CALL_LOOP(1, lvl_init_or_update),
 	CLEAR_LEVEL(),

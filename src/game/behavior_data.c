@@ -6136,3 +6136,17 @@ const BehaviorScript bhvZipline[] = {
         CALL_NATIVE(bhv_zipline_step),
     END_LOOP(),
 };
+
+extern const Collision c4_ripple_collision[];
+extern void bhv_c4_ripple();
+const BehaviorScript bhvC4Ripple[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    OR_LONG(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_DONT_CALC_COLL_DIST)),
+    LOAD_COLLISION_DATA(c4_ripple_collision),
+    SET_FLOAT(oCollisionDistance, 300),
+    SET_HOME(),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_c4_ripple),
+        CALL_NATIVE(load_object_collision_model),
+    END_LOOP(),
+};

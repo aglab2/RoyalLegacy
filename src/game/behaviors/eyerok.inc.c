@@ -12,6 +12,8 @@ struct ObjectHitbox sEyerokHitbox = {
     /* hurtboxHeight:     */ 1,
 };
 
+#define oRippleAngleVel oF4
+
 s8 sEyerokAnimStatesList[] = { 0, 1, 3, 2, 1, 0 };
 
 static s32 eyerok_check_mario_relative_z(s32 relZ) {
@@ -170,10 +172,26 @@ static s32 eyerok_hand_check_attacked(void) {
     }
 }
 
+extern const BehaviorScript bhvC4Ripple[];
 static void eyerok_hand_pound_ground(void) {
     cur_obj_play_sound_2(SOUND_OBJ_POUNDING_LOUD);
     set_camera_shake_from_point(SHAKE_POS_SMALL, o->oPosX, o->oPosY, o->oPosZ);
     spawn_mist_from_global();
+
+    for (int i = 0; i < 4; i++)
+    {
+        struct Object* ripple = spawn_object(o, MODEL_C4_RIPPLE, bhvC4Ripple);
+        s16 angle = o->oMoveAngleYaw + 0x4000 * i;
+
+        ripple->oForwardVel = 31.f;
+        ripple->oRippleAngleVel =  o->oBehParams2ndByte ? 0x80 : -0x80;
+        ripple->oFaceAngleYaw = angle;
+        ripple->oMoveAngleYaw = angle;
+        ripple->oFaceAnglePitch = ripple->oMoveAnglePitch = ripple->oFaceAngleRoll = ripple->oMoveAngleRoll = 0;
+
+        ripple->oPosX = o->oPosX;
+        ripple->oPosZ = o->oPosZ;
+    }
 }
 
 static void eyerok_hand_act_sleep(void) {
@@ -217,6 +235,21 @@ static void eyerok_hand_act_idle(void) {
                     o->oAction = EYEROK_HAND_ACT_TARGET_MARIO;
                     o->oMoveAngleYaw = o->oAngleToMario;
                     o->oGravity = 0.0f;
+                    
+                    for (int i = 0; i < 2; i++)
+                    {
+                        struct Object* ripple = spawn_object(o, MODEL_C4_RIPPLE, bhvC4Ripple);
+                        s16 angle = o->oMoveAngleYaw + (i ? 0xA00 : -0xA00);
+
+                        ripple->oForwardVel = 21.f;
+                        ripple->oRippleAngleVel = 0;
+                        ripple->oFaceAngleYaw = angle;
+                        ripple->oMoveAngleYaw = angle;
+                        ripple->oFaceAnglePitch = ripple->oMoveAnglePitch = ripple->oFaceAngleRoll = ripple->oMoveAngleRoll = 0;
+
+                        ripple->oPosX = o->oPosX + 200.f * sins(angle);
+                        ripple->oPosZ = o->oPosZ + 200.f * coss(angle);
+                    }
                 } else {
                     o->oAction = EYEROK_HAND_ACT_FIST_PUSH;
                     if (o->parentObj->oPosX - gMarioObject->oPosX < 0.0f) {
@@ -226,6 +259,21 @@ static void eyerok_hand_act_idle(void) {
                     }
 
                     o->oMoveAngleYaw += o->oAngleToMario;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        struct Object* ripple = spawn_object(o, MODEL_C4_RIPPLE, bhvC4Ripple);
+                        s16 angle = o->oMoveAngleYaw + (i ? 0x900 : -0x900);
+
+                        ripple->oForwardVel = 51.f;
+                        ripple->oRippleAngleVel = 0;
+                        ripple->oFaceAngleYaw = angle;
+                        ripple->oMoveAngleYaw = angle;
+                        ripple->oFaceAnglePitch = ripple->oMoveAnglePitch = ripple->oFaceAngleRoll = ripple->oMoveAngleRoll = 0;
+
+                        ripple->oPosX = o->oPosX + 200.f * sins(angle);
+                        ripple->oPosZ = o->oPosZ + 200.f * coss(angle);
+                    }
+
                     o->oGravity = -4.0f;
                 }
             } else {
@@ -424,6 +472,21 @@ static void eyerok_hand_act_fist_push(void) {
         } else {
             o->oMoveAngleYaw = -0x4000;
         }
+
+        for (int i = 0; i < 4; i++)
+        {
+            struct Object* ripple = spawn_object(o, MODEL_C4_RIPPLE, bhvC4Ripple);
+            s16 angle = o->oMoveAngleYaw + 0x4000 * i;
+
+            ripple->oForwardVel = 31.f;
+            ripple->oRippleAngleVel =  o->oBehParams2ndByte ? 0x80 : -0x80;
+            ripple->oFaceAngleYaw = angle;
+            ripple->oMoveAngleYaw = angle;
+            ripple->oFaceAnglePitch = ripple->oMoveAnglePitch = ripple->oFaceAngleRoll = ripple->oMoveAngleRoll = 0;
+
+            ripple->oPosX = o->oPosX;
+            ripple->oPosZ = o->oPosZ;
+        }
     } else {
         o->oForwardVel = 50.0f;
     }
@@ -543,4 +606,46 @@ void bhv_eyerok_hand_loop(void) {
 
     load_object_collision_model();
     o->header.gfx.scale[0] = 1.5f * o->oBehParams2ndByte;
+}
+
+void bhv_c4_ripple()
+{
+    if (0 == o->oRippleAngleVel)
+    {
+        o->oVelX = o->oForwardVel * sins(o->oMoveAngleYaw);
+        o->oVelZ = o->oForwardVel * coss(o->oMoveAngleYaw);
+        o->oPosX += o->oVelX;
+        o->oPosZ += o->oVelZ;
+    }
+    else
+    {
+        o->oMoveAngleYaw += o->oRippleAngleVel;
+        o->oVelX = o->oForwardVel * sins(o->oMoveAngleYaw);
+        o->oVelZ = o->oForwardVel * coss(o->oMoveAngleYaw);
+        o->oPosX = o->oHomeX + o->oTimer * o->oVelX;
+        o->oPosZ = o->oHomeZ + o->oTimer * o->oVelZ;
+    }
+    if (0 == o->oAction)
+    {
+        f32 baseScale = 0.02f * CLAMP(o->oTimer, 0, 30);
+        obj_scale(o, baseScale * (1 + sins(o->oTimer * 0x130) / 6.f));
+
+        struct Surface *surf = NULL;
+        f32 y = find_floor(o->oPosX, o->oPosY + 10.f, o->oPosZ, &surf);
+        if (y < -10000.f || surf->type == SURFACE_INSTANT_QUICKSAND) {
+            o->oAction = 1;
+            o->oRippleAngleVel = 0;
+        }
+    }
+    else
+    {
+        f32 curScale = o->header.gfx.scale[0];
+        curScale -= 0.02f;
+        if (curScale < 0.f)
+        {
+            o->activeFlags = 0;
+            return;
+        }
+        obj_scale(o, curScale);
+    }
 }
