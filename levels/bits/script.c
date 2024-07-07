@@ -83,7 +83,7 @@ const LevelScript level_bits_entry[] = {
 		OBJECT(22, 4494, 7670, 14457, 0, 0, 0, 0x450000, bhvWarpPipe),
 		TERRAIN(bits_area_1_collision),
 		MACRO_OBJECTS(bits_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, 0x2c),
+		SET_BACKGROUND_MUSIC(0x00, 36),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
