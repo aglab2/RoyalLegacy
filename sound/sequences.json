@@ -46,5 +46,6 @@
     "2B_castle": ["27_castle"],
     "2C_bowser": ["2A_bowser"],
     "2D_c2": ["2B_c2"],
-    "2E_c4": ["2C_c4"]
+    "2E_c4": ["2C_c4"],
+    "2F_fight": ["2D_fight"]
 }

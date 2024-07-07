@@ -54,7 +54,7 @@ const LevelScript level_bowser_3_entry[] = {
 		OBJECT(MODEL_BLACK_BOBOMB, -2952, 0, -5765, 0, 0, 0, (1 << 16), bhvBobomb),
 		TERRAIN(bowser_3_area_1_collision),
 		MACRO_OBJECTS(bowser_3_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0, 0x27),
+		SET_BACKGROUND_MUSIC(0, 0x2f),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
