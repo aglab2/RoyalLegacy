@@ -4,6 +4,7 @@ const GeoLayout wf_area_2_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, wf_dl_CityHall_Doubled__World_2__mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, wf_dl_CityHall_Doubled__World_2__mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
