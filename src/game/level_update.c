@@ -32,6 +32,7 @@
 #include "puppyprint.h"
 #include "level_commands.h"
 #include "debug.h"
+#include "fail_warp.h"
 
 #include "config.h"
 
@@ -286,7 +287,7 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
             set_mario_action(m, ACT_WARP_DOOR_SPAWN, actionArg);
             break;
         case MARIO_SPAWN_IDLE:
-            set_mario_action(m, ACT_IDLE, 0);
+            fail_warp_init_mario_after_quick_warp(m);
             break;
         case MARIO_SPAWN_PIPE:
             set_mario_action(m, ACT_EMERGE_FROM_PIPE, 0);
@@ -295,7 +296,7 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
             set_mario_action(m, ACT_TELEPORT_FADE_IN, 0);
             break;
         case MARIO_SPAWN_INSTANT_ACTIVE:
-            set_mario_action(m, ACT_IDLE, 0);
+            fail_warp_init_mario_after_quick_warp(m);
             break;
         case MARIO_SPAWN_AIRBORNE:
             set_mario_action(m, ACT_SPAWN_NO_SPIN_AIRBORNE, 0);
@@ -385,7 +386,7 @@ void init_mario_after_warp(void) {
         gMarioState->usedObj = object;
     }
 
-    reset_camera(gCurrentArea->camera);
+    fail_warp_init_mario_after_quick_warp_reset_camera(object);
     sWarpDest.type = WARP_TYPE_NOT_WARPING;
     sDelayedWarpOp = WARP_OP_NONE;
 
@@ -726,6 +727,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
 
     if (sDelayedWarpOp == WARP_OP_NONE) {
         m->invincTimer = -1;
+        fail_warp_pre_level_trigger_warp(m, &warpOp);
         sDelayedWarpArg = WARP_FLAGS_NONE;
         sDelayedWarpOp = warpOp;
 
@@ -810,7 +812,7 @@ s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
                 sDelayedWarpTimer = 20;
                 sSourceWarpNodeId = GET_BPARAM2(m->usedObj->oBehParams);
                 fadeMusic = !music_unchanged_through_warp(sSourceWarpNodeId);
-                play_transition(WARP_TRANSITION_FADE_INTO_COLOR, sDelayedWarpTimer, 0xFF, 0xFF, 0xFF);
+                play_transition(WARP_TRANSITION_FADE_INTO_COLOR, sDelayedWarpTimer, 0, 0, 0);
                 break;
 
             case WARP_OP_WARP_DOOR:
