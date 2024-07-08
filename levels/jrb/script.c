@@ -166,7 +166,7 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(86, 4195, 2401, 5329, 0, 0, 0, 0x0, bhvSmallBully),
 		OBJECT(86, 4568, 2401, 4919, 0, 0, 0, 0x0, bhvSmallBully),
 		OBJECT(86, 4078, 2401, 4826, 0, 0, 0, 0x0, bhvSmallBully),
-		OBJECT(0, -7229, -94, -452, 0, 0, 0, 0xa0000, bhvSpinAirborneWarp),
+		OBJECT(0, -7229, -94, -452, 0, -180, 0, 0xa0000, bhvSpinAirborneWarp),
 		OBJECT(122, -966, -6, -9893, 0, 0, 0, (1 << 24), bhvStar),
 		OBJECT(122, 9468, 4692, -516, 0, 0, 0, 0x2000000, bhvStar),
 		OBJECT(MODEL_RED_COIN_ARROW, -314, 1896, -9177, 0, 0, 0, (4 << 16), bhvRedCoinRadar),
