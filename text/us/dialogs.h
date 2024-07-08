@@ -137,7 +137,7 @@ Ready?\n\
 \n\
 \n\
 \n\
-//Go!////Don't Go")
+\tGo!\t\tDon't Go")
 
 DEFINE_DIALOG(DIALOG_006,1,4,30,200, "So, you thought you\n\
 could just use the cannon\n\
@@ -185,7 +185,7 @@ The goal is in\n\
 Windswept Valley.\n\
 Ready?\n\
 \n\
-//Go//// Don't Go")
+\tGo\t\t Don't Go")
 
 DEFINE_DIALOG(DIALOG_010,1,4,30,200, "You have found the only \n\
 switch in the game. The\n\
@@ -194,7 +194,7 @@ to wield.\n\
 \n\
 Isn't that exciting?\n\
 \n\
-//Yes////No")
+\tYes\t\tNo")
 
 DEFINE_DIALOG(DIALOG_011,1,4,30,200, "You've just stepped on\n\
 the Metal Cap Switch!\n\
@@ -206,7 +206,7 @@ green blocks you find.\n\
 \n\
 Would you like to Save?\n\
 \n\
-//Yes////No")
+\tYes\t\tNo")
 
 DEFINE_DIALOG(DIALOG_012,1,4,30,200, "You've just stepped on\n\
 the Vanish Cap Switch.\n\
@@ -218,13 +218,13 @@ blocks you find.\n\
 \n\
 Would you like to Save?\n\
 \n\
-//Yes////No")
+\tYes\t\tNo")
 
 DEFINE_DIALOG(DIALOG_013,1,5,30,200, "Yeah, we don't mess\n\
 around with that 80 or\n\
 90 coin star business.\n\
 Isn't that dope?\n\
-//Yes////No")
+\tYes\t\tNo")
 
 DEFINE_DIALOG(DIALOG_014,1,4,30,200, "Well done! Each star you \n\
 collect brings you closer \n\
@@ -232,7 +232,7 @@ to recovering Princess \n\
 Peach's crown.\n\
 Do you want to Save?\n\
 \n\
-//Sure!//No, thanks.")
+\tSure!\tNo, thanks.")
 
 DEFINE_DIALOG(DIALOG_015,1,4,30,200, "Though they are long,\n\
 it is possible to cross\n\
@@ -463,7 +463,7 @@ perhaps one hint:\n\
 Heed the Star names at\n\
 the beginning of the\n\
 course.\n\
-//--The Big Bob-omb")
+\t--The Big Bob-omb")
 
 DEFINE_DIALOG(DIALOG_040,1,3,30,200, "Warning!\n\
 Cold, Cold Crevasse\n\
@@ -649,7 +649,7 @@ you know. Whaddya say?\n\
 How about a race?\n\
 Ready...\n\
 \n\
-//Go//// Don't Go")
+\tGo\t\t Don't Go")
 
 DEFINE_DIALOG(DIALOG_056,1,6,30,200, "You brrrr-oke my record!\n\
 Unbelievable! I knew\n\
@@ -878,7 +878,7 @@ ye say?\n\
 \n\
 I'll never tell!\n\
 \n\
-//--The Cap'n")
+\t--The Cap'n")
 
 DEFINE_DIALOG(DIALOG_074,1,5,30,200, "You can grab on to the\n\
 edge of a cliff or ledge\n\
@@ -979,7 +979,7 @@ I'll give you something\n\
 really good.\n\
 So, how about it?\n\
 \n\
-//Free him/ Hold on")
+\tFree him/ Hold on")
 
 DEFINE_DIALOG(DIALOG_080,1,1,30,200, "Eeeh hee hee hee!")
 
@@ -1046,12 +1046,12 @@ Those who can't do the\n\
 Long Jump, tsk, tsk. Make\n\
 your way to the right.\n\
 Right: Work Elevator\n\
-/// Cloudy Maze\n\
+\t/ Cloudy Maze\n\
 Left: Black Hole\n\
-///Underground Lake\n\
+\t/Underground Lake\n\
 \n\
 Red Circle: Elevator 2\n\
-//// Underground Lake\n\
+\t\t Underground Lake\n\
 Arrow: You are here")
 
 DEFINE_DIALOG(DIALOG_090,1,6,30,200, "Bwa ha ha ha!\n\
@@ -1344,7 +1344,7 @@ So long, gay Mario!")
 
 DEFINE_DIALOG(DIALOG_122,1,4,30,200, "The Black Hole\n\
 Right: Work Elevator\n\
-/// Cloudy Maze\n\
+\t/ Cloudy Maze\n\
 Left: Underground Lake")
 
 DEFINE_DIALOG(DIALOG_123,1,4,30,200, "Metal Cavern\n\
@@ -1359,12 +1359,12 @@ Turn back now.")
 
 DEFINE_DIALOG(DIALOG_126,2,3,30,200, "Up: Black Hole\n\
 Right: Work Elevator\n\
-/// Hazy Maze")
+\t/ Hazy Maze")
 
 DEFINE_DIALOG(DIALOG_127,3,4,30,200, "Underground Lake\n\
 Right: Metal Cave\n\
 Left: Abandoned Mine\n\
-///(Closed)\n\
+\t/(Closed)\n\
 A gentle sea dragon lives\n\
 here. Pound on his back to\n\
 make him lower his head.\n\
@@ -1919,7 +1919,7 @@ buddy.\n\
 Whaddya say?\n\
 Ready...set...\n\
 \n\
-//Go//// Don't Go")
+\tGo\t\t Don't Go")
 
 DEFINE_DIALOG(DIALOG_165,1,5,30,200, "I take no responsibility\n\
 whatsoever for those who\n\
@@ -1930,7 +1930,7 @@ this post.")
 DEFINE_DIALOG(DIALOG_166,1,4,30,200, "I'll be back soon.\n\
 I'm out training now,\n\
 so come back later.\n\
-//--Koopa the Quick")
+\t--Koopa the Quick")
 
 DEFINE_DIALOG(DIALOG_167,1,4,30,200, "Princess Toadstool's\n\
 castle is just ahead.\n\
