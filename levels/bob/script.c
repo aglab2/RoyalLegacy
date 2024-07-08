@@ -94,7 +94,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(0xf1, -3289, 2366, -14, 0, -13, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0xf1, -3361, 2088, 293, 0, -13, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0xf1, -3430, 1822, 574, 0, -13, 0, (1 << 16), bhvHiddenObject),
-		OBJECT(0xf1, -3006, 3022, -1055, 0, -19, 0, 0x0, bhvHiddenObject),
+		OBJECT(0xf1, -3006, 3022, -1055, 0, -19, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0, 3588, 169, -5280, 0, -6, 179, 0x3000000, bhvHiddenRedCoinStar),
 		OBJECT(190, 1332, -3472, -5898, 0, 0, 0, 0x0, bhvKoopaShellUnderwater),
 		OBJECT(0, 200, -2753, 1047, 0, 0, 0, 0x0, bhvLargeFishGroup),
