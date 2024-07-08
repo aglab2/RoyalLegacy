@@ -661,7 +661,7 @@ void bhv_c4_ripple()
     if (0 == o->oAction)
     {
         f32 baseScale = 0.02f * CLAMP(o->oTimer, 0, 30);
-        obj_scale(o, baseScale * (1 + sins(o->oTimer * 0x130) / 6.f));
+        obj_scale(o, 0.02f + baseScale * (1 + sins(o->oTimer * 0x130) / 6.f));
 
         struct Surface *surf = NULL;
         f32 y = find_floor(o->oPosX, o->oPosY + 10.f, o->oPosZ, &surf);
@@ -674,7 +674,7 @@ void bhv_c4_ripple()
     {
         f32 curScale = o->header.gfx.scale[0];
         curScale -= 0.02f;
-        if (curScale < 0.f)
+        if (curScale < 0.05f)
         {
             o->activeFlags = 0;
             return;
