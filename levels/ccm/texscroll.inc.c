@@ -61,14 +61,14 @@ void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5() {
 	currentX += deltaX;
 }
 
-void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_19() {
+void scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_18() {
 	int i = 0;
 	int count = 201;
 	int width = 64 * 0x20;
 
 	static int currentX = 0;
 	int deltaX;
-	Vtx *vertices = segmented_to_virtual(ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_19);
+	Vtx *vertices = segmented_to_virtual(ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_18);
 
 	deltaX = (int)(0.2199999988079071 * 0x20) % width;
 
@@ -86,5 +86,5 @@ void scroll_ccm() {
 	scroll_ccm_dl_Desert_Ruins_Definitive_Edition_008_mesh_layer_1_vtx_8();
 	scroll_ccm_dl_Desert_Ruins_Definitive_Edition_019_mesh_layer_5_vtx_0();
 	scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_5();
-	scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_19();
+	scroll_ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_18();
 };

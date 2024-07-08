@@ -52,7 +52,13 @@ void fail_warp_mario_set_safe_pos(struct MarioState *m, struct Surface *floor)
         return;
 
     s16 type = floor->type;
-    if (!SURFACE_IS_UNSAFE(type) && type != SURFACE_VERY_SLIPPERY && floor->normal.y >= 0.8f)
+    if (!SURFACE_IS_UNSAFE(type) 
+      && type != SURFACE_SLIPPERY
+      && type != SURFACE_HARD_SLIPPERY
+      && type != SURFACE_VERY_SLIPPERY
+      && type != SURFACE_HARD_VERY_SLIPPERY
+      && type != SURFACE_VANISH_CAP_WALLS
+      && floor->normal.y >= 0.8f)
     {
         return fail_warp_set_safe_pos(m);
     }

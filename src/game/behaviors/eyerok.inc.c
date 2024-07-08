@@ -117,7 +117,7 @@ static void eyerok_boss_act_fight(void) {
 static void eyerok_boss_act_die(void) {
     if (o->oTimer == 60) {
         if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_UP, DIALOG_FLAG_NONE, CUTSCENE_DIALOG, DIALOG_118)) {
-            spawn_default_star(0.0f, -900.0f, -3700.0f);
+            spawn_default_star(946.0f, -5911.0f, -10799.0f);
         } else {
             o->oTimer--;
         }
@@ -127,7 +127,40 @@ static void eyerok_boss_act_die(void) {
     }
 }
 
+static void despawn_hands(const BehaviorScript *behavior) {
+    uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
+    struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(behaviorAddr)];
+    struct Object *obj = (struct Object *) listHead->next;
+    while (obj != (struct Object *) listHead) {
+        if (obj->behavior == behaviorAddr
+            && obj->activeFlags != ACTIVE_FLAG_DEACTIVATED
+            && obj != o
+        ) {
+            obj->activeFlags = 0;
+        }
+
+        obj = (struct Object *) obj->header.next;
+    }
+}
+
 void bhv_eyerok_boss_loop(void) {
+    if (gMarioStates->pos[1] > -4000.f)
+    {
+        if (o->oAction != EYEROK_BOSS_ACT_SLEEP)
+        {
+            o->oAction = EYEROK_BOSS_ACT_SLEEP;
+            o->oEyerokBossNumHands = 0;
+            o->oEyerokBossActiveHand = 0;
+            o->oEyerokBossActiveHandId = 0;
+            o->oEyerokBossAttackCountdown = 0;
+            o->oEyerokBossAttackPhase = 0;
+            o->oEyerokBossOffsetFromHome = 0.0f;
+            o->oEyerokBossFightSideZ = 0.0f;
+            o->oEyerokBossClampedMarioPosZ = 0.0f;
+            despawn_hands(bhvEyerokHand);
+        }
+    }
+
     switch (o->oAction) {
         case EYEROK_BOSS_ACT_SLEEP:
             eyerok_boss_act_sleep();
