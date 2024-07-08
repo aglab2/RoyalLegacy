@@ -12,7 +12,7 @@
 #undef DEFINE_DIALOG
 #define DEFINE_DIALOG(id, voice, linesPerBox, leftOffset, width, _) \
     static const struct DialogEntry dialog_entry_ ## id = { \
-        voice, linesPerBox, leftOffset, width, dialog_text_ ## id \
+        linesPerBox, leftOffset, width, dialog_text_ ## id \
     };
 
 #include DIALOG_FILE

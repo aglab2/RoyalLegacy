@@ -156,7 +156,6 @@ enum TextAlignments {
 // bits 0x0100 through 0x4000 are free for use, and the mask can be reduced if necessary
 
 struct DialogEntry {
-    /*0x00*/ s32 voice;
     /*0x04*/ s8 linesPerBox;
     /*0x06*/ s16 leftOffset;
     /*0x08*/ s16 width;
