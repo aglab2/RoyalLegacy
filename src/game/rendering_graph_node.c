@@ -688,7 +688,7 @@ void geo_process_cull(struct GraphNodeCull* node)
     {
         if (node->style & (8 | 4))
         {
-            active = !!(node->style & 4);
+            active = !(node->style & 4);
         }
 
         if (node->style & 16)
