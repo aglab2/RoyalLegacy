@@ -61,14 +61,14 @@ void scroll_bowser_3_dl_Bowser_Fight_003_mesh_layer_5_vtx_0() {
 	currentX += deltaX;
 }
 
-void scroll_bowser_3_dl_skybox1_mesh_layer_1_vtx_0() {
+void scroll_bowser_3_dl_skybox1_mesh_layer_0_vtx_0() {
 	int i = 0;
 	int count = 87;
 	int height = 64 * 0x20;
 
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(bowser_3_dl_skybox1_mesh_layer_1_vtx_0);
+	Vtx *vertices = segmented_to_virtual(bowser_3_dl_skybox1_mesh_layer_0_vtx_0);
 
 	deltaY = (int)(0.3400000333786011 * 0x20) % height;
 
@@ -82,14 +82,14 @@ void scroll_bowser_3_dl_skybox1_mesh_layer_1_vtx_0() {
 	currentY += deltaY;
 }
 
-void scroll_bowser_3_dl_skybox2_mesh_layer_5_vtx_0() {
+void scroll_bowser_3_dl_skybox2_mesh_layer_0_vtx_0() {
 	int i = 0;
 	int count = 53;
 	int height = 32 * 0x20;
 
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(bowser_3_dl_skybox2_mesh_layer_5_vtx_0);
+	Vtx *vertices = segmented_to_virtual(bowser_3_dl_skybox2_mesh_layer_0_vtx_0);
 
 	deltaY = (int)(0.009999999776482582 * 0x20) % height;
 
@@ -112,8 +112,8 @@ void scroll_gfx_mat_bowser_3_dl__9_f3d_layer1() {
 
 };
 
-void scroll_gfx_mat_bowser_3_dl_f3dlite_material_005_layer5() {
-	Gfx *mat = segmented_to_virtual(mat_bowser_3_dl_f3dlite_material_005_layer5);
+void scroll_gfx_mat_bowser_3_dl_f3dlite_material_005_layer0() {
+	Gfx *mat = segmented_to_virtual(mat_bowser_3_dl_f3dlite_material_005_layer0);
 
 
 	shift_s(mat, 16, PACK_TILESIZE(0, 1));
@@ -127,8 +127,8 @@ void scroll_bowser_3() {
 	scroll_bowser_3_dl_Bowser_Fight_mesh_layer_1_vtx_0();
 	scroll_bowser_3_dl_Bowser_Fight_002_mesh_layer_1_vtx_0();
 	scroll_bowser_3_dl_Bowser_Fight_003_mesh_layer_5_vtx_0();
-	scroll_bowser_3_dl_skybox1_mesh_layer_1_vtx_0();
-	scroll_bowser_3_dl_skybox2_mesh_layer_5_vtx_0();
+	scroll_bowser_3_dl_skybox1_mesh_layer_0_vtx_0();
+	scroll_bowser_3_dl_skybox2_mesh_layer_0_vtx_0();
 	scroll_gfx_mat_bowser_3_dl__9_f3d_layer1();
-	scroll_gfx_mat_bowser_3_dl_f3dlite_material_005_layer5();
+	scroll_gfx_mat_bowser_3_dl_f3dlite_material_005_layer0();
 };
