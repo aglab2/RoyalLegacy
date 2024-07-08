@@ -663,11 +663,11 @@ void geo_process_level_of_detail(struct GraphNodeLevelOfDetail *node) {
 extern char gIsCs;
 void geo_process_cull(struct GraphNodeCull* node)
 {
-    s16 active = TRUE;
+    int active = TRUE;
 #ifdef AUTO_LOD
     // if (!__unlikely(!gIsConsole))
 #endif
-    if (!gIsCs)
+    if (!gIsCs && gIsConsole)
     {
         active = node->x0 < gMarioStates->pos[0] && gMarioStates->pos[0] < node->x1
                 && node->y0 < gMarioStates->pos[1] && gMarioStates->pos[1] < node->y1
@@ -675,13 +675,25 @@ void geo_process_cull(struct GraphNodeCull* node)
 
         if ((node->style & 2) && gMarioStates->floor && (gMarioStates->floor->type == SURFACE_HARD))
             return;
-    }
 
-    if (node->style & (8 | 4))
-    {
-        if (gMarioStates->pos[1] > 2000.f && (1000.f < gMarioStates->pos[0] && gMarioStates->pos[0] < 10000.f))
+        if (node->style & (8 | 4))
         {
-            active =  !!(node->style & 4);
+            if (gMarioStates->pos[1] > 2000.f && (1000.f < gMarioStates->pos[0] && gMarioStates->pos[0] < 10000.f))
+            {
+                active =  !!(node->style & 4);
+            }
+        }
+    }
+    else
+    {
+        if (node->style & (8 | 4))
+        {
+            active = !!(node->style & 4);
+        }
+
+        if (node->style & 16)
+        {
+            active = 0;
         }
     }
 

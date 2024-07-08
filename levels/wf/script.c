@@ -112,7 +112,7 @@ const LevelScript level_wf_entry[] = {
 		OBJECT_WITH_ACTS(215, -7720, 1788, -2885, 0, -171, 0, 0x0, bhvRedCoin, ACT_3),
 		OBJECT_WITH_ACTS(215, -4156, 191, -2310, 0, 0, 0, 0x0, bhvRedCoin, ACT_3),
 		OBJECT_WITH_ACTS(215, -1021, 3581, 442, 0, 0, 0, 0x0, bhvRedCoin, ACT_3),
-		OBJECT(0, -453, -180, -955, 0, 136, 0, 0xa0000, bhvSpinAirborneWarp),
+		OBJECT(0, -453, -180, -955, 0, -114, 0, 0xa0000, bhvSpinAirborneWarp),
 		OBJECT(84, -5156, 1394, -2663, 0, 0, 0, 0x0, bhvSpindrift),
 		OBJECT(84, -9004, 1560, -1870, 0, 0, 0, 0x0, bhvSpindrift),
 		OBJECT(84, -8882, 1571, 1669, 0, 0, 0, 0x0, bhvSpindrift),
