@@ -53,6 +53,8 @@ void checkerboard_plat_act_rotate(s32 nextAction, s16 pitch) {
 
 void bhv_checkerboard_platform_init(void) {
     o->oCheckerBoardPlatformHeight = o->parentObj->oBehParams2ndByte;
+    obj_scale(o, 1.1f);
+    o->oDrawingDistance = 30000.f;
 }
 
 void bhv_checkerboard_platform_loop(void) {

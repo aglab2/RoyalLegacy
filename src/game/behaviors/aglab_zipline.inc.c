@@ -124,6 +124,8 @@ void bhv_zipline_step()
                     cur_obj_become_intangible();
                     gMarioObject->oInteractStatus |= INT_STATUS_MARIO_DROP_FROM_HOOT;
                 }
+
+                cur_obj_play_sound_1(SOUND_ENV_ELEVATOR1);
             }
 
             f32 movAmt = o->oForwardVel / dirMag;
