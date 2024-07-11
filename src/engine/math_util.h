@@ -6,6 +6,8 @@
 #include "types.h"
 #include "game/puppyprint.h"
 
+// #define FOLDED_POLYNOMIAL
+
 #define NEAR_ZERO   __FLT_EPSILON__
 #define NEAR_ONE    (1.0f - __FLT_EPSILON__)
 
@@ -35,11 +37,18 @@ extern Vec3s gVec3sOne;
 
 // Trig functions
 
+typedef _Complex float f32x2;
+#define F32X2_NEW(x, y) __builtin_complex((float) (x), (float) (y))
+f32x2 sincos(s16 angle) __attribute__ ((const));
+#define sins(x) (__real__(sincos((s16) x)))
+#define coss(x) (__imag__(sincos((s16) x)))
+#ifdef FOLDED_POLYNOMIAL
+#else
 extern f32 gSineTable[];
 #define gCosineTable (gSineTable + 0x400)
-
 #define sins(x) gSineTable[  (u16) (x) >> 4]
 #define coss(x) gCosineTable[(u16) (x) >> 4]
+#endif
 #define tans(x) (sins(x) / coss(x))
 #define cots(x) (coss(x) / sins(x))
 #define atans(x) gArctanTable[(s32)((((x) * 1024) + 0.5f))] // is this correct? used for atan2_lookup

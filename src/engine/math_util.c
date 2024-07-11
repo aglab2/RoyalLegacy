@@ -1078,3 +1078,29 @@ OPTIMIZE_OS void mtxf_to_mtx_fast(s16* dst, float* src) {
     //  to set the top half.
     dst[15] = 1;
 }
+
+#ifdef FOLDED_POLYNOMIAL
+#define ONE 1.0f
+#define SECOND_ORDER_COEFFICIENT 0.0000000010911122665310369f
+#define quasi_cos_2(x) (ONE - SECOND_ORDER_COEFFICIENT * x * x)
+
+f32x2 sincos(s16 angle) {
+    s32 shifter = (angle ^ (angle << 1)) & 0xC000;
+    f32 x = (f32) (((angle + shifter) << 17) >> 16);
+    float cosx = quasi_cos_2(x);
+    float sinx = sqrtf(ONE - cosx * cosx);
+
+    if (shifter & 0x4000) {
+        float temp = cosx;
+        cosx = sinx;
+        sinx = temp;
+    }
+    if (angle < 0) {
+        sinx = -sinx;
+    }
+    if (shifter & 0x8000) {
+        cosx = -cosx;
+    }
+        return F32X2_NEW(sinx, cosx);
+}
+#endif
