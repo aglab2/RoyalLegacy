@@ -1335,7 +1335,6 @@ sound/sequences/us/10_event_koopa_message.m64
 sound/sequences/us/11_level_koopa_road.m64
 sound/sequences/us/12_event_high_score.m64
 sound/sequences/us/13_event_merry_go_round.m64
-sound/sequences/us/14_event_race.m64
 sound/sequences/us/15_cutscene_star_spawn.m64
 sound/sequences/us/17_cutscene_collect_key.m64
 sound/sequences/us/18_event_endless_stairs.m64
