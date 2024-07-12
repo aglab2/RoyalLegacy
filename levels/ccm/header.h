@@ -18,4 +18,8 @@ extern const LevelScript level_ccm_entry[];
 
 #include "levels/ccm/c4_ripple/geo_header.h"
 
+#include "levels/ccm/c4_platform/geo_header.h"
+
+#include "levels/ccm/c4_platform/collision_header.h"
+
 #endif

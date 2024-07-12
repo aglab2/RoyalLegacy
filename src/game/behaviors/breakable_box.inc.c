@@ -71,9 +71,11 @@ void hidden_breakable_box_actions(void) {
 extern const Collision c1_leaf_collision[];
 extern const Collision c3_spin_collision[];
 extern const Collision c3_spin_burn_collision[];
+extern const Collision c4_platform_collision[];
 static const void * kCollisions[] = {
     c1_leaf_collision,
     c3_spin_collision,
+    c4_platform_collision,
 };
 
 void hidden_unbreakable_box_actions(void) {
@@ -137,6 +139,10 @@ void bhv_hidden_object_loop(void) {
             o->oOpacity = 255 * amt;
             //o->oFaceAngleRoll = -0x4000 * (1.f - amt);
             //obj_scale_xyz(o, amt, 1.f, 1.f);
+        }
+         if (3 == o->oBehParams2ndByte)
+        {
+            obj_set_collision_data(o, c4_platform_collision);
         }
         hidden_unbreakable_box_actions();
     }
