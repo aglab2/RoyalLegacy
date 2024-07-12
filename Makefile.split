@@ -51,13 +51,13 @@ SEG_FILES := \
     $(LEVEL_FILES:%=$(BUILD_DIR)/levels/%.elf) \
     $(VANILLA_ACTORS_FILES:%=$(BUILD_DIR)/actors/vanilla_actors/%.elf)
 
-YAY0_FILES := \
+YAZ0_FILES := \
     $(SEGMENTS:%=$(BUILD_DIR)/bin/%.szp) \
     $(ACTOR_GROUPS:%=$(BUILD_DIR)/actors/%.szp) \
     $(LEVEL_FILES:%=$(BUILD_DIR)/levels/%.szp) \
     $(VANILLA_ACTORS_FILES:%=$(BUILD_DIR)/actors/vanilla_actors/%.szp)
 
-YAY0_OBJ_FILES := $(YAY0_FILES:.szp=.szp.o)
+YAZ0_OBJ_FILES := $(YAZ0_FILES:.szp=.szp.o)
 
 
 # --------------------------------------
