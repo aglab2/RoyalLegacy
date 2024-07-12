@@ -41,6 +41,7 @@ const LevelScript level_ccm_entry[] = {
 	JUMP_LINK(script_func_vo_bob), 
 	LOAD_MODEL_FROM_GEO(MODEL_SSL_PALM_TREE, palm_tree_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_C4_RIPPLE, c4_ripple_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_C4_PLATFORM, c4_platform_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -103,16 +104,7 @@ const LevelScript level_ccm_entry[] = {
 		OBJECT(118, -13309, 2392, 762, 0, 0, 0, 0x0, bhvHiddenBlueCoin),
 		OBJECT(118, -13309, 2395, 1292, 0, 0, 0, 0x0, bhvHiddenBlueCoin),
 		OBJECT(118, -13837, 2419, -316, 0, 0, 0, 0x0, bhvHiddenBlueCoin),
-		OBJECT(129, 6626, 2761, -497, 0, 45, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 7480, 2562, -1353, 0, 45, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 5963, 2962, 377, 0, 0, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 5563, 2962, 377, 0, 0, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 5763, 2962, 577, 0, 0, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 5763, 2962, 177, 0, 0, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 5963, 2962, 577, 0, 0, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 5963, 2962, 177, 0, 0, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 5563, 2962, 577, 0, 0, 0, 0x0, bhvHiddenObject),
-		OBJECT(129, 5563, 2962, 177, 0, 0, 0, 0x0, bhvHiddenObject),
+		OBJECT(0xE5, 5765, 2779, 1676, 0, 0, 0, (3 << 16), bhvHiddenObject),
 		OBJECT(0, 5743, 1920, -15608, 0, 0, 0, 0x2000000, bhvHiddenStar),
 		OBJECT(0, 6614, 240, -13659, 0, 0, 0, 0x0, bhvHiddenStarTrigger),
 		OBJECT(0, 6446, 412, -14461, 0, 0, 0, 0x0, bhvHiddenStarTrigger),

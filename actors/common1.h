@@ -280,4 +280,5 @@ extern const Collision wooden_signpost_seg3_collision_0302DD80[];
 
 #include "redcoinradar/geo_header.h"
 
+
 #endif

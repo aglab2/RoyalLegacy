@@ -13,3 +13,5 @@
 
 #include "levels/ccm/c4_ripple/collision.inc.c"
 #include "levels/ccm/c4_ripple/model.inc.c"
+#include "levels/ccm/c4_platform/model.inc.c"
+#include "levels/ccm/c4_platform/collision.inc.c"

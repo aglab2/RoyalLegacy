@@ -16,3 +16,4 @@
 #include "levels/ccm/geo.inc.c"
 
 #include "levels/ccm/c4_ripple/geo.inc.c"
+#include "levels/ccm/c4_platform/geo.inc.c"
