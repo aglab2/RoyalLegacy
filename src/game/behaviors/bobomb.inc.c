@@ -305,7 +305,6 @@ void bhv_bobomb_buddy_init(void) {
     o->oFriction = 0.8f;
     o->oBuoyancy = 1.3f;
     o->oInteractionSubtype = INT_SUBTYPE_NPC;
-    o->oDrawingDistance = 30000.0f;
 }
 
 void bobomb_buddy_act_idle(void) {
@@ -449,4 +448,6 @@ void bhv_bobomb_buddy_loop(void) {
     curr_obj_random_blink(&o->oBobombBuddyBlinkTimer);
 
     o->oInteractStatus = INT_STATUS_NONE;
+    o->oDrawingDistance = 30000.0f;
+    set_object_visibility(o, 30000);
 }
