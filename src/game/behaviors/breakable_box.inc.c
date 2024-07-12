@@ -117,6 +117,11 @@ void bhv_hidden_object_init()
         o->oMoveAngleYaw = 1111 * (o->oPosZ + o->oPosY + o->oPosX);
         obj_scale(o, 0.9f);
     }
+
+    if (3 == o->oBehParams2ndByte)
+    {
+        o->oDrawingDistance = 30000.f;
+    }
 }
 
 void bhv_hidden_object_loop(void) {
@@ -140,10 +145,7 @@ void bhv_hidden_object_loop(void) {
             //o->oFaceAngleRoll = -0x4000 * (1.f - amt);
             //obj_scale_xyz(o, amt, 1.f, 1.f);
         }
-         if (3 == o->oBehParams2ndByte)
-        {
-            obj_set_collision_data(o, c4_platform_collision);
-        }
+
         hidden_unbreakable_box_actions();
     }
 }
