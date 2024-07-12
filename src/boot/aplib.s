@@ -14,7 +14,6 @@
 #define match_off   $t5
 #define match_len   $t6
 #define outbuf_orig $t7
-#define dma_ptr     $t8
 
 #define ra2         $a1
 #define ra3         $a3
@@ -55,8 +54,6 @@
 decompress_aplib_full_fast:
     move ra3, $ra
     move outbuf_orig, outbuf
-    bal .Lwaitdma
-     li dma_ptr, 0
     b .Lcmd_literal
      li cc_count, -1
 
@@ -119,9 +116,6 @@ decompress_aplib_full_fast:
     li nlit, 2
 .Lloop:                                         # main loop
     #tne ra, ra, 0x10
-    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
     cc_check 0, .Lcmd_literal                   # 0xx => literal
     cc_check 0, .Lcmd_offset8                   # 10x => offset 8
     cc_check 0, .Lcmd_offset7                   # 110 => offset 7
@@ -221,23 +215,6 @@ decompress_aplib_full_fast:
     addiu inbuf, 1                               # (other read bytes will be ignored)
     jr $ra
      li cc_count, 6                              # reset CC counter
-
-.Lwaitdma:
-    li $t1, 0x80000000 - DMA_RACE_MARGIN
-.Lwaitdma_loop:
-    lw $t0, (PI_STATUS)
-    andi $t0, 1
-    beqz $t0, .Lwaitdma_end
-     li dma_ptr, 0xffffffff
-    lw dma_ptr, (PI_DRAM_ADDR)
-    andi $t0, dma_ptr, 0xF
-    xor dma_ptr, $t0
-    addu dma_ptr, $t1
-    ble dma_ptr, inbuf, .Lwaitdma_loop
-     nop
-.Lwaitdma_end:
-    jr $ra
-     nop
 
 .Ldone:
     jr ra3
