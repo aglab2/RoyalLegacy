@@ -529,7 +529,7 @@ CPPFLAGS := -P -Wno-trigraphs $(DEF_INC_CFLAGS)
 # N64 tools
 YAZ0TOOL              := $(TOOLS_DIR)/slienc
 MIO0TOOL              := $(TOOLS_DIR)/mio0
-RNCPACK               := $(TOOLS_DIR)/rncpack
+RNCPACK               := $(TOOLS_DIR)/shrinkler/build/native/Shrinkler
 LZ4PACK               := $(TOOLS_DIR)/lz4pack
 FILESIZER             := $(TOOLS_DIR)/filesizer
 N64CKSUM              := $(TOOLS_DIR)/n64cksum

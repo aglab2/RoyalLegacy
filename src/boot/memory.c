@@ -12,6 +12,9 @@
 #ifdef GZIP
 #include "aplib.h"
 #endif
+#ifdef RNC1
+#include "shrinkler.h"
+#endif
 #if defined(RNC1) || defined(RNC2)
 #include <rnc.h>
 #endif
@@ -593,14 +596,17 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 
 #ifdef GZIP
     u32 compSize = ALIGN16(srcEnd - srcStart + 8);
+#elif defined(RNC1)
 #else
     u32 compSize = ALIGN16(srcEnd - srcStart);
 #endif
+
 #if 0
     u8 *compressed = main_pool_alloc_aligned_freeable(compSize, 0);
 #else
     u8 *compressed = 0x80425800;
 #endif
+
 #ifdef GZIP
     struct {
         u32 destLength;
@@ -610,6 +616,22 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 
     dma_read((u8*)&ApLibHeader, srcStart, srcStart + 16); // We must extract this data from the header
     u32 *size = &ApLibHeader.destLength;
+#elif defined(RNC1)
+    struct {
+        s8 magic[4];
+        s8 majorVersion;
+        s8 minorVersion;
+        u16 headerSize;
+        u32 compressedSize;
+        u32 uncompressedSize;
+        u32 safetyMargin;
+        u32 flags;
+        u64 pad; // Alignment
+    } ShrinklerHeader;
+    dma_read((u8*)&ShrinklerHeader, srcStart, srcStart + sizeof(ShrinklerHeader)); // We must extract this data from the header
+    u32 *size = &ShrinklerHeader.uncompressedSize;
+    u32 compSize = ShrinklerHeader.compressedSize;
+    osSyncPrintf("Segment size: %u", ShrinklerHeader.uncompressedSize);
 #else
     // Decompressed size from header (This works for non-mio0 because they also have the size in same place)
     u32 *size = (u32 *) (compressed + 4);
@@ -620,6 +642,9 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
         dest = main_pool_alloc_aligned(compSize, 0);
         dma_read(dest, srcStart, srcEnd);
 #elif defined(GZIP)
+        dest = main_pool_alloc_aligned(*size, 0);
+#elif defined(RNC1)
+        dma_read(compressed, srcStart + sizeof(ShrinklerHeader), srcEnd);
         dest = main_pool_alloc_aligned(*size, 0);
 #else
         u32 margin = 0;
@@ -645,7 +670,7 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             dma_ctx_init(&ctx, compressed, srcStart + 8, srcEnd);
             decompress_aplib_full_fast(compressed, srcEnd - srcStart - 8, dest, &ctx);
 #elif RNC1
-            Propack_UnpackM1(compressed, dest);
+            decompress_shrinkler_full_fast(compressed, ShrinklerHeader.compressedSize, dest, *size);
 #elif RNC2
             Propack_UnpackM2(compressed, dest);
 #elif YAZ0
