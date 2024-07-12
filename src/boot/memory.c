@@ -541,7 +541,11 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 #else
     u32 compSize = ALIGN16(srcEnd - srcStart);
 #endif
+#if 0
     u8 *compressed = main_pool_alloc_aligned_freeable(compSize, 0);
+#else
+    u8 *compressed = 0x80425800;
+#endif
 #ifdef GZIP
     // Decompressed size from end of gzip
     u32 *size = (u32 *) (compressed + compSize);
@@ -572,7 +576,10 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;
+            
+#if 0
             main_pool_free(compressed);
+#endif
         }
     }
 #ifdef PUPPYPRINT_DEBUG
