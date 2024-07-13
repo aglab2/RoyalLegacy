@@ -6,7 +6,7 @@
 
 #define MAX_COMP_SIZE (8*1024*1024)
 
-// #define FAVOR_DECOMPRESSION_SPEED
+#define FAVOR_DECOMPRESSION_SPEED
 #define COMPRESSION_LEVEL LZ4HC_CLEVEL_MAX
 
 int main(int argc, char *argv[])
@@ -35,7 +35,9 @@ int main(int argc, char *argv[])
 #ifdef FAVOR_DECOMPRESSION_SPEED
     LZ4_favorDecompressionSpeed(state, 1);
 #endif
-    int compSize = LZ4_compress_HC_extStateHC(state, src, dst, srcSize, MAX_COMP_SIZE, COMPRESSION_LEVEL);
+    LZ4_setCompressionLevel(state, COMPRESSION_LEVEL);
+    int compSize = LZ4_compress_HC_continue(state, (char*)src, dst, srcSize, MAX_COMP_SIZE);
+    LZ4_freeStreamHC(state);
     if (0 == compSize)
     {
         printf("Compression failed!\n");
@@ -57,7 +59,6 @@ int main(int argc, char *argv[])
     fwrite(dst, compSize, 1, out);
     fclose(out);
 
-    LZ4_freeStreamHC(state);
     free(src);
     free(dst);
 

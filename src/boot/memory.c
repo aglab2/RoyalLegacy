@@ -588,8 +588,11 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 #elif MIO0
             decompress(compressed, dest);
 #elif LZ4
+            // u32 lz4CompSize = *(u32 *) (compressed + 0);
+            // LZ4_decompress_safe (compressed + 8, dest, lz4CompSize, *size);
             u32 lz4CompSize = *(u32 *) (compressed + 0);
-            LZ4_decompress_safe (compressed + 8, dest, lz4CompSize, *size);
+            extern int decompress_lz4_full_fast(const void *inbuf, int insize, void *outbuf);
+            decompress_lz4_full_fast(compressed + 8, lz4CompSize, dest);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;
