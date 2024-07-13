@@ -19,11 +19,7 @@
 #define match_off   $t5
 #define match_len   $t6
 #define token       $t7
-#define dma_ptr     $t8
 #define outbuf_orig $v1
-
-#define ra3         $t4
-#define ra2         $a3
 
     .section .text.decompress_lz4_full_fast
 	.p2align 5
@@ -33,15 +29,13 @@
     .set noreorder
 
 decompress_lz4_full_fast:
+    addiu $sp, $sp, -0x18
+    sw $ra, 0x14($sp)
+
     add $a1, $a0                                # calculate end of input buffer
-    move ra3, $ra
     move outbuf_orig, outbuf
-    li dma_ptr, 0x80000000                      # initialize dma_ptr to force a first check
 
 .Lloop:
-    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
     lbu token, 0(inbuf)                         # read token byte
     addiu inbuf, 1
     srl match_len, token, 4                     # extract literal length
@@ -51,9 +45,6 @@ decompress_lz4_full_fast:
      nop
     move $v0, inbuf                            # store start of literals into $v0
     add inbuf, match_len                        # advance inbuf to end of literals
-    sub $t0, inbuf, dma_ptr                     # check if all the literals have been DMA'd
-    bgezal $t0, .Lwaitdma                       # if not, wait for DMA
-     nop
 .Lcopy_lit:
     ldl $t0, 0($v0)                             # load 8 bytes of literals
     ldr $t0, 7($v0)
@@ -122,35 +113,15 @@ decompress_lz4_full_fast:
      nop
 
 .Lend:
-    jr ra3
-     sub $v0, outbuf, outbuf_orig               # return number of bytes written
+    lw $ra, 0x14($sp)
+    jr $ra
+    addiu $sp, $sp, 0x18
 
 .Lread_match_len:                               # read extended match length
-    move ra2, $ra
 .Lread_match_len_loop:
-    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
     lbu $t0, 0(inbuf)                           # read 1 byte
     addiu inbuf, 1
     beq $t0, 0xFF, .Lread_match_len_loop        # if byte is 0xFF, continue reading
      add match_len, $t0                         # add to match_len
-    jr ra2
-     nop
-
-.Lwaitdma:
-    li $t1, 0x80000000 - DMA_RACE_MARGIN
-.Lwaitdma_loop:
-    lw $t0, (PI_STATUS)
-    andi $t0, 1
-    beqz $t0, .Lwaitdma_end
-     li dma_ptr, 0xffffffff
-    lw dma_ptr, (PI_DRAM_ADDR)
-    andi $t0, dma_ptr, 0xF
-    xor dma_ptr, $t0
-    addu dma_ptr, $t1
-    ble dma_ptr, inbuf, .Lwaitdma_loop
-     nop
-.Lwaitdma_end:
     jr $ra
      nop

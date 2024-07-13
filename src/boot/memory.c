@@ -572,7 +572,7 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
         dest = main_pool_alloc_aligned(*size, 0);
 #else
         dma_read(compressed, srcStart, srcEnd);
-        dest = main_pool_alloc_aligned(*size, 0);
+        dest = main_pool_alloc_aligned(*size + 8, 0);
 #endif
 
 	if (dest != NULL) {
