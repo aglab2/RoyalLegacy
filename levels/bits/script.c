@@ -77,6 +77,8 @@ const LevelScript level_bits_entry[] = {
 		OBJECT(85, -4031, 2763, 668, 0, 0, 0, 0x0, bhvMrBlizzard),
 		OBJECT(85, -3835, 3267, 1363, 0, 0, 0, 0x0, bhvMrBlizzard),
 		OBJECT(85, -3237, 3771, 2151, 0, 0, 0, 0x0, bhvMrBlizzard),
+		OBJECT(MODEL_HEART, -1845, 4194, -447, 0, 0, 0, 0x0, bhvRecoveryHeart),
+		OBJECT(MODEL_NONE, 3904, 7065, 5853, 0, 0, 0, 0x0, bhvCoinFormation),
 		OBJECT(206, -10439, 419, 7875, 0, 15, 0, 0x0, bhvSnufit),
 		OBJECT(206, -10034, 750, 5113, 0, -22, 0, 0x0, bhvSnufit),
 		OBJECT(0, -10200, 0, 12457, 0, -180, 0, 0xa0000, bhvSpinAirborneWarp),
