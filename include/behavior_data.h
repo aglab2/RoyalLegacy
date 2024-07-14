@@ -550,5 +550,6 @@ extern const BehaviorScript bhvCS[];
 extern const BehaviorScript bhvRedCoinRadar[];
 extern const BehaviorScript bhvC2Stairs[];
 extern const BehaviorScript bhvZipline[];
+extern const BehaviorScript bhvEpicDoor[];
 
 #endif // BEHAVIOR_DATA_H

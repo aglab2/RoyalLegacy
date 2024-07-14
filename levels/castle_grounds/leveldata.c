@@ -8,3 +8,8 @@
 #include "levels/castle_grounds/areas/1/movtext.inc.c"
 
 #include "levels/castle_grounds/leveldata.inc.c"
+
+#include "levels/castle_grounds/beta_door_l/collision.inc.c"
+#include "levels/castle_grounds/beta_door_l/model.inc.c"
+#include "levels/castle_grounds/beta_door_r/model.inc.c"
+#include "levels/castle_grounds/beta_door_r/collision.inc.c"

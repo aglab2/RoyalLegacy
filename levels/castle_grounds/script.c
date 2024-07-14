@@ -41,6 +41,8 @@ const LevelScript level_castle_grounds_entry[] = {
 	JUMP_LINK(script_func_vo_castle_inside), 
 	LOAD_MODEL_FROM_GEO(MODEL_CASTLE_DOOR_0_STARS, castle_door_0_star_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_SL_SNOW_TREE, snow_tree_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_CASTLE_DOOR_L, beta_door_l_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_CASTLE_DOOR_R, beta_door_r_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -66,6 +68,8 @@ const LevelScript level_castle_grounds_entry[] = {
 		WARP_NODE(14, LEVEL_BOB, 1, 10, WARP_NO_CHECKPOINT),
 		WARP_NODE(10, LEVEL_BOB, 1, 0, WARP_NO_CHECKPOINT),
 		WARP_NODE(16, LEVEL_WF, 1, 10, WARP_NO_CHECKPOINT),
+		OBJECT(MODEL_CASTLE_DOOR_L, 806, -711, -4238, 0, 0, 0, 0x0, bhvEpicDoor),
+		OBJECT(MODEL_CASTLE_DOOR_R, 1262, -711, -4238, 0, 0, 0, (1 << 16), bhvEpicDoor),
 		OBJECT(0, 2950, 0, -1638, 0, 48, 0, 0x60000, bhvAirborneDeathWarp),
 		OBJECT(0, -1117, 0, -1385, 0, -55, 0, 0x40000, bhvAirborneDeathWarp),
 		OBJECT(0, -1195, -711, -3770, 0, -90, 0, 0x80000, bhvAirborneDeathWarp),

@@ -12,4 +12,12 @@ extern Movtex castle_grounds_movtex_tris_waterfall[];
 
 #include "levels/castle_grounds/header.inc.h"
 
+#include "levels/castle_grounds/beta_door_l/collision_header.h"
+
+#include "levels/castle_grounds/beta_door_l/geo_header.h"
+
+#include "levels/castle_grounds/beta_door_r/geo_header.h"
+
+#include "levels/castle_grounds/beta_door_r/collision_header.h"
+
 #endif
