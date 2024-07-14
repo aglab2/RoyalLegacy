@@ -173,3 +173,5 @@ decompress_lz4_full_fast:
     lw $ra, 0x14($sp)
     jr $ra
     addiu $sp, $sp, 0x18
+
+.endfunc

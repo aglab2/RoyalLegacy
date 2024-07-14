@@ -1,22 +1,14 @@
-/*
- * Written by Rasky for the libdragon project.
- */
+#define inbuf       $s0
+#define outbuf      $s2
+#define nlit        $s3
+#define cc          $s4
+#define cc_count    $s5
+#define match_off   $s6
+#define match_len   $s7
+#define v0_st       $s8
 
-#define DMA_RACE_MARGIN     16
-#define PI_STATUS           0xA4600010
-#define PI_DRAM_ADDR        0xA4600000
-
-#define inbuf       $a0
-#define outbuf      $a2
-#define nlit        $t2
-#define cc          $t3
-#define cc_count    $t4
-#define match_off   $t5
-#define match_len   $t6
-#define outbuf_orig $t7
-
-#define ra2         $a1
-#define ra3         $a3
+#define dma_ctx     $s1
+#define dma_ptr     $v0
 
 # Read one bit from CC, and jump to target if it matches
 # the specified value
@@ -52,8 +44,24 @@
     .set noreorder
 
 decompress_aplib_full_fast:
-    move ra3, $ra
-    move outbuf_orig, outbuf
+    addiu $sp, $sp, -0x40
+    sw $ra, 0x14($sp)
+    sw $s0, 0x18($sp)
+    sw $s1, 0x1c($sp)
+    sw $s2, 0x20($sp)
+    sw $s3, 0x24($sp)
+    sw $s4, 0x28($sp)
+    sw $s5, 0x2C($sp)
+    sw $s6, 0x30($sp)
+    sw $s7, 0x34($sp)
+    sw $s8, 0x38($sp)
+    
+    move $s0, $a0
+    move $s2, $a2
+    move dma_ctx, $a3
+
+    bal .Lwaitdma
+     li dma_ptr, 0
     b .Lcmd_literal
      li cc_count, -1
 
@@ -70,11 +78,11 @@ decompress_aplib_full_fast:
     # allow the code to write past the end of the output buffer (up to 8 bytes).
 .Lmatch:
     blt match_off, match_len, .Lmatch1_loop_check
-     sub $v0, outbuf, match_off
+     sub v0_st, outbuf, match_off
 .Lmatch8_loop:                                  # 8-byte copy loop
-    ldl $t0, 0($v0)                             # load 8 bytes
-    ldr $t0, 7($v0)
-    addiu $v0, 8
+    ldl $t0, 0(v0_st)                             # load 8 bytes
+    ldr $t0, 7(v0_st)
+    addiu v0_st, 8
     sdl $t0, 0(outbuf)                          # store 8 bytes
     sdr $t0, 7(outbuf)
     addiu match_len, -8
@@ -102,8 +110,8 @@ decompress_aplib_full_fast:
 .Lmatch1_loop_check:                            # 1-byte copy loop
     beq match_off, 1, .Lmatch1_memset
 .Lmatch1_loop:                                  # 1-byte copy loop
-    lbu $t0, 0($v0)                             # load 1 byte
-    addiu $v0, 1
+    lbu $t0, 0(v0_st)                             # load 1 byte
+    addiu v0_st, 1
     sb $t0, 0(outbuf)                           # store 1 byte
     addiu match_len, -1
     bgtz match_len, .Lmatch1_loop               # check we went past match_len
@@ -116,30 +124,33 @@ decompress_aplib_full_fast:
     li nlit, 2
 .Lloop:                                         # main loop
     #tne ra, ra, 0x10
+    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
+    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+     nop
     cc_check 0, .Lcmd_literal                   # 0xx => literal
     cc_check 0, .Lcmd_offset8                   # 10x => offset 8
     cc_check 0, .Lcmd_offset7                   # 110 => offset 7
 .Lcmd_offset4:                                  # 111 => offset 4
     li nlit, 3
-    li $v0, 0
+    li v0_st, 0
 
     cc_peek 1                                   # if next CC bit is 1
-     ori $v0, 0x8                               #  set bit 0x8 in v0
+     ori v0_st, 0x8                               #  set bit 0x8 in v0
     sll cc, 1                                   # shift CC
     cc_peek 1                                   # if next CC bit is 1
-     ori $v0, 0x4                               #  set bit 0x4 in v0
+     ori v0_st, 0x4                               #  set bit 0x4 in v0
     sll cc, 1                                   # shift CC
     cc_peek 1                                   # if next CC bit is 1
-     ori $v0, 0x2                               #  set bit 0x2 in v0
+     ori v0_st, 0x2                               #  set bit 0x2 in v0
     sll cc, 1                                   # shift CC
     cc_peek 1                                   # if next CC bit is 1
-     ori $v0, 0x1                               #  set bit 0x1 in v0
+     ori v0_st, 0x1                               #  set bit 0x1 in v0
     sll cc, 1                                   # shift CC
 
-    beqz $v0, .Loutz                            # if v0 == 0, store zero into outbuf
+    beqz v0_st, .Loutz                            # if v0 == 0, store zero into outbuf
      li $t0, 0
-    sub $v0, outbuf, $v0                        # else v0 is the match offset
-    lbu $t0, 0($v0)                             # load byte from match offset
+    sub v0_st, outbuf, v0_st                        # else v0 is the match offset
+    lbu $t0, 0(v0_st)                             # load byte from match offset
 .Loutz:
     sb $t0, 0(outbuf)                           # store byte
     b .Lloop                                    # back to main loop
@@ -159,14 +170,14 @@ decompress_aplib_full_fast:
     beqz $t0, .Ldone                            # if byte == 0, we're done
      srl match_off, $t0, 1                      # match_offset is bits 1..7
     andi $t0, 1                                 # match_len is 2 + bit 0
-    sub $v0, outbuf, match_off                  # compute match pointer
-    lbu $t1, 0($v0)                             # load byte from match pointer
+    sub v0_st, outbuf, match_off                  # compute match pointer
+    lbu $t1, 0(v0_st)                             # load byte from match pointer
     addiu outbuf, 2
     sb $t1, -2(outbuf)                          # store byte
-    lbu $t1, 1($v0)                             # load byte from match pointer + 1
+    lbu $t1, 1(v0_st)                             # load byte from match pointer + 1
     beqz $t0, .Lloop_lit2                       # if match_len == 2, back to main loop
      sb $t1, -1(outbuf)                         # store byte
-    lbu $t1, 2($v0)                             # load byte from match pointer + 2
+    lbu $t1, 2(v0_st)                             # load byte from match pointer + 2
     addiu outbuf, 1
     b .Lloop_lit2                               # back to main loop
      sb $t1, -1(outbuf)                         # store byte
@@ -175,40 +186,56 @@ decompress_aplib_full_fast:
     #tne ra, ra, 0x10
     bal .Lreadgamma                             # read gamma-encoded value
      nop
-    sub $v0, nlit                               # if value-nlit < 0, it's a repmatch
-    bltz $v0, .Lrepmatch                        # so jump to repmatch code
+    sub v0_st, nlit                               # if value-nlit < 0, it's a repmatch
+    bltz v0_st, .Lrepmatch                        # so jump to repmatch code
      nop
-    sll match_off, $v0, 8                       # else, it is the MSB of match_off
+    sll match_off, v0_st, 8                       # else, it is the MSB of match_off
     lbu $t0, 0(inbuf)                           # load byte from inbuf (LSB of match off)
     addiu inbuf, 1
     bal .Lreadgamma                             # read gamma-encoded value (match_len)
      or match_off, $t0                          # compute match_off
     bltl match_off, 128, 1f                     
-     addiu $v0, 2
+     addiu v0_st, 2
 1:  bgel match_off, 32000, 1f
-     addiu $v0, 1
+     addiu v0_st, 1
 1:  bgel match_off, 1280, 1f
-     addiu $v0, 1
+     addiu v0_st, 1
 1:
 .Ljump_match:                                   
     b .Lmatch                                    # jump to match code
-     move match_len, $v0
+     move match_len, v0_st
 .Lrepmatch:                                      # repmatch: just read mach_len
     bal .Lreadgamma                              # read gamma-encoded value
      addiu $ra, -(1f - .Ljump_match)             # when done, return to jump_match
 1:
 
+.Ldone:
+    lw $ra, 0x14($sp)
+    lw $s0, 0x18($sp)
+    lw $s1, 0x1c($sp)
+    lw $s2, 0x20($sp)
+    lw $s3, 0x24($sp)
+    lw $s4, 0x28($sp)
+    lw $s5, 0x2C($sp)
+    lw $s6, 0x30($sp)
+    lw $s7, 0x34($sp)
+    lw $s8, 0x38($sp)
+    jr $ra
+    addiu $sp, $sp, 0x40
+
 .Lreadgamma:                                     # read gamma-encoded value
-    move ra2, $ra
-    li $v0, 1                                     # Start from 1
+    addiu $sp, $sp, -0x18
+    sw $ra, 0x14($sp)
+    li v0_st, 1                                     # Start from 1
 .Lreadgamma_loop:
-    sll $v0, 1                                   # Shift to make space for new bit
+    sll v0_st, 1                                   # Shift to make space for new bit
     cc_check 0, .Lreadgamma_check                # Read one bit from CC
-    ori $v0, 1                                   # If 1, set the LSB
+    ori v0_st, 1                                   # If 1, set the LSB
 .Lreadgamma_check:
     cc_check 1, .Lreadgamma_loop                 # if next CC bit is 0, we are done
-    jr ra2
-     nop
+    lw $ra, 0x14($sp)
+    jr $ra
+    addiu $sp, $sp, 0x18
 
 .Lreadcc:                                        # read new CC byte 
     lwl cc, 0(inbuf)                             # load current byte into MSB
@@ -216,8 +243,15 @@ decompress_aplib_full_fast:
     jr $ra
      li cc_count, 6                              # reset CC counter
 
-.Ldone:
-    jr ra3
-     sub $v0, outbuf, outbuf_orig
+.Lwaitdma:
+    addiu $sp, $sp, -0x18
+    sw $ra, 0x14($sp)
 
-    .endfunc
+    jal dma_read_ctx
+    move $a0, dma_ctx
+
+    lw $ra, 0x14($sp)
+    jr $ra
+    addiu $sp, $sp, 0x18
+
+.endfunc

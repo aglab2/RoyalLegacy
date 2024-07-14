@@ -614,7 +614,6 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
         dest = main_pool_alloc_aligned(compSize, 0);
         dma_read(dest, srcStart, srcEnd);
 #elif defined(GZIP)
-        dma_read(compressed, srcStart + 8, srcEnd);
         dest = main_pool_alloc_aligned(*size, 0);
 #else
         u32 margin = 0;
@@ -632,7 +631,9 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 	if (dest != NULL) {
             osSyncPrintf("start decompress\n");
 #ifdef GZIP
-            decompress_aplib_full_fast(compressed, srcEnd - srcStart - 8, dest);
+            struct DMAContext ctx;
+            dma_ctx_init(&ctx, compressed, srcStart + 8, srcEnd);
+            decompress_aplib_full_fast(compressed, srcEnd - srcStart - 8, dest, &ctx);
 #elif RNC1
             Propack_UnpackM1(compressed, dest);
 #elif RNC2
