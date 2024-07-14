@@ -427,6 +427,52 @@ void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
     }
 }
 
+struct DMAContext {
+    u8* srcStart;
+    u8* dest;
+    u32 size;
+};
+
+// Starts to DMA the first block
+static void dma_ctx_init(struct DMAContext* ctx, u8 *dest, u8 *srcStart, u8 *srcEnd) {
+    u32 size = ALIGN16(srcEnd - srcStart);
+    osInvalDCache(dest, size);
+
+    u32 copySize = (size >= 0x1000) ? 0x1000 : size;
+
+    osPiStartDma(&gDmaIoMesg, OS_MESG_PRI_NORMAL, OS_READ, (uintptr_t) srcStart, dest, copySize, &gDmaMesgQueue);
+
+    dest += copySize;
+    srcStart += copySize;
+    size -= copySize;
+    
+    ctx->srcStart = srcStart;
+    ctx->dest = dest;
+    ctx->size = size;
+}
+
+// Starts to DMA the next block and waits for the previous block
+void* dma_read_ctx(struct DMAContext* ctx) {
+    // wait for the previous DMA issued
+    osRecvMesg(&gDmaMesgQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+
+    // start the new DMA transfer
+    u32 copySize = (ctx->size >= 0x1000) ? 0x1000 : ctx->size;
+    if (copySize == 0) {
+        // we are done, return a dummy address that is so gigantic that we will never be called again
+        return (void*) 0x80800000;
+    }
+    osPiStartDma(&gDmaIoMesg, OS_MESG_PRI_NORMAL, OS_READ, (uintptr_t) ctx->srcStart, ctx->dest, copySize, &gDmaMesgQueue);
+
+    // provide a tiny buffer between DMA edges
+    void* ret = ctx->dest - 16;
+    ctx->dest += copySize;
+    ctx->srcStart += copySize;
+    ctx->size -= copySize;
+
+    return ret;
+}
+
 /**
  * Perform a DMA read from ROM, allocating space in the memory pool to write to.
  * Return the destination address.
@@ -571,8 +617,16 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
         dma_read(compressed, srcStart + 8, srcEnd);
         dest = main_pool_alloc_aligned(*size, 0);
 #else
+        u32 margin = 0;
+#ifndef LZ4
+        // Read the whole compressed content
         dma_read(compressed, srcStart, srcEnd);
-        dest = main_pool_alloc_aligned(*size + 8, 0);
+#else
+        // read the header for LZ4 decompression
+        dma_read(compressed, srcStart, srcStart + 16);
+        margin = 16;
+#endif
+        dest = main_pool_alloc_aligned(*size + margin, 0);
 #endif
 
 	if (dest != NULL) {
@@ -588,11 +642,11 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 #elif MIO0
             decompress(compressed, dest);
 #elif LZ4
-            // u32 lz4CompSize = *(u32 *) (compressed + 0);
-            // LZ4_decompress_safe (compressed + 8, dest, lz4CompSize, *size);
-            u32 lz4CompSize = *(u32 *) (compressed + 0);
-            extern int decompress_lz4_full_fast(const void *inbuf, int insize, void *outbuf);
-            decompress_lz4_full_fast(compressed + 8, lz4CompSize, dest);
+            struct DMAContext ctx;
+            u32 lz4CompSize = *(u32 *) (compressed + 8);
+            dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
+            extern int decompress_lz4_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
+            decompress_lz4_full_fast(compressed + 16, lz4CompSize, dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;

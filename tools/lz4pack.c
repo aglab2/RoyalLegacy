@@ -53,10 +53,16 @@ int main(int argc, char *argv[])
 
     uint32_t compSizeBE = __builtin_bswap32(compSize);
     uint32_t srcSizeBE = __builtin_bswap32(srcSize);
+    uint32_t magicHeader = 'LZ4H';
+    uint32_t magicFooter = 'LZ4F';
 
-    fwrite(&compSizeBE, 1, sizeof(compSizeBE), out);
-    fwrite(&srcSizeBE, 1, sizeof(srcSizeBE), out);
+    fwrite(&magicHeader, 1, sizeof(magicHeader), out);
+    fwrite(&srcSizeBE  , 1, sizeof(srcSizeBE)  , out);
+    fwrite(&compSizeBE , 1, sizeof(compSizeBE) , out);
+    fwrite(&magicFooter, 1, sizeof(magicFooter), out);  
+
     fwrite(dst, compSize, 1, out);
+
     fclose(out);
 
     free(src);

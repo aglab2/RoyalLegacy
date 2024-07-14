@@ -6,20 +6,20 @@
 # after the end of the output buffer. The outut buffer must have been sized
 # accordingly to accomodate for this.
 
-#define DMA_RACE_MARGIN     16
-#define PI_STATUS           0xA4600010
-#define PI_DRAM_ADDR        0xA4600000
-
 #define MINMATCH    4
 
-#define inbuf       $a0
-#define inbuf_end   $a1
-#define outbuf      $a2
+#define inbuf       $s0
+#define inbuf_end   $s1
+#define outbuf      $s2
 
-#define match_off   $t5
-#define match_len   $t6
-#define token       $t7
-#define outbuf_orig $v1
+#define match_off   $s3
+#define match_len   $s4
+#define token       $s5
+#define outbuf_orig $s6
+#define v0_st       $s7
+
+#define dma_ctx     $s8
+#define dma_ptr     $v0
 
     .section .text.decompress_lz4_full_fast
 	.p2align 5
@@ -29,13 +29,32 @@
     .set noreorder
 
 decompress_lz4_full_fast:
-    addiu $sp, $sp, -0x18
+    addiu $sp, $sp, -0x40
     sw $ra, 0x14($sp)
+    sw $s0, 0x18($sp)
+    sw $s1, 0x1c($sp)
+    sw $s2, 0x20($sp)
+    sw $s3, 0x24($sp)
+    sw $s4, 0x28($sp)
+    sw $s5, 0x2C($sp)
+    sw $s6, 0x30($sp)
+    sw $s7, 0x34($sp)
+    sw $s8, 0x38($sp)
 
-    add $a1, $a0                                # calculate end of input buffer
+    move $s0, $a0
+    move $s1, $a1
+    move $s2, $a2
+    move dma_ctx, $a3
+
+    add $s1, $s0                                # calculate end of input buffer
     move outbuf_orig, outbuf
+    move dma_ptr, $a0
+    addiu dma_ptr, dma_ptr, -16
 
 .Lloop:
+    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
+    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+     nop
     lbu token, 0(inbuf)                         # read token byte
     addiu inbuf, 1
     srl match_len, token, 4                     # extract literal length
@@ -43,12 +62,15 @@ decompress_lz4_full_fast:
      addiu $t0, match_len, -0xF                 # check if literal length is 15
     bgezal $t0, .Lread_match_len                # if literal length is 15, read more
      nop
-    move $v0, inbuf                            # store start of literals into $v0
+    move v0_st, inbuf                            # store start of literals into v0_st
     add inbuf, match_len                        # advance inbuf to end of literals
+    sub $t0, inbuf, dma_ptr                     # check if all the literals have been DMA'd
+    bgezal $t0, .Lwaitdma                       # if not, wait for DMA
+     nop
 .Lcopy_lit:
-    ldl $t0, 0($v0)                             # load 8 bytes of literals
-    ldr $t0, 7($v0)
-    addiu $v0, 8
+    ldl $t0, 0(v0_st)                             # load 8 bytes of literals
+    ldr $t0, 7(v0_st)
+    addiu v0_st, 8
     sdl $t0, 0(outbuf)                          # store 8 bytes of literals
     sdr $t0, 7(outbuf)
     addiu match_len, -8
@@ -71,11 +93,11 @@ decompress_lz4_full_fast:
 
 .Lmatch:
     blt match_off, match_len, .Lmatch1_loop_check   # check if we can do 8-byte copy
-     sub $v0, outbuf, match_off                 # calculate start of match
+     sub v0_st, outbuf, match_off                 # calculate start of match
 .Lmatch8_loop:                                  # 8-byte copy loop
-    ldl $t0, 0($v0)                             # load 8 bytes
-    ldr $t0, 7($v0)
-    addiu $v0, 8
+    ldl $t0, 0(v0_st)                             # load 8 bytes
+    ldr $t0, 7(v0_st)
+    addiu v0_st, 8
     sdl $t0, 0(outbuf)                          # store 8 bytes
     sdr $t0, 7(outbuf)
     addiu match_len, -8
@@ -103,8 +125,8 @@ decompress_lz4_full_fast:
 .Lmatch1_loop_check:                            # 1-byte copy loop
     beq match_off, 1, .Lmatch1_memset           # if match_off is 1, it's a memset
 .Lmatch1_loop:                                  # 1-byte copy loop
-    lbu $t0, 0($v0)                             # load 1 byte
-    addiu $v0, 1
+    lbu $t0, 0(v0_st)                             # load 1 byte
+    addiu v0_st, 1
     sb $t0, 0(outbuf)                           # store 1 byte
     addiu match_len, -1
     bgtz match_len, .Lmatch1_loop               # check we went past match_len
@@ -114,14 +136,40 @@ decompress_lz4_full_fast:
 
 .Lend:
     lw $ra, 0x14($sp)
+    lw $s0, 0x18($sp)
+    lw $s1, 0x1c($sp)
+    lw $s2, 0x20($sp)
+    lw $s3, 0x24($sp)
+    lw $s4, 0x28($sp)
+    lw $s5, 0x2C($sp)
+    lw $s6, 0x30($sp)
+    lw $s7, 0x34($sp)
+    lw $s8, 0x38($sp)
     jr $ra
-    addiu $sp, $sp, 0x18
+    addiu $sp, $sp, 0x40
 
 .Lread_match_len:                               # read extended match length
+    addiu $sp, $sp, -0x18
+    sw $ra, 0x14($sp)
 .Lread_match_len_loop:
+    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
+    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+     nop
     lbu $t0, 0(inbuf)                           # read 1 byte
     addiu inbuf, 1
     beq $t0, 0xFF, .Lread_match_len_loop        # if byte is 0xFF, continue reading
      add match_len, $t0                         # add to match_len
+    lw $ra, 0x14($sp)
     jr $ra
-     nop
+    addiu $sp, $sp, 0x18
+
+.Lwaitdma:
+    addiu $sp, $sp, -0x18
+    sw $ra, 0x14($sp)
+
+    jal dma_read_ctx
+    move $a0, dma_ctx
+
+    lw $ra, 0x14($sp)
+    jr $ra
+    addiu $sp, $sp, 0x18
