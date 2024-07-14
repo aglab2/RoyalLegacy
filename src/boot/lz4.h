@@ -626,8 +626,6 @@ LZ4_attach_dictionary(LZ4_stream_t* workingStream,
  * so it's possible to reduce memory requirements by playing with them.
  */
 
-#define LZ4_DISTANCE_MAX 8*1024
-
 #define LZ4_DECOMPRESS_INPLACE_MARGIN(compressedSize)          (((compressedSize) >> 8) + 32)
 #define LZ4_DECOMPRESS_INPLACE_BUFFER_SIZE(decompressedSize)   ((decompressedSize) + LZ4_DECOMPRESS_INPLACE_MARGIN(decompressedSize))  /**< note: presumes that compressedSize < decompressedSize. note2: margin is overestimated a bit, since it could use compressedSize instead */
 

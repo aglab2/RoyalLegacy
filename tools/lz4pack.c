@@ -6,7 +6,7 @@
 
 #define MAX_COMP_SIZE (8*1024*1024)
 
-#define FAVOR_DECOMPRESSION_SPEED
+// #define FAVOR_DECOMPRESSION_SPEED
 #define COMPRESSION_LEVEL LZ4HC_CLEVEL_MAX
 
 int main(int argc, char *argv[])
