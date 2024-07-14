@@ -14,45 +14,45 @@
 glabel slidstart
 
 slidstart:
-	lw      $6, 4($4)
-	add     $6, $5, $6
-	move    $8, $0
+	lw      $a2, 4($a0)
+	add     $a2, $a1, $a2
+	move    $t0, $0
 1:
-	bnez    $8, 2f
-	add     $4, 1
-	lwl     $9, 15($4)
-	add     $4, 1
-	li      $8, 8
+	bnez    $t0, 2f
+	add     $a0, 1
+	lwl     $t1, 15($a0)
+	add     $a0, 1
+	li      $t0, 8
 2:
-	bgez    $9, 2f
-	lbu     $10, 15($4)
-	sb      $10, ($5)
+	bgez    $t1, 2f
+	lbu     $10, 15($a0)
+	sb      $10, ($a1)
 	b       3f
-	add     $5, 1
+	add     $a1, 1
 2:
-	add     $4, 1
-	lbu     $11, 15($4)
+	add     $a0, 1
+	lbu     $11, 15($a0)
 	sll     $10, 8
 	or      $10, $11
 	srl     $11, $10, 12
 	and     $10, 0xFFF
 	bnez    $11, 2f
 	add     $11, 2
-	add     $4, 1
-	lbu     $11, 15($4)
+	add     $a0, 1
+	lbu     $11, 15($a0)
 	add     $11, 18
 2:
-	sub     $10, $5, $10
-	add     $11, $5, $11
+	sub     $10, $a1, $10
+	add     $11, $a1, $11
 2:
 	lbu     $12, -1($10)
 	add     $10, 1
-	add     $5, 1
-	bne     $5, $11, 2b
-	sb      $12, -1($5)
+	add     $a1, 1
+	bne     $a1, $11, 2b
+	sb      $12, -1($a1)
 3:
-	sll     $9, 1
-	bne     $5, $6, 1b
-	sub     $8, 1
+	sll     $t1, 1
+	bne     $a1, $a2, 1b
+	sub     $t0, 1
 	j       $31
 	nop
