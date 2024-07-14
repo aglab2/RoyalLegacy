@@ -48,6 +48,7 @@ const LevelScript level_bowser_3_entry[] = {
 		WARP_NODE(0, LEVEL_ENDING, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_BOWSER, -63, 0, 49, 0, 0, 0, 0x00000000, bhvBowser),
 		OBJECT(MODEL_BOWSER_BOMB, -87, 185, 5329, 0, 0, 0, 0x00000000, bhvBowserBomb),
+		OBJECT(MODEL_HEART, -2938, 99, -1182, 0, 0, 0, (0xa << 16), bhvRecoveryHeart),
 		MARIO_POS(0x01, 0, -63, 0, -977),
 		OBJECT(MODEL_NONE, -71, 716, -973, 0, 0, 0, (0xa << 16), bhvAirborneWarp),
 		OBJECT(MODEL_NONE, 2795, 0, -5765, 0, 0, 0, 0x00000000, bhvFightSpawner),

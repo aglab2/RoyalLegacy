@@ -3228,6 +3228,9 @@ void init_camera(struct Camera *c) {
     marioOffset[1] = 125.f;
     marioOffset[2] = 400.f;
 
+    static s16 sLastLevel = 0;
+    if (sLastLevel != gCurrLevelNum)
+    {
     // Set the camera's starting position or start a cutscene for certain levels
     switch (gCurrLevelNum) {
         // Calls the initial cutscene when you enter Bowser battle levels
@@ -3281,7 +3284,10 @@ void init_camera(struct Camera *c) {
             vec3f_set(sFixedModeBasePosition, -2985.f, 478.f, -5568.f);
             break;
 #endif
+    } 
     }
+    sLastLevel = gCurrLevelNum;
+
     if (c->mode == CAMERA_MODE_8_DIRECTIONS) {
         gCameraMovementFlags |= CAM_MOVE_ZOOMED_OUT;
     }
