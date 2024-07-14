@@ -465,7 +465,13 @@ void* dma_read_ctx(struct DMAContext* ctx) {
     osPiStartDma(&gDmaIoMesg, OS_MESG_PRI_NORMAL, OS_READ, (uintptr_t) ctx->srcStart, ctx->dest, copySize, &gDmaMesgQueue);
 
     // provide a tiny buffer between DMA edges
-    void* ret = ctx->dest - 16;
+#ifndef YAZ0
+    const u32 margin = 16;
+#else
+    // yaz0 lookaheads a lot, so we need a bigger margin
+    const u32 margin = 32;
+#endif
+    void* ret = ctx->dest - margin;
     ctx->dest += copySize;
     ctx->srcStart += copySize;
     ctx->size -= copySize;
@@ -617,14 +623,18 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
         dest = main_pool_alloc_aligned(*size, 0);
 #else
         u32 margin = 0;
-#ifndef LZ4
-        // Read the whole compressed content
-        dma_read(compressed, srcStart, srcEnd);
-#else
-        // read the header for LZ4 decompression
-        dma_read(compressed, srcStart, srcStart + 16);
+#ifdef LZ4
         margin = 16;
 #endif
+
+#if defined(LZ4) || defined(YAZ0)
+        // read the header for LZ4 decompression
+        dma_read(compressed, srcStart, srcStart + 16);
+#else
+        // Read the whole compressed content
+        dma_read(compressed, srcStart, srcEnd);
+#endif
+
         dest = main_pool_alloc_aligned(*size + margin, 0);
 #endif
 
@@ -639,7 +649,9 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 #elif RNC2
             Propack_UnpackM2(compressed, dest);
 #elif YAZ0
-            slidstart(compressed, dest);
+            struct DMAContext ctx;
+            dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcEnd);
+            slidstart(compressed, dest, &ctx);
 #elif MIO0
             decompress(compressed, dest);
 #elif LZ4

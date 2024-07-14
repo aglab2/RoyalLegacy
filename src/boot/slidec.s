@@ -2,6 +2,10 @@
  * MIPS YAY0 decoder created by devwizard64.
  */
 
+#define inbuf       $s0
+#define dma_ctx     $s8
+#define dma_ptr     $v0
+
 .set noat      # allow manual use of $at
 .set gp=64
 .set noreorder
@@ -14,45 +18,99 @@
 glabel slidstart
 
 slidstart:
-	lw      $a2, 4($a0)
-	add     $a2, $a1, $a2
-	move    $t0, $0
+    addiu $sp, $sp, -0x40
+    sw $ra, 0x14($sp)
+    sw $s0, 0x18($sp)
+    sw $s1, 0x1c($sp)
+    sw $s2, 0x20($sp)
+    sw $s3, 0x24($sp)
+    sw $s4, 0x28($sp)
+    sw $s5, 0x2C($sp)
+    sw $s6, 0x30($sp)
+    sw $s7, 0x34($sp)
+    sw $s8, 0x38($sp)
+
+    move $s0, $a0
+    move $s1, $a1
+
+	lw      $s7, 4($s0)
+	add     $s7, $s1, $s7
+	move    $s2, $0
+
+	# initialize V0 with the first data, we are going to need it immediately
+	bal .Lwaitdma
+	move dma_ctx, $a2
+
 1:
-	bnez    $t0, 2f
-	add     $a0, 1
-	lwl     $t1, 15($a0)
-	add     $a0, 1
-	li      $t0, 8
+	bnez    $s2, 2f
+	add     $s0, 1
+    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
+    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+     nop
+	lwl     $s3, 15($s0)
+	add     $s0, 1
+	li      $s2, 8
 2:
-	bgez    $t1, 2f
-	lbu     $10, 15($a0)
-	sb      $10, ($a1)
+    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
+    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+     nop
+	bgez    $s3, 2f
+	lbu     $s4, 15($s0)
+	sb      $s4, ($s1)
 	b       3f
-	add     $a1, 1
+	add     $s1, 1
 2:
-	add     $a0, 1
-	lbu     $11, 15($a0)
-	sll     $10, 8
-	or      $10, $11
-	srl     $11, $10, 12
-	and     $10, 0xFFF
-	bnez    $11, 2f
-	add     $11, 2
-	add     $a0, 1
-	lbu     $11, 15($a0)
-	add     $11, 18
+	add     $s0, 1
+    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
+    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+     nop
+	lbu     $s5, 15($s0)
+	sll     $s4, 8
+	or      $s4, $s5
+	srl     $s5, $s4, 12
+	and     $s4, 0xFFF
+	bnez    $s5, 2f
+	add     $s5, 2
+	add     $s0, 1
+    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
+    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+     nop
+	lbu     $s5, 15($s0)
+	add     $s5, 18
 2:
-	sub     $10, $a1, $10
-	add     $11, $a1, $11
+	sub     $s4, $s1, $s4
+	add     $s5, $s1, $s5
 2:
-	lbu     $12, -1($10)
-	add     $10, 1
-	add     $a1, 1
-	bne     $a1, $11, 2b
-	sb      $12, -1($a1)
+	lbu     $s6, -1($s4)
+	add     $s4, 1
+	add     $s1, 1
+	bne     $s1, $s5, 2b
+	sb      $s6, -1($s1)
 3:
-	sll     $t1, 1
-	bne     $a1, $a2, 1b
-	sub     $t0, 1
-	j       $31
-	nop
+	sll     $s3, 1
+	bne     $s1, $s7, 1b
+	sub     $s2, 1
+
+    lw $ra, 0x14($sp)
+    lw $s0, 0x18($sp)
+    lw $s1, 0x1c($sp)
+    lw $s2, 0x20($sp)
+    lw $s3, 0x24($sp)
+    lw $s4, 0x28($sp)
+    lw $s5, 0x2C($sp)
+    lw $s6, 0x30($sp)
+    lw $s7, 0x34($sp)
+    lw $s8, 0x38($sp)
+    jr $ra
+    addiu $sp, $sp, 0x40
+
+.Lwaitdma:
+    addiu $sp, $sp, -0x18
+    sw $ra, 0x14($sp)
+
+    jal dma_read_ctx
+    move $a0, dma_ctx
+
+    lw $ra, 0x14($sp)
+    jr $ra
+    addiu $sp, $sp, 0x18
