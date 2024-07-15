@@ -33,63 +33,63 @@ slidstart:
     move $s0, $a0
     move $s1, $a1
 
-	lw      $s7, 4($s0)
-	add     $s7, $s1, $s7
-	move    $s2, $0
+    lw      $s7, 4($s0)
+    add     $s7, $s1, $s7
+    move    $s2, $0
 
-	# initialize V0 with the first data, we are going to need it immediately
-	bal .Lwaitdma
-	move dma_ctx, $a2
+    # initialize V0 with the first data, we are going to need it immediately
+    bal .Lwaitdma
+    move dma_ctx, $a2
 
-1:
-	bnez    $s2, 2f
-	add     $s0, 1
+.L1:
+    bnez    $s2, .L2
+    add     $s0, 1
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
     bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
      nop
-	lwl     $s3, 15($s0)
-	add     $s0, 1
-	li      $s2, 8
-2:
+    lwl     $s3, 15($s0)
+    add     $s0, 1
+    li      $s2, 8
+.L2:
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
     bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
      nop
-	bgez    $s3, 2f
-	lbu     $s4, 15($s0)
-	sb      $s4, ($s1)
-	b       3f
-	add     $s1, 1
-2:
-	add     $s0, 1
+    bgez    $s3, .L3
+    lbu     $s4, 15($s0)
+    sb      $s4, ($s1)
+    b       .L4
+    add     $s1, 1
+.L3:
+    add     $s0, 1
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
     bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
      nop
-	lbu     $s5, 15($s0)
-	sll     $s4, 8
-	or      $s4, $s5
-	srl     $s5, $s4, 12
-	and     $s4, 0xFFF
-	bnez    $s5, 2f
-	add     $s5, 2
-	add     $s0, 1
+    lbu     $s5, 15($s0)
+    sll     $s4, 8
+    or      $s4, $s5
+    srl     $s5, $s4, 12
+    and     $s4, 0xFFF
+    bnez    $s5, .L5
+    add     $s5, 2
+    add     $s0, 1
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
     bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
      nop
-	lbu     $s5, 15($s0)
-	add     $s5, 18
-2:
-	sub     $s4, $s1, $s4
-	add     $s5, $s1, $s5
-2:
-	lbu     $s6, -1($s4)
-	add     $s4, 1
-	add     $s1, 1
-	bne     $s1, $s5, 2b
-	sb      $s6, -1($s1)
-3:
-	sll     $s3, 1
-	bne     $s1, $s7, 1b
-	sub     $s2, 1
+    lbu     $s5, 15($s0)
+    add     $s5, 18
+.L5:
+    sub     $s4, $s1, $s4
+    add     $s5, $s1, $s5
+.L6:
+    lbu     $s6, -1($s4)
+    add     $s4, 1
+    add     $s1, 1
+    bne     $s1, $s5, .L6
+    sb      $s6, -1($s1)
+.L4:
+    sll     $s3, 1
+    bne     $s1, $s7, .L1
+    sub     $s2, 1
 
     lw $ra, 0x14($sp)
     lw $s0, 0x18($sp)
