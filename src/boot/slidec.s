@@ -3,6 +3,13 @@
  */
 
 #define inbuf       $s0
+#define outbuf      $s1
+#define bits_left   $s2
+#define msb_check   $s3
+#define rle_b1      $s4
+#define rle_b2      $s5
+#define outbuf_end  $s7
+
 #define dma_ctx     $s8
 #define dma_ptr     $v0
 
@@ -34,58 +41,58 @@ slidstart:
     sw $s7, 0x34($sp)
     sw $s8, 0x38($sp)
 
-    move $s0, $a0
-    move $s1, $a1
+    move inbuf, $a0
+    move outbuf, $a1
 
-    lw      $s7, 4($s0)
-    add     $s7, $s1, $s7
-    move    $s2, $0
+    lw      outbuf_end, 4(inbuf)
+    add     outbuf_end, outbuf, outbuf_end
+    move    bits_left, $0
 
     # initialize V0 with the first data, we are going to need it immediately
     bal .Lwaitdma
     move dma_ctx, $a2
 
-.L1:
-    bnez    $s2, .L2
-    add     $s0, 1
+.Lloop:
+    bnez    bits_left, .Lhandle_group
+    add     inbuf, 1
     dma_check inbuf
-    lwl     $s3, 15($s0)
-    add     $s0, 1
-    li      $s2, 8
-.L2:
+    lwl     msb_check, 15(inbuf)
+    add     inbuf, 1
+    li      bits_left, 8
+.Lhandle_group:
     dma_check inbuf
-    bgez    $s3, .L3
-    lbu     $s4, 15($s0)
-    sb      $s4, ($s1)
-    b       .L4
-    add     $s1, 1
-.L3:
-    add     $s0, 1
+    bgez    msb_check, .Lbackref
+    lbu     rle_b1, 15(inbuf)
+    sb      rle_b1, (outbuf)
+    b       .Lnext_bit
+    add     outbuf, 1
+.Lbackref:
+    add     inbuf, 1
     dma_check inbuf
-    lbu     $s5, 15($s0)
-    sll     $s4, 8
-    or      $s4, $s5
-    srl     $s5, $s4, 12
-    and     $s4, 0xFFF
-    bnez    $s5, .L5
-    add     $s5, 2
-    add     $s0, 1
+    lbu     rle_b2, 15(inbuf)
+    sll     rle_b1, 8
+    or      rle_b1, rle_b2
+    srl     rle_b2, rle_b1, 12
+    and     rle_b1, 0xFFF
+    bnez    rle_b2, .L5
+    add     rle_b2, 2
+    add     inbuf, 1
     dma_check inbuf
-    lbu     $s5, 15($s0)
-    add     $s5, 18
+    lbu     rle_b2, 15(inbuf)
+    add     rle_b2, 18
 .L5:
-    sub     $s4, $s1, $s4
-    add     $s5, $s1, $s5
-.L6:
-    lbu     $s6, -1($s4)
-    add     $s4, 1
-    add     $s1, 1
-    bne     $s1, $s5, .L6
-    sb      $s6, -1($s1)
-.L4:
-    sll     $s3, 1
-    bne     $s1, $s7, .L1
-    sub     $s2, 1
+    sub     rle_b1, outbuf, rle_b1
+    add     rle_b2, outbuf, rle_b2
+.Lmemcpy_loop:
+    lbu     $t1, -1(rle_b1)
+    add     rle_b1, 1
+    add     outbuf, 1
+    bne     outbuf, rle_b2, .Lmemcpy_loop
+    sb      $t1, -1(outbuf)
+.Lnext_bit:
+    sll     msb_check, 1
+    bne     outbuf, outbuf_end, .Lloop
+    sub     bits_left, 1
 
     lw $ra, 0x14($sp)
     lw $s0, 0x18($sp)
