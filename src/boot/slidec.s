@@ -6,6 +6,14 @@
 #define dma_ctx     $s8
 #define dma_ptr     $v0
 
+# Read one bit from CC, and jump to target if it matches
+# the specified value
+.macro dma_check value
+    sub $t0, \value, dma_ptr                    # check if we need to wait for dma
+    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+     nop
+.endm
+
     .section .text.slidstart
 	.p2align 5
     .globl slidstart 
@@ -40,16 +48,12 @@ slidstart:
 .L1:
     bnez    $s2, .L2
     add     $s0, 1
-    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
+    dma_check inbuf
     lwl     $s3, 15($s0)
     add     $s0, 1
     li      $s2, 8
 .L2:
-    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
+    dma_check inbuf
     bgez    $s3, .L3
     lbu     $s4, 15($s0)
     sb      $s4, ($s1)
@@ -57,9 +61,7 @@ slidstart:
     add     $s1, 1
 .L3:
     add     $s0, 1
-    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
+    dma_check inbuf
     lbu     $s5, 15($s0)
     sll     $s4, 8
     or      $s4, $s5
@@ -68,9 +70,7 @@ slidstart:
     bnez    $s5, .L5
     add     $s5, 2
     add     $s0, 1
-    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
+    dma_check inbuf
     lbu     $s5, 15($s0)
     add     $s5, 18
 .L5:
