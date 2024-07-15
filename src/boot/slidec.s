@@ -6,16 +6,12 @@
 #define dma_ctx     $s8
 #define dma_ptr     $v0
 
-.set noat      # allow manual use of $at
-.set gp=64
-.set noreorder
-
-.include "macros.inc"
-
-.align 4
-
-.text
-glabel slidstart
+    .section .text.slidstart
+	.p2align 5
+    .globl slidstart 
+    .func slidstart
+    .set at
+    .set noreorder
 
 slidstart:
     addiu $sp, $sp, -0x40
@@ -114,3 +110,5 @@ slidstart:
     lw $ra, 0x14($sp)
     jr $ra
     addiu $sp, $sp, 0x18
+
+.endfunc
