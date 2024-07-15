@@ -7,7 +7,7 @@ CC           := gcc
 CXX          := g++
 CFLAGS       := -I. -O2 -s
 LDFLAGS      := -lm
-ALL_PROGRAMS := armips filesizer lz4pack rncpack n64graphics n64graphics_ci mio0 slienc n64cksum aifc_decode aiff_extract_codebook vadpcm_enc tabledesign extract_data_for_mio skyconv flips
+ALL_PROGRAMS := armips filesizer lz4pack rncpack n64graphics n64graphics_ci mio0 slienc n64cksum aifc_decode aiff_extract_codebook vadpcm_enc tabledesign extract_data_for_mio skyconv flips yaz4pack
 LIBAUDIOFILE := audiofile/libaudiofile.a
 APLIB_COMPRESS := apultra/apultra
 SHRINKLER_COMPRESS := shrinkler/build/native/Shrinkler
@@ -72,6 +72,9 @@ extract_data_for_mio_SOURCES := extract_data_for_mio.c
 
 skyconv_SOURCES := skyconv.c n64graphics.c utils.c
 skyconv_CFLAGS := -g -I../include
+
+yaz4pack_SOURCES := yaz4pack.c zlib-ng/adler32.c zlib-ng/compress.c zlib-ng/crc32.c zlib-ng/deflate.c zlib-ng/deflate_fast.c zlib-ng/deflate_medium.c zlib-ng/deflate_slow.c zlib-ng/functable.c zlib-ng/trees.c zlib-ng/zutil.c
+yaz4pack_CFLAGS := -g -I./zlib-ng -ffunction-sections -fdata-sections -Wl,--gc-sections
 
 armips$(EXT): CC := $(CXX)
 armips_SOURCES := armips.cpp
