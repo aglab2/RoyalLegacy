@@ -81,13 +81,13 @@ slidstart:
     lbu     rle_b2, 15(inbuf)
     add     rle_b2, 18
 .L5:
-    sub     rle_b1, outbuf, rle_b1
-    add     rle_b2, outbuf, rle_b2
+    sub     $t2, outbuf, rle_b1
+    add     $t3, outbuf, rle_b2
 .Lmemcpy_loop:
-    lbu     $t1, -1(rle_b1)
-    add     rle_b1, 1
+    lbu     $t1, -1($t2)
+    add     $t2, 1
     add     outbuf, 1
-    bne     outbuf, rle_b2, .Lmemcpy_loop
+    bne     outbuf, $t3, .Lmemcpy_loop
     sb      $t1, -1(outbuf)
 .Lnext_bit:
     sll     msb_check, 1
