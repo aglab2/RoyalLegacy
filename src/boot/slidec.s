@@ -82,6 +82,8 @@ slidstart:
     add     rle_b2, 18
 .L5:
     sub     $t2, outbuf, rle_b1
+    sub     $t9, rle_b1, 9
+    bgez    $t9, .Lmemcpy_loop2
     add     $t3, outbuf, rle_b2
 .Lmemcpy_loop:
     lbu     $t1, -1($t2)
@@ -89,6 +91,19 @@ slidstart:
     add     outbuf, 1
     bne     outbuf, $t3, .Lmemcpy_loop
     sb      $t1, -1(outbuf)
+    b       .Lnext_bit
+    nop
+.Lmemcpy_loop2:
+    ldl $t1, -1($t2)
+    ldr $t1, 6($t2)
+    sdl $t1, 0(outbuf)                          # store 8 bytes
+    sdr $t1, 7(outbuf)
+    add outbuf, 8
+    sub $t4, outbuf, $t3
+    bltz $t4, .Lmemcpy_loop2
+    add $t2, 8
+    move outbuf, $t3
+
 .Lnext_bit:
     sll     msb_check, 1
     bne     outbuf, outbuf_end, .Lloop
