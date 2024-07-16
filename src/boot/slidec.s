@@ -57,8 +57,9 @@ slidstart:
     add     inbuf, 1
     dma_check inbuf
     lwl     msb_check, 15(inbuf)
-    add     inbuf, 1
-    li      bits_left, 8
+    lwr     msb_check, 18(inbuf)
+    add     inbuf, 4
+    li      bits_left, 32
 .Lhandle_group:
     dma_check inbuf
     bgez    msb_check, .Lbackref

@@ -59,8 +59,8 @@ typedef struct {
     uint32_t padding[2];
 } Yaz0Header;
 
-#define LAYOUT_TYPE uint8_t
-#define MAX_LAYOUT_BIT 0x80
+#define LAYOUT_TYPE uint32_t
+#define MAX_LAYOUT_BIT 0x80000000U
 
 typedef struct {
     uint8_t* p_cur_layout;
@@ -69,9 +69,9 @@ typedef struct {
 } layout_ctl_t;
 
 static void write_layout(layout_ctl_t* ctl) {
-    // uint32_t swapped = bswap32(value);
-    // memcpy(ptr, &swapped, sizeof(uint32_t));
-    *ctl->p_cur_layout = ctl->cur_layout;
+    uint32_t value = bswap32(ctl->cur_layout);
+    memcpy(ctl->p_cur_layout, &value, sizeof(uint32_t));
+    // *ctl->p_cur_layout = ctl->cur_layout;
 }
 
 static int advance(layout_ctl_t* ctl, uint8_t* out_ptr)
