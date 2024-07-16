@@ -58,18 +58,29 @@ slidstart:
     dma_check inbuf
     lwl     msb_check, -1(inbuf)
     lwr     msb_check, 2(inbuf)
+    li      loaded_amt, 1
     add     inbuf, 4
     li      bits_left, 32
 .Lhandle_group:
-    dma_check inbuf
     bgez    msb_check, .Lbackref
-    nop
-    lbu     rle_b1, -1(inbuf)
+    sub     loaded_amt, 1
+
+# copy byte to output if it was not copied yet
+    bnez    loaded_amt, .Lnext_bit
     add     outbuf, 1
+    dma_check inbuf
+    ldl     $t1, -1(inbuf)
+    ldr     $t1, 6(inbuf)
+    li      loaded_amt, 8
+    sdl     $t1, -1(outbuf)
     b       .Lnext_bit
-    sb      rle_b1, -1(outbuf)
+    sdr     $t1, 6(outbuf)
+
+# RLE from decompressed output
 .Lbackref:
     # need to parse NRRR or 0RRRMM
+    dma_check inbuf
+    li      loaded_amt, 1
     lwl     $t8, -1(inbuf)
     lwr     $t8, 2(inbuf)       # t8 = ?RRRMM--
     add     inbuf, 1
