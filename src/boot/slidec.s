@@ -96,9 +96,9 @@ slidstart:
 .Lmemcpy_loop2:
     ldl $t1, -1($t2)
     ldr $t1, 6($t2)
-    sdl $t1, 0(outbuf)                          # store 8 bytes
-    sdr $t1, 7(outbuf)
     add outbuf, 8
+    sdl $t1, -8(outbuf)                          # store 8 bytes
+    sdr $t1, -1(outbuf)
     sub $t4, outbuf, $t3
     bltz $t4, .Lmemcpy_loop2
     add $t2, 8
