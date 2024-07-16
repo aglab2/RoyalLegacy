@@ -63,9 +63,9 @@ slidstart:
     dma_check inbuf
     bgez    msb_check, .Lbackref
     lbu     rle_b1, -1(inbuf)
-    sb      rle_b1, (outbuf)
-    b       .Lnext_bit
     add     outbuf, 1
+    b       .Lnext_bit
+    sb      rle_b1, -1(outbuf)
 .Lbackref:
     add     inbuf, 1
     lbu     rle_b2, -1(inbuf)
