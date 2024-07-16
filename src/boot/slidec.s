@@ -7,6 +7,7 @@
 #define bits_left   $s2
 #define msb_check   $s3
 #define rle_b1      $s4
+#define loaded_amt  $s6
 #define rle_b2      $s5
 #define outbuf_end  $s7
 
@@ -62,23 +63,27 @@ slidstart:
 .Lhandle_group:
     dma_check inbuf
     bgez    msb_check, .Lbackref
+    nop
     lbu     rle_b1, -1(inbuf)
     add     outbuf, 1
     b       .Lnext_bit
     sb      rle_b1, -1(outbuf)
 .Lbackref:
+    # need to parse NRRR or 0RRRMM
+    lbu     rle_b1, -1(inbuf)   # rle_b1 = ?R
     add     inbuf, 1
-    lbu     rle_b2, -1(inbuf)
-    sll     rle_b1, 8
-    or      rle_b1, rle_b2
-    srl     rle_b2, rle_b1, 12
-    and     rle_b1, 0xFFF
-    bnez    rle_b2, .L5
-    add     rle_b2, 2
+    lbu     rle_b2, -1(inbuf)   # rle_b2 = RR
+    sll     rle_b1, 8           # rle_b1 = ?R00
+    or      rle_b1, rle_b2      # rle_b1 = ?RRR
+    srl     rle_b2, rle_b1, 12  # rle_b2 = ?
+    and     rle_b1, 0xFFF       # rle_b1 = RRR
+    bnez    rle_b2, .L5         # is ? == 0
+    add     rle_b2, 2           # rle_b2 = N + 2
     add     inbuf, 1
-    lbu     rle_b2, -1(inbuf)
-    add     rle_b2, 18
+    lbu     rle_b2, -1(inbuf)   # rle_b2 = MM
+    add     rle_b2, 18          # rle_b2 = MM + 18
 .L5:
+    # rle_b1 = offset, rle_b2 = amount
     sub     $t2, outbuf, rle_b1
     sub     $t9, rle_b1, 9
     bgez    $t9, .Lmemcpy_loop2
