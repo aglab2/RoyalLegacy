@@ -69,7 +69,6 @@ slidstart:
     add     outbuf, 1
 .Lbackref:
     add     inbuf, 1
-    dma_check inbuf
     lbu     rle_b2, 15(inbuf)
     sll     rle_b1, 8
     or      rle_b1, rle_b2
@@ -78,7 +77,6 @@ slidstart:
     bnez    rle_b2, .L5
     add     rle_b2, 2
     add     inbuf, 1
-    dma_check inbuf
     lbu     rle_b2, 15(inbuf)
     add     rle_b2, 18
 .L5:
