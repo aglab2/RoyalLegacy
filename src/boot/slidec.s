@@ -122,14 +122,7 @@ slidstart:
     addiu $sp, $sp, 0x40
 
 .Lwaitdma:
-    addiu $sp, $sp, -0x18
-    sw $ra, 0x14($sp)
-
-    jal dma_read_ctx
+    j dma_read_ctx
     move $a0, dma_ctx
-
-    lw $ra, 0x14($sp)
-    jr $ra
-    addiu $sp, $sp, 0x18
 
 .endfunc
