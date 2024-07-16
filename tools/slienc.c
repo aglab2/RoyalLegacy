@@ -59,17 +59,62 @@ typedef struct {
     uint32_t padding[2];
 } Yaz0Header;
 
+#define LAYOUT_TYPE uint8_t
+#define MAX_LAYOUT_BIT 0x80
+
+typedef struct {
+    uint8_t* p_cur_layout;
+    LAYOUT_TYPE cur_layout;
+    LAYOUT_TYPE cur_layout_bit;
+} layout_ctl_t;
+
+static void write_layout(layout_ctl_t* ctl) {
+    // uint32_t swapped = bswap32(value);
+    // memcpy(ptr, &swapped, sizeof(uint32_t));
+    *ctl->p_cur_layout = ctl->cur_layout;
+}
+
+static int advance(layout_ctl_t* ctl, uint8_t* out_ptr)
+{
+    // Advance to the next layout bit
+    ctl->cur_layout_bit >>= 1;
+
+    if ( !ctl->cur_layout_bit ) {
+        ctl->cur_layout_bit = MAX_LAYOUT_BIT;
+        write_layout(ctl);
+        ctl->p_cur_layout = out_ptr;
+        ctl->cur_layout = 0;
+        return sizeof(ctl->cur_layout);
+    } else {
+        return 0;
+    }
+}
+
+static void set_bit(layout_ctl_t* ctl)
+{
+    ctl->cur_layout |= ctl->cur_layout_bit;
+}
+
+static int flush(layout_ctl_t* ctl)
+{
+    if ( ctl->cur_layout_bit != MAX_LAYOUT_BIT ) {
+        write_layout(ctl);
+        return sizeof(ctl->cur_layout);
+    } else {
+        return 0;
+    }
+}
+
 // dst is caller-freed memory!
 uint32_t compress(uint32_t input_size, uint8_t* src, uint8_t** dst)
 {
     // Worst-case size for output is zero compression on the input, meaning the input size plus the number of layout bytes.
     // There would be one layout byte for every 8 input bytes, so the worst-case size is:
     //   input_size + ROUND_UP_DIVIDE(input_size, 8)
-    uint8_t* output = calloc(input_size + DIVIDE_ROUND_UP(input_size, 8), sizeof(unsigned char));
-    uint8_t* cur_layout_byte = &output[0];
-    uint8_t* out_ptr = cur_layout_byte + 1;
+    uint8_t* output = calloc(input_size + DIVIDE_ROUND_UP(input_size, 8) + 8, sizeof(unsigned char));
+    layout_ctl_t ctl = { &output[0], 0, MAX_LAYOUT_BIT };
+    uint8_t* out_ptr = &output[0] + sizeof(LAYOUT_TYPE);
     unsigned int input_pos = 0;
-    unsigned int cur_layout_bit = 0x80;
 
     while ( input_pos < input_size ) {
         int group_pos;
@@ -80,7 +125,7 @@ uint32_t compress(uint32_t input_size, uint8_t* src, uint8_t** dst)
         // If the group isn't larger than 2 bytes, copying the input without compression is smaller
         if ( group_size <= 2 ) {
             // Set the current layout bit to indicate that this is an uncompressed byte
-            *cur_layout_byte |= cur_layout_bit;
+            set_bit(&ctl);
             *out_ptr++ = src[input_pos++];
         } else {
             int new_size;
@@ -92,18 +137,12 @@ uint32_t compress(uint32_t input_size, uint8_t* src, uint8_t** dst)
             // If the new group is better than the current group by at least 2 bytes, use it one instead
             if ( new_size >= group_size + 2 ) {
                 // Mark the current layout bit to skip compressing this byte, as the next input position yielded better compression
-                *cur_layout_byte |= cur_layout_bit;
+                set_bit(&ctl);
                 // Copy the input byte to the output
                 *out_ptr++ = src[input_pos++];
 
                 // Advance to the next layout bit
-                cur_layout_bit >>= 1;
-
-                if ( !cur_layout_bit ) {
-                    cur_layout_bit = 0x80;
-                    cur_layout_byte = out_ptr++;
-                    *cur_layout_byte = 0;
-                }
+                out_ptr += advance(&ctl, out_ptr);
 
                 group_size = new_size;
                 group_pos = new_position;
@@ -129,18 +168,10 @@ uint32_t compress(uint32_t input_size, uint8_t* src, uint8_t** dst)
         }
 
         // Advance to the next layout bit
-        cur_layout_bit >>= 1;
-
-        if ( !cur_layout_bit ) {
-            cur_layout_bit = 0x80;
-            cur_layout_byte = out_ptr++;
-            *cur_layout_byte = 0;
-        }
+        out_ptr += advance(&ctl, out_ptr);
     }
 
-    if ( cur_layout_bit != 0x80 ) {
-        out_ptr++;
-    }
+    flush(&ctl);
     
     *dst = output;
     return out_ptr - output;
