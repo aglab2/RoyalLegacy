@@ -42,34 +42,33 @@ slidstart:
     sw $s8, 0x38($sp)
 
     move inbuf, $a0
-    move outbuf, $a1
+    move outbuf, $a2
 
-    lw      outbuf_end, 4(inbuf)
-    add     outbuf_end, outbuf, outbuf_end
+    add     outbuf_end, outbuf, $a1
     move    bits_left, $0
 
     # initialize V0 with the first data, we are going to need it immediately
     bal .Lwaitdma
-    move dma_ctx, $a2
+    move dma_ctx, $a3
 
 .Lloop:
     bnez    bits_left, .Lhandle_group
     add     inbuf, 1
     dma_check inbuf
-    lwl     msb_check, 15(inbuf)
-    lwr     msb_check, 18(inbuf)
+    lwl     msb_check, -1(inbuf)
+    lwr     msb_check, 2(inbuf)
     add     inbuf, 4
     li      bits_left, 32
 .Lhandle_group:
     dma_check inbuf
     bgez    msb_check, .Lbackref
-    lbu     rle_b1, 15(inbuf)
+    lbu     rle_b1, -1(inbuf)
     sb      rle_b1, (outbuf)
     b       .Lnext_bit
     add     outbuf, 1
 .Lbackref:
     add     inbuf, 1
-    lbu     rle_b2, 15(inbuf)
+    lbu     rle_b2, -1(inbuf)
     sll     rle_b1, 8
     or      rle_b1, rle_b2
     srl     rle_b2, rle_b1, 12
@@ -77,7 +76,7 @@ slidstart:
     bnez    rle_b2, .L5
     add     rle_b2, 2
     add     inbuf, 1
-    lbu     rle_b2, 15(inbuf)
+    lbu     rle_b2, -1(inbuf)
     add     rle_b2, 18
 .L5:
     sub     $t2, outbuf, rle_b1
@@ -96,9 +95,9 @@ slidstart:
     ldl $t1, -1($t2)
     ldr $t1, 6($t2)
     add outbuf, 8
+    sub $t4, outbuf, $t3
     sdl $t1, -8(outbuf)                          # store 8 bytes
     sdr $t1, -1(outbuf)
-    sub $t4, outbuf, $t3
     bltz $t4, .Lmemcpy_loop2
     add $t2, 8
     move outbuf, $t3

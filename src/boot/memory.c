@@ -467,13 +467,7 @@ void* dma_read_ctx(struct DMAContext* ctx) {
     }
     osPiStartDma(&gDmaIoMesg, OS_MESG_PRI_NORMAL, OS_READ, (uintptr_t) ctx->srcStart, ctx->dest, copySize, &gDmaMesgQueue);
 
-    // provide a tiny buffer between DMA edges
-#ifndef YAZ0
     const u32 margin = 16;
-#else
-    // yaz0 lookaheads a lot, so we need a bigger margin
-    const u32 margin = 32;
-#endif
     void* ret = ctx->dest - margin;
     ctx->dest += copySize;
     ctx->srcStart += copySize;
@@ -676,7 +670,7 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 #elif YAZ0
             struct DMAContext ctx;
             dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcEnd);
-            slidstart(compressed, dest, &ctx);
+            slidstart(compressed + 16, *size, dest, &ctx);
 #elif MIO0
             decompress(compressed, dest);
 #elif LZ4

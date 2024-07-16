@@ -1,3 +1,3 @@
 #pragma once
 
-void slidstart(unsigned char *compress, unsigned char *decompress, void* ctx);
+void slidstart(unsigned char *compress, uint32_t decompressedSize, unsigned char *decompress, void* ctx);
