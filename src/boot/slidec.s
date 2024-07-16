@@ -97,7 +97,7 @@ slidstart:
 
     # rle_b1 = offset, rle_b2 = amount
     sub     $t2, outbuf, rle_b1
-    sub     $t9, rle_b1, 9
+    sub     $t9, rle_b1, 6
     bgez    $t9, .Lmemcpy_loop2
     add     $t3, outbuf, rle_b2
 .Lmemcpy_loop:
