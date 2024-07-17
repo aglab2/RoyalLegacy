@@ -208,9 +208,6 @@ SECTIONS
       lib/PR/audio/n_aspMain.o(.text*);
       lib/PR/hvqm/hvqm2sp1.o(.text*);
 
-      BUILD_DIR/src/boot*.o(.text.slidstart);
-      BUILD_DIR/src/boot*.o(.text.dma_read_ctx);
-
       _mainSegmentTextEnd = .;
 
       /* data */

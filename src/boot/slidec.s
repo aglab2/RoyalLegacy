@@ -6,19 +6,26 @@
 #define outbuf      $s1
 #define bits_left   $s2
 #define msb_check   $s3
-#define rle_b1      $s4
-#define rle_b2      $s5
-#define loaded_amt  $s6
-#define outbuf_end  $s7
+#define loaded_amt  $s4
+#define outbuf_end  $s5
 
-#define dma_ctx     $s8
+#define cp_curr     $t0
+#define cp_limit    $t1
+#define cp_scr_b1   $t2
+#define cp_scr_b2   $t3
+#define rle_b2      $t4
+#define rle_b1      $t5
+
+#define check       $t9
+
+#define dma_ctx     $s6
 #define dma_ptr     $v0
 
 # Read one bit from CC, and jump to target if it matches
 # the specified value
 .macro dma_check value
-    sub $t0, \value, dma_ptr                    # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
+    sub check, \value, dma_ptr                    # check if we need to wait for dma
+    bgezal check, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
      nop
 .endm
 
@@ -30,7 +37,7 @@
     .set noreorder
 
 slidstart:
-    addiu $sp, $sp, -0x40
+    addiu $sp, $sp, -0x38
     sw $ra, 0x14($sp)
     sw $s0, 0x18($sp)
     sw $s1, 0x1c($sp)
@@ -39,8 +46,6 @@ slidstart:
     sw $s4, 0x28($sp)
     sw $s5, 0x2C($sp)
     sw $s6, 0x30($sp)
-    sw $s7, 0x34($sp)
-    sw $s8, 0x38($sp)
 
     move inbuf, $a0
     move outbuf, $a2
@@ -69,11 +74,11 @@ slidstart:
     bnez    loaded_amt, .Lnext_bit
     add     outbuf, 1
     dma_check inbuf
-    ldl     $t1, -1(inbuf)
-    ldr     $t1, 6(inbuf)
+    ldl     cp_scr_b2, -1(inbuf)
+    ldr     cp_scr_b2, 6(inbuf)
     li      loaded_amt, 8
-    sdl     $t1, -1(outbuf)
-    sdr     $t1, 6(outbuf)
+    sdl     cp_scr_b2, -1(outbuf)
+    sdr     cp_scr_b2, 6(outbuf)
     sll     msb_check, 1
     bne     outbuf, outbuf_end, .Lloop
     sub     bits_left, 1
@@ -98,49 +103,49 @@ slidstart:
 .Lprepare_memcpy2:
 
     # rle_b1 = offset, rle_b2 = amount
-    sub     $t2, outbuf, rle_b1
-    sub     $t9, rle_b1, 6
-    bgez    $t9, .Lmemcpy_loop8
-    add     $t3, outbuf, rle_b2
+    sub     cp_curr, outbuf, rle_b1
+    sub     check, rle_b1, 6
+    bgez    check, .Lmemcpy_loop8
+    add     cp_limit, outbuf, rle_b2
     beqz    rle_b1, .Lmemset # lbu t1 is needed for memset
 
 .Lmemcpy_loop:
-    lbu     $t1, -1($t2)
-    add     $t2, 1
+    lbu     cp_scr_b2, -1(cp_curr)
+    add     cp_curr, 1
     add     outbuf, 1
-    bne     outbuf, $t3, .Lmemcpy_loop
-    sb      $t1, -1(outbuf)
+    bne     outbuf, cp_limit, .Lmemcpy_loop
+    sb      cp_scr_b2, -1(outbuf)
     b       .Lnext_bit
     nop
 
 .Lmemset:
-    dsll $t5, $t1, 8                            # duplicate the LSB into all bytes
-    or $t1, $t5
-    dsll $t5, $t1, 16
-    or $t1, $t5
-    dsll $t5, $t1, 32
-    or $t5, $t1
+    dsll cp_scr_b1, cp_scr_b2, 8                            # duplicate the LSB into all bytes
+    or cp_scr_b2, cp_scr_b1
+    dsll cp_scr_b1, cp_scr_b2, 16
+    or cp_scr_b2, cp_scr_b1
+    dsll cp_scr_b1, cp_scr_b2, 32
+    or cp_scr_b1, cp_scr_b2
 
 .Lmemset_loop:
-    sdl $t5, 0(outbuf)
-    sdr $t5, 7(outbuf)
+    sdl cp_scr_b1, 0(outbuf)
+    sdr cp_scr_b1, 7(outbuf)
     add outbuf, 8
-    sub $t4, outbuf, $t3
-    bltz $t4, .Lmemset_loop
+    sub check, outbuf, cp_limit
+    bltz check, .Lmemset_loop
     nop
     b       .Lnext_bit
-    move outbuf, $t3
+    move outbuf, cp_limit
 
 .Lmemcpy_loop8:
-    ldl $t1, -1($t2)
-    ldr $t1, 6($t2)
+    ldl cp_scr_b2, -1(cp_curr)
+    ldr cp_scr_b2, 6(cp_curr)
     add outbuf, 8
-    sub $t4, outbuf, $t3
-    sdl $t1, -8(outbuf)                          # store 8 bytes
-    sdr $t1, -1(outbuf)
-    bltz $t4, .Lmemcpy_loop8
-    add $t2, 8
-    move outbuf, $t3
+    sub check, outbuf, cp_limit
+    sdl cp_scr_b2, -8(outbuf)                          # store 8 bytes
+    sdr cp_scr_b2, -1(outbuf)
+    bltz check, .Lmemcpy_loop8
+    add cp_curr, 8
+    move outbuf, cp_limit
 
 .Lnext_bit:
     sll     msb_check, 1
@@ -155,10 +160,8 @@ slidstart:
     lw $s4, 0x28($sp)
     lw $s5, 0x2C($sp)
     lw $s6, 0x30($sp)
-    lw $s7, 0x34($sp)
-    lw $s8, 0x38($sp)
     jr $ra
-    addiu $sp, $sp, 0x40
+    addiu $sp, $sp, 0x38
 
 .Lwaitdma:
     j dma_read_ctx
