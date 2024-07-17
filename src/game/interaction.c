@@ -776,6 +776,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     u32 noExit = (obj->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
 #endif // !NON_STOP_STARS
     u32 grandStar = (obj->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
+    u32 gem = (obj->oInteractionSubtype & INT_SUBTYPE_GEM) != 0;
 
     if (m->health >= 0x100) {
         mario_stop_riding_and_holding(m);
@@ -832,7 +833,11 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 #else
         starIndex = (obj->oBehParams >> 24) & 0x1F;
 #endif
-        save_file_collect_star_or_key(m->numCoins, starIndex);
+
+        if (gem)
+            save_file_collect_gem();
+        else
+            save_file_collect_star_or_key(m->numCoins, starIndex);
 
         m->numStars =
             save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);

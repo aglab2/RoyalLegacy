@@ -70,6 +70,8 @@ enum InteractSubtypes {
     
 };
 
+#define INT_SUBTYPE_GEM INT_SUBTYPE_EATS_MARIO 
+
 enum AttackType {
     ATTACK_NONE,
     ATTACK_PUNCH,

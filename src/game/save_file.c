@@ -510,6 +510,33 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
     }
 }
 
+static int gem_flag()
+{
+    switch (gCurrCourseNum)
+    {
+        case 1:
+            return SAVE_FILE_RL_GEM_1;
+        case 2:
+            return SAVE_FILE_RL_GEM_2;
+        case 3:
+            return SAVE_FILE_RL_GEM_3;
+        case 4:
+            return SAVE_FILE_RL_GEM_4;
+    }
+
+    return 0;
+}
+
+void save_file_collect_gem()
+{
+    save_file_set_flags(gem_flag());
+}
+
+int save_file_is_gem_collected()
+{
+    return save_file_get_flags() & gem_flag();
+}
+
 s32 save_file_exists(s32 fileIndex) {
     return (gSaveBuffer.files[fileIndex][0].flags & SAVE_FLAG_FILE_EXISTS) != 0;
 }

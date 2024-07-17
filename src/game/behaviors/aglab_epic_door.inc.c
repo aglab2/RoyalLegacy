@@ -1,7 +1,81 @@
 extern const Collision beta_door_r_collision[];
 extern const Collision beta_door_l_collision[];
 
-void bhv_epic_door()
+#define oCrystal0 oObjF4
+#define oCrystal1 oObjF8
+
+void bhv_epic_door_init()
+{
+    int flag0;
+    int flag1;
+    int model0;
+    int model1;
+    if (0 == o->oBehParams2ndByte)
+    {
+        flag0 = SAVE_FILE_RL_GEM_1;
+        flag1 = SAVE_FILE_RL_GEM_2;
+        model0 = MODEL_GEM_GREEN;
+        model1 = MODEL_GEM_BLUE;
+    }
+    else
+    {
+        flag0 = SAVE_FILE_RL_GEM_3;
+        flag1 = SAVE_FILE_RL_GEM_4;
+        model0 = MODEL_GEM_RED;
+        model1 = MODEL_GEM_PURPLE;
+    }
+    
+    // if (save_file_get_flags() & flag0)
+    if (1)
+    {
+        o->oCrystal0 = spawn_object(o, model0, bhvStaticObject);
+        o->oCrystal0->oPosY = o->oPosY + 166.f;
+        obj_scale(o->oCrystal0, 1.1f);
+    }
+    else
+    {
+        o->oCrystal0 = NULL;
+    }
+
+    // if (save_file_get_flags() & flag1)
+    if (1)
+    {
+        o->oCrystal1 = spawn_object(o, model1, bhvStaticObject);
+        o->oCrystal1->oPosY = o->oPosY + 244.f;
+        obj_scale(o->oCrystal0, 1.1f);
+    }
+    else
+    {
+        o->oCrystal1 = NULL;
+    }
+}
+
+static void adjust_crystal(struct Object* crystal)
+{
+    if (!crystal)
+        return;
+
+#if 0
+    static f32 amt = 183.f;
+    if (gPlayer1Controller->buttonPressed & L_JPAD)
+    {
+        amt += 0.1f;
+    }
+    if (gPlayer1Controller->buttonPressed & R_JPAD)
+    {
+        amt -= 0.1f;
+    }
+    print_text_fmt_int(20, 20, "%d", (s32)amt);
+#endif
+
+    int angleOff = o->oBehParams2ndByte ? -0x4000 : 0x4000;
+    crystal->oPosX = o->oPosX + 190.f * sins(o->oMoveAngleYaw + angleOff) - sins(o->oMoveAngleYaw + 2*angleOff) * 38.f;
+    crystal->oPosZ = o->oPosZ + 190.f * coss(o->oMoveAngleYaw + angleOff) - coss(o->oMoveAngleYaw + 2*angleOff) * 38.f;
+    crystal->oFaceAngleYaw = o->oMoveAngleYaw;
+    // crystal->oPosY = o->oPosY + amt;
+}
+
+void bhv_epic_door_loop()
 {
     if (0 == o->oBehParams2ndByte)
     {
@@ -64,4 +138,7 @@ void bhv_epic_door()
             }
         }
     }
+
+    adjust_crystal(o->oCrystal0);
+    adjust_crystal(o->oCrystal1);
 }

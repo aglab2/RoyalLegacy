@@ -1252,7 +1252,11 @@ s32 init_level(void) {
 
     // NOTE: gStarModelLastCollected reset here as a safety to prevent possible UB if assigned a model used
     // in a non-global group. This checked can be removed as needed.
-    if (gStarModelLastCollected != MODEL_BOWSER_KEY
+    if (gStarModelLastCollected != MODEL_BOWSER_KEY 
+     && gStarModelLastCollected != MODEL_GEM_BLUE
+     && gStarModelLastCollected != MODEL_GEM_RED
+     && gStarModelLastCollected != MODEL_GEM_GREEN
+     && gStarModelLastCollected != MODEL_GEM_PURPLE
 #ifdef STAR_DANCE_USES_STARS_MODEL
          || gStarModelLastCollected != MODEL_TRANSPARENT_STAR
 #endif

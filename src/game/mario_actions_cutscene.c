@@ -561,7 +561,11 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
 #ifdef STAR_DANCE_USES_STARS_MODEL
                 obj_set_model(celebStar, gStarModelLastCollected);
 #else
-                if (gStarModelLastCollected == MODEL_BOWSER_KEY) {
+                if (gStarModelLastCollected == MODEL_BOWSER_KEY 
+                 || gStarModelLastCollected == MODEL_GEM_BLUE
+                 || gStarModelLastCollected == MODEL_GEM_RED
+                 || gStarModelLastCollected == MODEL_GEM_GREEN
+                 || gStarModelLastCollected == MODEL_GEM_PURPLE) {
                     obj_set_model(celebStar, gStarModelLastCollected);
                 }
 #endif
