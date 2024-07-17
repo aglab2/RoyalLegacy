@@ -85,3 +85,5 @@ UNUSED static const u64 binid_18 = 18;
 #include "gem_green/model.inc.c"
 #include "gem_purple/model.inc.c"
 #include "gem_red/model.inc.c"
+
+#include "gem_glow/model.inc.c"

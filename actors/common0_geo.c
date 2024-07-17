@@ -33,3 +33,5 @@
 #include "gem_green/geo.inc.c"
 #include "gem_purple/geo.inc.c"
 #include "gem_red/geo.inc.c"
+
+#include "gem_glow/geo.inc.c"

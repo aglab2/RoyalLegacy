@@ -11,6 +11,7 @@
 
 #include "levels/scripts.h"
 
+#include "actors/common0.h"
 #include "actors/common1.h"
 
 /* Fast64 begin persistent block [includes] */
@@ -38,6 +39,7 @@ const LevelScript level_jrb_entry[] = {
 	JUMP_LINK(script_func_global_3), 
 	JUMP_LINK(script_func_global_15), 
 	LOAD_MODEL_FROM_GEO(MODEL_C3_SPIN, c3_spin_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_GEM_STAR, gem_star_red_geo),
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */

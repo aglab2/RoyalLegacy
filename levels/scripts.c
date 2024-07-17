@@ -200,10 +200,6 @@ const LevelScript script_func_global_1[] = {
     LOAD_MODEL_FROM_GEO(MODEL_TRAJECTORY_MARKER_BALL,      bowling_ball_track_geo),
 	LOAD_MODEL_FROM_GEO(MODEL_THI_WARP_PIPE, warp_pipe_geo),
     LOAD_MODEL_FROM_GEO(MODEL_RED_COIN_ARROW,            redcoinradar_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_GEM_BLUE,            gem_blue_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_GEM_GREEN,            gem_green_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_GEM_PURPLE,            gem_purple_geo),
-    LOAD_MODEL_FROM_GEO(MODEL_GEM_RED,            gem_red_geo),
     RETURN(),
 };
 

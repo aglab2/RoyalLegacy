@@ -588,4 +588,7 @@
 #define MODEL_GEM_RED 0xf8
 #define MODEL_GEM_PURPLE 0xf9
 
+// Can be only one of the 4 gems per course
+#define MODEL_GEM_STAR 0xfa
+
 #endif // MODEL_IDS_H
