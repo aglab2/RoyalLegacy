@@ -552,4 +552,6 @@ extern const BehaviorScript bhvC2Stairs[];
 extern const BehaviorScript bhvZipline[];
 extern const BehaviorScript bhvEpicDoor[];
 
+extern const BehaviorScript bhvGem[];
+
 #endif // BEHAVIOR_DATA_H

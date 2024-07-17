@@ -26,7 +26,7 @@ const GeoLayout bob_area_1_geo[] = {
 		GEO_OPEN_NODE(),
 			GEO_DISPLAY_LIST(LAYER_OPAQUE, bob_dl_fgrass_mesh_layer_1),
 		GEO_CLOSE_NODE(),
-		GEO_CULL(-32000, 32000, -32000, 2400, -4400, 32000, 6),
+		GEO_CULL(-32000, 32000, -32000, 2400, -4400, 32000, 2),
 		GEO_OPEN_NODE(),
 			GEO_DISPLAY_LIST(LAYER_OPAQUE, bob_dl_gmush_mesh_layer_1),
 		GEO_CLOSE_NODE(),
