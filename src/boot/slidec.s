@@ -73,8 +73,10 @@ slidstart:
     ldr     $t1, 6(inbuf)
     li      loaded_amt, 8
     sdl     $t1, -1(outbuf)
-    b       .Lnext_bit
     sdr     $t1, 6(outbuf)
+    sll     msb_check, 1
+    bne     outbuf, outbuf_end, .Lloop
+    sub     bits_left, 1
 
 # RLE from decompressed output
 .Lbackref:
