@@ -98,8 +98,10 @@ slidstart:
     # rle_b1 = offset, rle_b2 = amount
     sub     $t2, outbuf, rle_b1
     sub     $t9, rle_b1, 6
-    bgez    $t9, .Lmemcpy_loop2
+    bgez    $t9, .Lmemcpy_loop8
     add     $t3, outbuf, rle_b2
+    beqz    rle_b1, .Lmemset # lbu t1 is needed for memset
+
 .Lmemcpy_loop:
     lbu     $t1, -1($t2)
     add     $t2, 1
@@ -108,14 +110,33 @@ slidstart:
     sb      $t1, -1(outbuf)
     b       .Lnext_bit
     nop
-.Lmemcpy_loop2:
+
+.Lmemset:
+    dsll $t5, $t1, 8                            # duplicate the LSB into all bytes
+    or $t1, $t5
+    dsll $t5, $t1, 16
+    or $t1, $t5
+    dsll $t5, $t1, 32
+    or $t5, $t1
+
+.Lmemset_loop:
+    sdl $t5, 0(outbuf)
+    sdr $t5, 7(outbuf)
+    add outbuf, 8
+    sub $t4, outbuf, $t3
+    bltz $t4, .Lmemset_loop
+    nop
+    b       .Lnext_bit
+    move outbuf, $t3
+
+.Lmemcpy_loop8:
     ldl $t1, -1($t2)
     ldr $t1, 6($t2)
     add outbuf, 8
     sub $t4, outbuf, $t3
     sdl $t1, -8(outbuf)                          # store 8 bytes
     sdr $t1, -1(outbuf)
-    bltz $t4, .Lmemcpy_loop2
+    bltz $t4, .Lmemcpy_loop8
     add $t2, 8
     move outbuf, $t3
 
