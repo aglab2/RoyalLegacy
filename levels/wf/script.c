@@ -55,6 +55,7 @@ const LevelScript level_wf_entry[] = {
 		WARP_NODE(10, LEVEL_WF, 1, 0, WARP_NO_CHECKPOINT),
 		WARP_NODE(17, LEVEL_WF, 2, 10, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_NONE, 0, 0, 0, 0, 0, 0, 0x00000000, bhvCS),
+		OBJECT(0, 890, 4131, 12732, 0, 0, 0, 0, bhvGem),
 		OBJECT(212, 2261, 6571, 14054, 0, 0, 0, 0x0, bhv1upSliding),
 		OBJECT(0, 1004, 487, 6412, 0, 0, 0, 0xb0000, bhvAirborneWarp),
 		OBJECT(140, -1819, 1241, -795, 0, -58, 0, 0x0, bhvBlueCoinSwitch),

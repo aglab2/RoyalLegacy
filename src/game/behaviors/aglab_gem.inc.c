@@ -8,9 +8,8 @@ void bhv_gem_init()
 {
     o->header.gfx.sharedChild = gLoadedGraphNodes[gemGetModelId()];
     obj_set_hitbox(o, &sCollectStarHitbox);
-    o->oFaceAnglePitch = 0x4000;
     o->oInteractionSubtype |= (INT_SUBTYPE_NO_EXIT | INT_SUBTYPE_GEM);
-    obj_scale(o, 2.4f);
+    obj_scale(o, 3.0f);
 
     if (save_file_is_gem_collected())
     {
