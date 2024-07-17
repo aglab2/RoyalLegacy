@@ -31,7 +31,9 @@ default: all
 
 filesizer_SOURCES	:= filesizer.c
 
-lz4pack_SOURCES	:= lz4.c lz4hc.c lz4pack.c
+lz4pack_SOURCES	:= lz4pack.c lz4ultra/dictionary.c lz4ultra/dictionary.c lz4ultra/matchfinder.c lz4ultra/shrink_block.c lz4ultra/shrink_context.c lz4ultra/shrink_inmem.c lz4ultra/shrink_inmem.c lz4ultra/libdivsufsort/divsufsort_utils.c lz4ultra/libdivsufsort/divsufsort.c lz4ultra/libdivsufsort/sssort.c lz4ultra/libdivsufsort/trsort.c
+lz4pack_CFLAGS := -Ilz4ultra -Ilz4ultra/libdivsufsort
+
 rncpack_SOURCES	:= rncpack.c
 
 n64graphics_SOURCES := n64graphics.c utils.c

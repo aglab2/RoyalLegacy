@@ -1,13 +1,13 @@
-#define LZ4_HC_STATIC_LINKING_ONLY
-#include "lz4hc.h"
+#include "lz4ultra/lib.h"
+#include "lz4ultra/shrink_inmem.h"
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #define MAX_COMP_SIZE (8*1024*1024)
 
 // #define FAVOR_DECOMPRESSION_SPEED
-#define COMPRESSION_LEVEL LZ4HC_CLEVEL_MAX
 
 int main(int argc, char *argv[])
 {
@@ -31,18 +31,17 @@ int main(int argc, char *argv[])
     fclose(in);
 
     char* dst = malloc(MAX_COMP_SIZE);
-    LZ4_streamHC_t* state = LZ4_createStreamHC();
+
+    size_t compSize = lz4ultra_compress_inmem(src, dst, srcSize, MAX_COMP_SIZE, LZ4ULTRA_FLAG_RAW_BLOCK | LZ4ULTRA_FLAG_FAVOR_RATIO, 7);
+    if (-1 == compSize)
+    {
+        printf("Compression failed!\n");
+        abort();
+    }
+
 #ifdef FAVOR_DECOMPRESSION_SPEED
     LZ4_favorDecompressionSpeed(state, 1);
 #endif
-    LZ4_setCompressionLevel(state, COMPRESSION_LEVEL);
-    int compSize = LZ4_compress_HC_continue(state, (char*)src, dst, srcSize, MAX_COMP_SIZE);
-    LZ4_freeStreamHC(state);
-    if (0 == compSize)
-    {
-        printf("Compression failed!\n");
-        return -1;
-    }
 
     FILE* out = fopen(argv[2], "wb");
     if (out == NULL)
@@ -51,7 +50,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    uint32_t compSizeBE = __builtin_bswap32(compSize);
+    uint32_t compSizeBE = __builtin_bswap32((uint32_t) compSize);
     uint32_t srcSizeBE = __builtin_bswap32(srcSize);
     uint32_t magicHeader = 'LZ4H';
     uint32_t magicFooter = 'LZ4F';
