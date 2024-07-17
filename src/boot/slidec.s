@@ -25,8 +25,8 @@
 # the specified value
 .macro dma_check value
     sub check, \value, dma_ptr                    # check if we need to wait for dma
-    bgezal check, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
+    bgezal check, dma_read_ctx                    # if inbuf >= dma_ptr, wait for dma
+    move $a0, dma_ctx
 .endm
 
     .section .text.slidstart
@@ -54,7 +54,8 @@ slidstart:
     move    bits_left, $0
 
     # initialize V0 with the first data, we are going to need it immediately
-    bal .Lwaitdma
+    move $a0, $a3
+    bal dma_read_ctx
     move dma_ctx, $a3
 
 .Lloop:
@@ -162,9 +163,5 @@ slidstart:
     lw $s6, 0x30($sp)
     jr $ra
     addiu $sp, $sp, 0x38
-
-.Lwaitdma:
-    j dma_read_ctx
-    move $a0, dma_ctx
 
 .endfunc
