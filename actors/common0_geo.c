@@ -28,3 +28,8 @@
 #include "exclamation_box_outline/geo.inc.c"
 #include "koopa_shell/geo.inc.c"
 
+
+#include "gem_blue/geo.inc.c"
+#include "gem_green/geo.inc.c"
+#include "gem_purple/geo.inc.c"
+#include "gem_red/geo.inc.c"

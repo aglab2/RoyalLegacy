@@ -197,4 +197,12 @@ extern const Collision unknown_seg8_collision_080262F8[];
 
 
 
+#include "gem_blue/geo_header.h"
+
+#include "gem_green/geo_header.h"
+
+#include "gem_purple/geo_header.h"
+
+#include "gem_red/geo_header.h"
+
 #endif

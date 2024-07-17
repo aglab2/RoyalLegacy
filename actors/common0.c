@@ -80,3 +80,8 @@ UNUSED static const u64 binid_17 = 17;
 #include "koopa_shell/model.inc.c"
 UNUSED static const u64 binid_18 = 18;
 
+
+#include "gem_blue/model.inc.c"
+#include "gem_green/model.inc.c"
+#include "gem_purple/model.inc.c"
+#include "gem_red/model.inc.c"
