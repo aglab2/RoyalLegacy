@@ -125,11 +125,11 @@ slidstart:
     dsll cp_scr_b1, cp_scr_b2, 16
     or cp_scr_b2, cp_scr_b1
     dsll cp_scr_b1, cp_scr_b2, 32
-    or cp_scr_b2, cp_scr_b1
+    or cp_scr_b1, cp_scr_b2
 
 .Lmemset_loop:
-    sdl cp_scr_b2, 0(outbuf)
-    sdr cp_scr_b2, 7(outbuf)
+    sdl cp_scr_b1, 0(outbuf)
+    sdr cp_scr_b1, 7(outbuf)
     add outbuf, 8
     sub check, outbuf, cp_limit
     bltz check, .Lmemset_loop
