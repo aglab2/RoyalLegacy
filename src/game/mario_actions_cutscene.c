@@ -551,6 +551,7 @@ s32 act_debug_free_move(struct MarioState *m) {
     return FALSE;
 }
 
+extern char gGemWasCollectedLast;
 void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
     struct Object *celebStar = NULL;
 
@@ -590,7 +591,7 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                     level_trigger_warp(m, WARP_OP_STAR_EXIT);
                 } else {
                     enable_time_stop();
-                    create_dialog_box_with_response(gLastCompletedStarNum == 7 ? DIALOG_013 : DIALOG_014);
+                    create_dialog_box_with_response( gGemWasCollectedLast ? DIALOG_015 : (gLastCompletedStarNum == 7 ? DIALOG_013 : DIALOG_014));
                     m->actionState = ACT_STATE_STAR_DANCE_DO_SAVE;
                 }
                 break;

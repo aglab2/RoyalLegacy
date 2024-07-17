@@ -234,16 +234,10 @@ Do you want to Save?\n\
 \n\
 \tSure!\tNo, thanks.")
 
-DEFINE_DIALOG(DIALOG_015,1,4,30,200, "Though they are long,\n\
-it is possible to cross\n\
-these sand falls. Aim a\n\
-long jump for the corner\n\
-and grab the ledge just\n\
-at the edge above where\n\
-the sand falls curves\n\
-down.\n\
-It is even safer if you\n\
-use a chain longjump.")
+DEFINE_DIALOG(DIALOG_015,1,4,30,200, "You found a crown gem!\n\
+Do you want to Save?\n\
+\n\
+\tSure!\tNo, thanks.")
 
 DEFINE_DIALOG(DIALOG_016,1,3,30,200, "")
 

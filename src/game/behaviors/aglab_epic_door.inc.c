@@ -6,47 +6,38 @@ extern const Collision beta_door_l_collision[];
 
 void bhv_epic_door_init()
 {
-    int flag0;
-    int flag1;
-    int model0;
-    int model1;
+    int flags[2];
+    int models[2];
     if (0 == o->oBehParams2ndByte)
     {
-        flag0 = SAVE_FILE_RL_GEM_1;
-        flag1 = SAVE_FILE_RL_GEM_2;
-        model0 = MODEL_GEM_GREEN;
-        model1 = MODEL_GEM_BLUE;
+        flags[0] = SAVE_FILE_RL_GEM_1;
+        models[0] = MODEL_GEM_GREEN;
+
+        flags[1] = SAVE_FILE_RL_GEM_3;
+        models[1] = MODEL_GEM_RED;
     }
     else
     {
-        flag0 = SAVE_FILE_RL_GEM_3;
-        flag1 = SAVE_FILE_RL_GEM_4;
-        model0 = MODEL_GEM_RED;
-        model1 = MODEL_GEM_PURPLE;
+        flags[0] = SAVE_FILE_RL_GEM_2;
+        models[0] = MODEL_GEM_BLUE;
+
+        flags[1] = SAVE_FILE_RL_GEM_4;
+        models[1] = MODEL_GEM_PURPLE;
     }
     
-    // if (save_file_get_flags() & flag0)
-    if (1)
+    struct Object** crystals = &o->oObjF4;
+    for (int i = 0; i < 2; i++)
     {
-        o->oCrystal0 = spawn_object(o, model0, bhvStaticObject);
-        o->oCrystal0->oPosY = o->oPosY + 166.f;
-        obj_scale(o->oCrystal0, 1.1f);
-    }
-    else
-    {
-        o->oCrystal0 = NULL;
-    }
-
-    // if (save_file_get_flags() & flag1)
-    if (1)
-    {
-        o->oCrystal1 = spawn_object(o, model1, bhvStaticObject);
-        o->oCrystal1->oPosY = o->oPosY + 244.f;
-        obj_scale(o->oCrystal0, 1.1f);
-    }
-    else
-    {
-        o->oCrystal1 = NULL;
+        if (save_file_get_flags() & flags[i])
+        {
+            crystals[i] = spawn_object(o, models[i], bhvStaticObject);
+            crystals[i]->oPosY = o->oPosY + 166.f + 78.f * i;
+            obj_scale(crystals[i], 1.1f);
+        }
+        else
+        {
+            crystals[i] = NULL;
+        }
     }
 }
 
@@ -87,8 +78,7 @@ void bhv_epic_door_loop()
     }
 
     s32 flags = save_file_get_flags();
-    // if ((flags & SAVE_FILE_RL_GEMS) == SAVE_FILE_RL_GEMS)
-    if (1)
+    if ((flags & SAVE_FILE_RL_GEMS) == SAVE_FILE_RL_GEMS)
     {
         static const Vec3f kPivot = { 1030, -711, -4167 };
         Vec3f dist;

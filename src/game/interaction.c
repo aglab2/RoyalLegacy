@@ -763,6 +763,7 @@ u32 interact_water_ring(struct MarioState *m, UNUSED u32 interactType, struct Ob
     return FALSE;
 }
 
+char gGemWasCollectedLast = 0;
 u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
     u32 starIndex;
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
@@ -834,6 +835,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
         starIndex = (obj->oBehParams >> 24) & 0x1F;
 #endif
 
+        gGemWasCollectedLast = gem;
         if (gem)
             save_file_collect_gem();
         else
