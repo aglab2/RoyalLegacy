@@ -39,6 +39,8 @@ void bhv_epic_door_init()
             crystals[i] = NULL;
         }
     }
+
+    o->oDrawingDistance = 10000.f;
 }
 
 static void adjust_crystal(struct Object* crystal)

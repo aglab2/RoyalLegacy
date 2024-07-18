@@ -39,7 +39,7 @@ const LevelScript level_bob_entry[] = {
 	JUMP_LINK(script_func_global_5), 
 	JUMP_LINK(script_func_global_18), 
 	LOAD_MODEL_FROM_GEO(MODEL_C1_LEAF, c1_leaf_geo), 
-	LOAD_MODEL_FROM_GEO(MODEL_GEM_STAR, gem_star_green_geo),
+	LOAD_MODEL_FROM_GEO(MODEL_GEM_STAR, gem_star_green_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -99,7 +99,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(0xf1, -3361, 2088, 293, 0, -13, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0xf1, -3430, 1822, 574, 0, -13, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0xf1, -3006, 3022, -1055, 0, -19, 0, (1 << 16), bhvHiddenObject),
-		OBJECT(0xf1, -2441, 428, 1026, 0, -13, 0, (1 << 16), bhvHiddenObject),
+		OBJECT(0xf1, -2441, 291, 1026, 0, -13, 0, (1 << 16), bhvHiddenObject),
 		OBJECT(0, 3588, 169, -5280, 0, -6, 179, 0x3000000, bhvHiddenRedCoinStar),
 		OBJECT(190, 1332, -3472, -5898, 0, 0, 0, 0x0, bhvKoopaShellUnderwater),
 		OBJECT(0, 200, -2753, 1047, 0, 0, 0, 0x0, bhvLargeFishGroup),
@@ -116,7 +116,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(215, -2920, 545, -5057, 0, 74, 0, 0x0, bhvRedCoin),
 		OBJECT(215, 182, -11, -6727, 0, 74, 0, 0x0, bhvRedCoin),
 		OBJECT(215, 3754, 406, -2742, 0, 0, 0, 0x0, bhvRedCoin),
-		OBJECT(0, -2838, 248, -3961, 0, 0, 0, 0xa0000, bhvSpinAirborneWarp),
+		OBJECT(0, -2838, 248, -3961, 0, 77, 0, 0xa0000, bhvSpinAirborneWarp),
 		OBJECT(122, -2159, 3625, -5438, 0, 0, 0, 0x0, bhvStar),
 		OBJECT(122, 4924, 2654, -3726, 0, 0, 0, 0x1000000, bhvStar),
 		OBJECT(122, 1922, 375, -6419, 0, 0, 0, 0x2000000, bhvStar),
@@ -166,6 +166,7 @@ const LevelScript level_bob_entry[] = {
 		WARP_NODE(240, LEVEL_CASTLE_GROUNDS, 1, 3, WARP_NO_CHECKPOINT),
 		WARP_NODE(13, LEVEL_BOB, 1, 14, WARP_NO_CHECKPOINT),
 		WARP_NODE(10, LEVEL_BOB, 3, 0, WARP_NO_CHECKPOINT),
+		OBJECT(0, 240, 245, 1030, 0, 0, 0, 0x0, bhvGem),
 		OBJECT(0, 582, -90, 2920, 0, -170, 0, 0xa0000, bhvAirborneWarp),
 		OBJECT(0, 446, -597, 2211, 0, -80, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, 395, -597, 1917, 0, -80, 0, 0x0, bhvCoinFormation),
@@ -175,7 +176,6 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(0, 240, -597, 1030, 0, -80, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, 186, -597, 732, 0, -80, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, 82, -597, 142, 0, -80, 0, 0x0, bhvCoinFormation),
-		OBJECT(0, 240, 245, 1030, 0, 0, 0, 0x0, bhvGem),
 		OBJECT(0, 727, 582, 2871, 0, 0, 0, 0xd0000, bhvWarp),
 		TERRAIN(bob_area_3_collision),
 		MACRO_OBJECTS(bob_area_3_macro_objs),
