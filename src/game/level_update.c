@@ -37,10 +37,10 @@
 #include "config.h"
 
 // TODO: Make these ifdefs better
-const char *credits01[] = { "1GAME DIRECTOR", "SHIGERU MIYAMOTO" };
-const char *credits02[] = { "2ASSISTANT DIRECTORS", "YOSHIAKI KOIZUMI", "TAKASHI TEZUKA" };
-const char *credits03[] = { "2SYSTEM PROGRAMMERS", "YASUNARI NISHIDA", "YOSHINORI TANIMOTO" };
-const char *credits04[] = { "3PROGRAMMERS", "HAJIME YAJIMA", "DAIKI IWAMOTO", "TOSHIO IWAWAKI" };
+const char *credits01[] = { "1GAME DIRECTOR", "STUNNING CACTUS" };
+const char *credits02[] = { "1VISUAL DESIGNER", "NOBBIE64" };
+const char *credits03[] = { "1SYSTEM PROGRAMMER", "AGLAB2" };
+const char *credits04[] = { "3TOOLS USED", "HACKERSM64", "FAST64", "STRM64" };
 
 #if defined(VERSION_JP) || defined(VERSION_SH)
 
@@ -62,7 +62,7 @@ const char *credits16[] = { "2PROGRESS MANAGEMENT", "KIMIYOSHI FUKUI", "KEIZO KA
 #else // VERSION_US || VERSION_EU
 
 // US and EU combine camera programmer and Mario face programmer...
-const char *credits05[] = { "4CAMERA PROGRAMMER", "MARIO FACE PROGRAMMER", "TAKUMI KAWAGOE", "GILES GODDARD" };
+const char *credits05[] = { "2TOOLS USED", "FAST64", "STRM64" };
 const char *credits06[] = { "2COURSE DIRECTORS", "YOICHI YAMADA", "YASUHISA YAMAMURA" };
 const char *credits07[] = { "2COURSE DESIGNERS", "KENTA USUI", "NAOKI MORI" };
 const char *credits08[] = { "3COURSE DESIGNERS", "YOSHIKI HARUHANA", "MAKOTO MIYANAGA", "KATSUHIKO KANNO" };
@@ -106,27 +106,11 @@ const char *credits20[] = { "1EXECUTIVE PRODUCER", "HIROSHI YAMAUCHI" };
 
 struct CreditsEntry sCreditsSequence[] = {
     { LEVEL_CASTLE_GROUNDS, 1, 1, -128, { 0, 8000, 0 }, NULL },
-    { LEVEL_BOB, 1, 1, 117, { 713, 3918, -3889 }, credits01 },
-    { LEVEL_WF, 1, 50, 46, { 347, 5376, 326 }, credits02 },
-    { LEVEL_JRB, 1, 18, 22, { 3800, -4840, 2727 }, credits03 },
-    { LEVEL_CCM, 2, 34, 25, { -5464, 6656, -6575 }, credits04 },
-    { LEVEL_BBH, 1, 1, 60, { 257, 1922, 2580 }, credits05 },
-    { LEVEL_HMC, 1, -15, 123, { -6469, 1616, -6054 }, credits06 },
-    { LEVEL_THI, 3, 17, -32, { 508, 1024, 1942 }, credits07 },
-    { LEVEL_LLL, 2, 33, 124, { -73, 82, -1467 }, credits08 },
-    { LEVEL_SSL, 1, 65, 98, { -5906, 1024, -2576 }, credits09 },
-    { LEVEL_DDD, 1, 50, 47, { -4884, -4607, -272 }, credits10 },
-    { LEVEL_SL, 1, 17, -34, { 1925, 3328, 563 }, credits11 },
-    { LEVEL_WDW, 1, 33, 105, { -537, 1850, 1818 }, credits12 },
-    { LEVEL_TTM, 1, 2, -33, { 2613, 313, 1074 }, credits13 },
-    { LEVEL_THI, 1, 51, 54, { -2609, 512, 856 }, credits14 },
-    { LEVEL_TTC, 1, 17, -72, { -1304, -71, -967 }, credits15 },
-    { LEVEL_RR, 1, 33, 64, { 1565, 1024, -148 }, credits16 },
-    { LEVEL_SA, 1, 1, 24, { -1050, -1330, -1559 }, credits17 },
-    { LEVEL_COTMC, 1, 49, -16, { -254, 415, -6045 }, credits18 },
-    { LEVEL_DDD, 2, -111, -64, { 3948, 1185, -104 }, credits19 },
-    { LEVEL_CCM, 1, 33, 31, { 3169, -4607, 5240 }, credits20 },
-    { LEVEL_CASTLE_GROUNDS, 1, 1, -128, { 0, 906, -1200 }, NULL },
+    { LEVEL_BOB, 1, 1, 117, { 5677, 1063, -1830 }, credits01 },
+    { LEVEL_WF, 1, 50, 46, { -1000, 3027, 317 }, credits02 },
+    { LEVEL_JRB, 1, 18, 22, { -1155, 1591, -6255 }, credits03 },
+    { LEVEL_CCM, 1, 34, 25, { 5849, 1153, 4115 }, credits04 },
+    { LEVEL_BITS, 1, 1, 60, { 4499, 7694, 12257 }, credits05 },
     { LEVEL_NONE, 0, 1, 0, { 0, 0, 0 }, NULL },
 };
 
@@ -896,9 +880,10 @@ void initiate_delayed_warp(void) {
                     break;
 
                 case WARP_OP_CREDITS_START:
-                    gCurrCreditsEntry = &sCreditsSequence[0];
+                    gCurrCreditsEntry = &sCreditsSequence[1];
                     initiate_warp(gCurrCreditsEntry->levelNum, gCurrCreditsEntry->areaIndex,
-                                  WARP_NODE_CREDITS_START, WARP_FLAGS_NONE);
+                                  WARP_NODE_CREDITS_NEXT, WARP_FLAGS_NONE);
+                    play_music(SEQ_PLAYER_SFX, SEQUENCE_ARGS(4, SEQ_EVENT_CUTSCENE_CREDITS), 0);
                     break;
 
                 case WARP_OP_CREDITS_NEXT:
@@ -1254,6 +1239,7 @@ s32 init_level(void) {
     // in a non-global group. This checked can be removed as needed.
     if (gStarModelLastCollected != MODEL_BOWSER_KEY 
      && gStarModelLastCollected != MODEL_GEM_STAR
+     && gStarModelLastCollected != MODEL_B3_CROWN
 #ifdef STAR_DANCE_USES_STARS_MODEL
          || gStarModelLastCollected != MODEL_TRANSPARENT_STAR
 #endif

@@ -764,6 +764,7 @@ u32 interact_water_ring(struct MarioState *m, UNUSED u32 interactType, struct Ob
 }
 
 char gGemWasCollectedLast = 0;
+char gGrandStar = 0;
 u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct Object *obj) {
     u32 starIndex;
     u32 starGrabAction = ACT_STAR_DANCE_EXIT;
@@ -776,7 +777,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 #else // !NON_STOP_STARS
     u32 noExit = (obj->oInteractionSubtype & INT_SUBTYPE_NO_EXIT) != 0;
 #endif // !NON_STOP_STARS
-    u32 grandStar = (obj->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
+    gGrandStar = (obj->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
     u32 gem = (obj->oInteractionSubtype & INT_SUBTYPE_GEM) != 0;
 
     if (m->health >= 0x100) {
@@ -836,10 +837,18 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 #endif
 
         gGemWasCollectedLast = gem;
-        if (gem)
-            save_file_collect_gem();
+        if (gGrandStar)
+        {
+            save_file_set_flags(SAVE_FILE_RL_BOWSER_DEAD);
+            save_file_do_save(gCurrSaveFileNum - 1);
+        }
         else
-            save_file_collect_star_or_key(m->numCoins, starIndex);
+        {
+            if (gem)
+                save_file_collect_gem();
+            else
+                save_file_collect_star_or_key(m->numCoins, starIndex);
+        }
 
         m->numStars =
             save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
@@ -851,12 +860,7 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
 
         play_sound(SOUND_MENU_STAR_SOUND, m->marioObj->header.gfx.cameraToObject);
         update_mario_sound_and_camera(m);
-
-        if (grandStar) {
-            return set_mario_action(m, ACT_JUMBO_STAR_CUTSCENE, 0);
-        }
-
-        return set_mario_action(m, starGrabAction, noExit + 2 * grandStar);
+        return set_mario_action(m, starGrabAction, noExit);
     }
 
     return FALSE;

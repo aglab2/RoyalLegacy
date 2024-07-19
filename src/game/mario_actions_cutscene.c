@@ -552,6 +552,7 @@ s32 act_debug_free_move(struct MarioState *m) {
 }
 
 extern char gGemWasCollectedLast;
+extern char gGrandStar;
 void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
     struct Object *celebStar = NULL;
 
@@ -563,7 +564,8 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                 obj_set_model(celebStar, gStarModelLastCollected);
 #else
                 if (gStarModelLastCollected == MODEL_BOWSER_KEY 
-                 || gStarModelLastCollected == MODEL_GEM_STAR) {
+                 || gStarModelLastCollected == MODEL_GEM_STAR
+                 || gStarModelLastCollected == MODEL_B3_CROWN) {
                     obj_set_model(celebStar, gStarModelLastCollected);
                 }
 #endif
@@ -585,6 +587,10 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
             case 42:
                 play_sound(SOUND_MARIO_HERE_WE_GO, m->marioObj->header.gfx.cameraToObject);
                 break;
+            
+            case 70:
+                if (gGrandStar)        
+                    level_trigger_warp(m, WARP_OP_CREDITS_START);
 
             case 80:
                 if (!(m->actionArg & 1)) {
@@ -1908,18 +1914,6 @@ static void jumbo_star_cutscene_flying(struct MarioState *m) {
 enum { JUMBO_STAR_CUTSCENE_FALLING, JUMBO_STAR_CUTSCENE_TAKING_OFF, JUMBO_STAR_CUTSCENE_FLYING };
 
 static s32 act_jumbo_star_cutscene(struct MarioState *m) {
-    switch (m->actionArg) {
-        case JUMBO_STAR_CUTSCENE_FALLING:
-            jumbo_star_cutscene_falling(m);
-            break;
-        case JUMBO_STAR_CUTSCENE_TAKING_OFF:
-            jumbo_star_cutscene_taking_off(m);
-            break;
-        case JUMBO_STAR_CUTSCENE_FLYING:
-            jumbo_star_cutscene_flying(m);
-            break;
-    }
-    return FALSE;
 }
 
 void generate_yellow_sparkles(s16 x, s16 y, s16 z, f32 radius) {

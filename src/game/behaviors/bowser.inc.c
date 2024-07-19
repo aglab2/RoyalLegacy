@@ -4,6 +4,8 @@
  * Behavior for Bowser and it's actions (Tail, Flame, Body)
  */
 
+#define BOWSER_DEBUG
+
 // Bowser's Tail
 
 /**
@@ -613,6 +615,10 @@ void bowser_act_teleport(void) {
             if (o->oTimer == 0) {
                 cur_obj_play_sound_2(SOUND_OBJ2_BOWSER_TELEPORT);
                 puffAt(o, 30.f, 50);
+#ifdef BOWSER_DEBUG
+                o->oAction = BOWSER_ACT_HIT_MINE;
+                o->oBowserTargetOpacity = 255;
+#endif
             }
             o->oOpacity = 0;
             if (10 == o->oTimer)
@@ -710,6 +716,11 @@ static void despawn_all_cutely(const BehaviorScript* scr)
  * Flips Bowser back on stage if he hits a mine with more than 1 health
  */
 void bowser_act_hit_mine(void) {
+#ifdef BOWSER_DEBUG
+    if (o->oHealth > 1)
+        o->oHealth = 1;
+#endif
+
     // Similar vel values from bowser_fly_back_dead
     if (o->oTimer == 0) {
         if (1 == o->oHealth) {

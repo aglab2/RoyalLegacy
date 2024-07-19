@@ -17,9 +17,17 @@ static void disableHud()
 }
 
 static char sCsShown[4] = {};
+extern struct CreditsEntry *gCurrCreditsEntry;
 
 void bhv_cs_init()
 {
+    if (gCurrCreditsEntry)
+    {
+        disableHud();
+        o->activeFlags = 0;
+        return;
+    }
+
     if (gCurrCourseNum == COURSE_NONE)
     {
         resetFlags();

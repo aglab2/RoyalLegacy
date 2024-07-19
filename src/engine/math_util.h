@@ -39,10 +39,10 @@ extern Vec3s gVec3sOne;
 
 typedef _Complex float f32x2;
 #define F32X2_NEW(x, y) __builtin_complex((float) (x), (float) (y))
+#ifdef FOLDED_POLYNOMIAL
 f32x2 sincos(s16 angle) __attribute__ ((const));
 #define sins(x) (__real__(sincos((s16) x)))
 #define coss(x) (__imag__(sincos((s16) x)))
-#ifdef FOLDED_POLYNOMIAL
 #else
 extern f32 gSineTable[];
 #define gCosineTable (gSineTable + 0x400)
