@@ -19,4 +19,9 @@ void bhv_ending_player_loop()
     auto camera = gCurrentArea->camera;
     set_camera_mode_8_directions(camera);
     reset_camera(camera);
+
+    if (60 == o->oTimer)
+    {
+        cur_obj_play_sound_2(SOUND_MENU_THANK_YOU_PLAYING_MY_GAME);
+    }
 }

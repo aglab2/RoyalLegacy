@@ -377,7 +377,7 @@ void init_mario_after_warp(void) {
 
     if (gCurrLevelNum == LEVEL_ENDING)
     {
-        play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 100, 0x00, 0x00, 0x00);
+        play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 60, 0x00, 0x00, 0x00);
     }
     else
     {
