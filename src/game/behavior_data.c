@@ -6174,3 +6174,11 @@ extern const BehaviorScript bhvGem[] = {
         CALL_NATIVE(bhv_gem_loop),
     END_LOOP(),
 };
+
+extern void bhv_ending_player_loop();
+extern const BehaviorScript bhvEndingPlayer[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_ending_player_loop),
+    END_LOOP(),
+};

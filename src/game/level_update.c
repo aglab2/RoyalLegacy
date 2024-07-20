@@ -111,6 +111,7 @@ struct CreditsEntry sCreditsSequence[] = {
     { LEVEL_JRB, 1, 18, 22, { -1155, 1591, -6255 }, credits03 },
     { LEVEL_CCM, 1, 34, 25, { 5849, 1153, 4115 }, credits04 },
     { LEVEL_BITS, 1, 1, 60, { 4499, 7694, 12257 }, credits05 },
+    { LEVEL_ENDING, 1, 1, 60, { -324, -72, -83 }, credits05 },
     { LEVEL_NONE, 0, 1, 0, { 0, 0, 0 }, NULL },
 };
 
@@ -338,8 +339,8 @@ void init_mario_after_warp(void) {
 
 #ifdef DEBUG_ASSERTIONS
     if (!object) {
-        char errorMsg[40];
-        sprintf(errorMsg, "No dest warp object found for: 0x%02X", sWarpDest.nodeId);
+        char errorMsg[100];
+        sprintf(errorMsg, "No dest warp object found for: 0x%02X, level %x, levelNum %x, area %x", sWarpDest.nodeId, gCurrLevelNum, sWarpDest.levelNum, sWarpDest.areaIdx);
         error(errorMsg);
     }
 #endif
@@ -374,30 +375,38 @@ void init_mario_after_warp(void) {
     sWarpDest.type = WARP_TYPE_NOT_WARPING;
     sDelayedWarpOp = WARP_OP_NONE;
 
-    switch (marioSpawnType) {
-        case MARIO_SPAWN_DOOR_WARP:
-        case MARIO_SPAWN_SPIN_AIRBORNE_CIRCLE:
-            play_transition(WARP_TRANSITION_FADE_FROM_CIRCLE, 0x10, 0x00, 0x00, 0x00);
-            break;
-        case MARIO_SPAWN_TELEPORT:
-            play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 0x14, 0xFF, 0xFF, 0xFF);
-            break;
-        case MARIO_SPAWN_SPIN_AIRBORNE:
-            play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 0x1A, 0xFF, 0xFF, 0xFF);
-            break;
-        case MARIO_SPAWN_FADE_FROM_BLACK:
-            play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 0x10, 0x00, 0x00, 0x00);
-            break;
-        default:
-            play_transition(WARP_TRANSITION_FADE_FROM_STAR, 0x10, 0x00, 0x00, 0x00);
-            break;
+    if (gCurrLevelNum == LEVEL_ENDING)
+    {
+        play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 100, 0x00, 0x00, 0x00);
+    }
+    else
+    {
+        switch (marioSpawnType) {
+            case MARIO_SPAWN_DOOR_WARP:
+            case MARIO_SPAWN_SPIN_AIRBORNE_CIRCLE:
+                play_transition(WARP_TRANSITION_FADE_FROM_CIRCLE, 0x10, 0x00, 0x00, 0x00);
+                break;
+            case MARIO_SPAWN_TELEPORT:
+                play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 0x14, 0xFF, 0xFF, 0xFF);
+                break;
+            case MARIO_SPAWN_SPIN_AIRBORNE:
+                play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 0x1A, 0xFF, 0xFF, 0xFF);
+                break;
+            case MARIO_SPAWN_FADE_FROM_BLACK:
+                play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 0x10, 0x00, 0x00, 0x00);
+                break;
+            default:
+                play_transition(WARP_TRANSITION_FADE_FROM_STAR, 0x10, 0x00, 0x00, 0x00);
+                break;
+        }
     }
 
     if (gCurrDemoInput == NULL) {
 #ifdef BETTER_REVERB
         gBetterReverbPresetValue = gCurrentArea->betterReverbPreset;
 #endif
-        set_background_music(gCurrentArea->musicParam, gCurrentArea->musicParam2, 0);
+        if (gCurrLevelNum != LEVEL_ENDING)
+            set_background_music(gCurrentArea->musicParam, gCurrentArea->musicParam2, 0);
 
         if (gMarioState->flags & MARIO_METAL_CAP) {
             play_cap_music(SEQUENCE_ARGS(4, SEQ_EVENT_METAL_CAP));
@@ -892,7 +901,7 @@ void initiate_delayed_warp(void) {
                     gCurrCreditsEntry++;
                     gCurrActNum = gCurrCreditsEntry->actNum & 0x07;
                     if ((gCurrCreditsEntry + 1)->levelNum == LEVEL_NONE) {
-                        destWarpNode = WARP_NODE_CREDITS_END;
+                        destWarpNode = 0x69;
                     } else {
                         destWarpNode = WARP_NODE_CREDITS_NEXT;
                     }

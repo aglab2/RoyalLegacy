@@ -12,4 +12,7 @@ extern const Gfx dl_cake_end_screen[];
 // script
 extern const LevelScript level_ending_entry[];
 
+
+#include "levels/ending/header.inc.h"
+
 #endif

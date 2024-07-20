@@ -35,3 +35,5 @@ const GeoLayout ending_geo_area_1[] = {
    GEO_CLOSE_NODE(),
    GEO_END(),
 };
+
+#include "levels/ending/geo.inc.c"

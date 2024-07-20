@@ -68,7 +68,7 @@ s16 gCurrLevelNum = LEVEL_MIN;
  * the spawn behavior executed, the index of that behavior is used with sSpawnTypeFromWarpBhv
 */
 
-const BehaviorScript *sWarpBhvSpawnTable[] = {
+static const BehaviorScript *sWarpBhvSpawnTable[] = {
     bhvDoorWarp,                bhvStar,                   bhvExitPodiumWarp,          bhvWarp,
     bhvWarpPipe,                bhvFadingWarp,             bhvInstantActiveWarp,       bhvAirborneWarp,
     bhvHardAirKnockBackWarp,    bhvSpinAirborneCircleWarp, bhvDeathWarp,               bhvSpinAirborneWarp,
@@ -76,7 +76,7 @@ const BehaviorScript *sWarpBhvSpawnTable[] = {
     bhvAirborneStarCollectWarp, bhvAirborneDeathWarp,      bhvLaunchStarCollectWarp,   bhvLaunchDeathWarp,
 };
 
-u8 sSpawnTypeFromWarpBhv[] = {
+static const u8 sSpawnTypeFromWarpBhv[] = {
     MARIO_SPAWN_DOOR_WARP,             MARIO_SPAWN_IDLE,                 MARIO_SPAWN_PIPE,                  MARIO_SPAWN_PIPE,
     MARIO_SPAWN_PIPE,                  MARIO_SPAWN_TELEPORT,             MARIO_SPAWN_INSTANT_ACTIVE,        MARIO_SPAWN_AIRBORNE,
     MARIO_SPAWN_HARD_AIR_KNOCKBACK,    MARIO_SPAWN_SPIN_AIRBORNE_CIRCLE, MARIO_SPAWN_DEATH,                 MARIO_SPAWN_SPIN_AIRBORNE,

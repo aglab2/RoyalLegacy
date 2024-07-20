@@ -823,3 +823,4 @@ void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 sca
 #include "behaviors/aglab_epic_door.inc.c"
 #include "behaviors/aglab_gem.inc.c"
 #include "behaviors/aglab_omm.inc.c"
+#include "behaviors/aglab_ending.inc.c"

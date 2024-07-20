@@ -7,6 +7,7 @@
 #include "make_const_nonconst.h"
 
 #include "levels/ending/cake.inc.c"
+#include "surface_terrains.h"
 
 #define NUM_CAKE_TEXTURES 40
 #define NUM_CAKE_TEXTURES_X 5
@@ -101,3 +102,5 @@ const Gfx dl_cake_end_screen[] = {
     gsDPSetRenderMode(G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2),
     gsSPEndDisplayList(),
 };
+
+#include "levels/ending/leveldata.inc.c"

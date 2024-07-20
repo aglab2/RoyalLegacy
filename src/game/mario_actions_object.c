@@ -349,7 +349,7 @@ s32 act_holding_bowser(struct MarioState *m) {
 
     struct Object* bomb = cur_obj_nearest_object_with_behavior(bhvBowserBomb);
     s16 angleDiff = obj_angle_to_object(bomb, m->marioObj) - m->faceAngle[1] + 0x8000;
-    if (abss(m->angleVel[1]) > 0x1900)
+    if (abss(m->angleVel[1]) > 0x1500)
     {
         sIsFastFrames++;
     }
@@ -386,7 +386,7 @@ s32 act_holding_bowser(struct MarioState *m) {
             spin = CLAMP(spin, -0x80, 0x80);
 
             m->twirlYaw = m->intendedYaw;
-            m->angleVel[1] += spin;
+            m->angleVel[1] += spin * 1.1f;
 
             m->angleVel[1] = CLAMP(m->angleVel[1], -0x1A00, 0x1A00);
         }
