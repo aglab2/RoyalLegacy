@@ -10501,8 +10501,8 @@ STATIC_ASSERT(ARRAY_COUNT(sZoomOutAreaMasks) - 1 == LEVEL_MAX / 2, "Make sure yo
 struct CutsceneSplinePoint sBobCreditsSplinePositions[] = {
     { 1, 0, { 2904, 562, 3502 } },
     { 3, 0, { 5681, 1086, 2254 } },
-    { 3, 0, { 6795, 1119, 822 } },
-    { 4, 0, { 7248, -416, -2364 } },
+    { 3, 0, { 6795, 1750, 822 } },
+    { 4, 0, { 7248, -200, -2364 } },
     { -1, 60, { 5861, -1787, -3337 } }
 };
 
@@ -10581,7 +10581,7 @@ struct CutsceneSplinePoint sHmcCreditsSplinePositions[] = {
     { 2, 0, { 1418, 640, -96 } },
     { 3, 0, { 1037, 320, -1341 } },
     { 4, 0, { 634, -374, -3688 } },
-    { -1, 0, { 1466, -374, -3682 } }
+    { -1, 0, { 1680, -374, -3682 } }
 };
 
 struct CutsceneSplinePoint sHmcCreditsSplineFocus[] = {
