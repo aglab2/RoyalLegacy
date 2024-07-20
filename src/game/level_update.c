@@ -38,10 +38,10 @@
 
 // TODO: Make these ifdefs better
 const char *credits01[] = { "1GAME DIRECTOR", "STUNNING CACTUS" };
-const char *credits02[] = { "1VISUAL DESIGNER", "NOBBIE" };
+const char *credits02[] = { "1DE VISUAL DESIGNER", "NOBBIE" };
 const char *credits03[] = { "1SYSTEM PROGRAMMER", "AGLAB2" };
 const char *credits04[] = { "3TOOLS USED", "HACKERSM64", "FAST64", "STRM64" };
-const char *credits05[] = { "2MUSIC COMPOSERS", "STUNNING CACTUS", "INDIE MUSIC MINUTE" };
+const char *credits05[] = { "2MUSIC COMPOSERS", "STUNNING CACTUS", "DALEROYSTEVE" };
 const char *credits06[] = { "1FIND 4 GEMS", "TO OPEN THE DOOR" };
 struct CreditsEntry sCreditsSequence[] = {
     { LEVEL_CASTLE_GROUNDS, 1, 1, -128, { 0, 8000, 0 }, NULL },
