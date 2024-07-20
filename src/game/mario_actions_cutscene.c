@@ -576,10 +576,17 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                     play_course_clear(obj_has_model(celebStar, MODEL_BOWSER_KEY));
                 } else {
                     // Exit
-                    if (obj_has_model(celebStar, MODEL_BOWSER_KEY)) {
-                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_KEY), 0);
-                    } else {
-                        play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_STAR), 0);
+                    if (gGrandStar)
+                    {
+                        play_music(SEQ_PLAYER_ENV, SEQ_EVENT_CUTSCENE_CREDITS, 0);
+                    }
+                    else
+                    {
+                        if (obj_has_model(celebStar, MODEL_BOWSER_KEY)) {
+                            play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_KEY), 0);
+                        } else {
+                            play_music(SEQ_PLAYER_ENV, SEQUENCE_ARGS(15, SEQ_EVENT_CUTSCENE_COLLECT_STAR), 0);
+                        }
                     }
                 }
                 break;
@@ -588,9 +595,11 @@ void general_star_dance_handler(struct MarioState *m, s32 isInWater) {
                 play_sound(SOUND_MARIO_HERE_WE_GO, m->marioObj->header.gfx.cameraToObject);
                 break;
             
-            case 70:
+            case 79:
                 if (gGrandStar)        
                     level_trigger_warp(m, WARP_OP_CREDITS_START);
+
+                break;
 
             case 80:
                 if (!(m->actionArg & 1)) {
@@ -2500,7 +2509,7 @@ static s32 act_end_peach_cutscene(struct MarioState *m) {
 
 #define TIMER_CREDITS_SHOW      61
 #define TIMER_CREDITS_PROGRESS  90
-#define TIMER_CREDITS_WARP     204
+#define TIMER_CREDITS_WARP     304
 
 static s32 act_credits_cutscene(struct MarioState *m) {
     m->statusForCamera->cameraEvent = CAM_EVENT_START_CREDITS;

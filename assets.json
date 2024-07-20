@@ -1121,7 +1121,6 @@
 "sound/sequences/us/17_cutscene_collect_key.m64": [671,{"us":[8149184]}],
 "sound/sequences/us/18_event_endless_stairs.m64": [1777,{"us":[8149856]}],
 "sound/sequences/us/19_level_boss_koopa_final.m64": [3515,{"us":[8151648]}],
-"sound/sequences/us/1A_cutscene_credits.m64": [14313,{"us":[8155168]}],
 "sound/sequences/us/1B_event_solve_puzzle.m64": [216,{"us":[8169488]}],
 "sound/sequences/us/1C_event_toad_message.m64": [208,{"us":[8169712]}],
 "sound/sequences/us/1D_event_peach_message.m64": [432,{"us":[8169920]}],

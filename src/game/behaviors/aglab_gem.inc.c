@@ -84,6 +84,19 @@ void bhv_gem_init()
     set_color(omm_star_ray_5_gfx, darkR, darkG, darkB);
 }
 
+void bhv_fight_spawner_init()
+{
+    u8 darkR = 0xFF, darkG = 0xba, darkB = 0x01;
+    u8 lightR = 0xFF, lightG = 0xc3, lightB = 0x0b;
+    set_color(omm_star_glow_gfx, lightR, lightG, lightB);
+    set_color(omm_star_ray_0_gfx, darkR, darkG, darkB);
+    set_color(omm_star_ray_1_gfx, darkR, darkG, darkB);
+    set_color(omm_star_ray_2_gfx, darkR, darkG, darkB);
+    set_color(omm_star_ray_3_gfx, darkR, darkG, darkB);
+    set_color(omm_star_ray_4_gfx, darkR, darkG, darkB);
+    set_color(omm_star_ray_5_gfx, darkR, darkG, darkB);
+}
+
 void bhv_gem_loop()
 {
     o->oFaceAngleYaw += 0x800;
