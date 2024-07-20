@@ -38,7 +38,7 @@
 
 // TODO: Make these ifdefs better
 const char *credits01[] = { "1GAME DIRECTOR", "STUNNING CACTUS" };
-const char *credits02[] = { "1VISUAL DESIGNER", "NOBBIE64" };
+const char *credits02[] = { "1VISUAL DESIGNER", "NOBBIE" };
 const char *credits03[] = { "1SYSTEM PROGRAMMER", "AGLAB2" };
 const char *credits04[] = { "3TOOLS USED", "HACKERSM64", "FAST64", "STRM64" };
 const char *credits05[] = { "2MUSIC COMPOSERS", "STUNNING CACTUS", "INDIE MUSIC MINUTE" };
