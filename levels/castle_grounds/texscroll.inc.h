@@ -1,6 +1,7 @@
 extern void scroll_castle_grounds_dl_HubWorld_001_mesh_layer_1_vtx_0();
 extern void scroll_castle_grounds_dl_HubWorld_002_mesh_layer_1_vtx_6();
 extern void scroll_castle_grounds_dl_HubWorld_011_mesh_layer_5_vtx_0();
+extern void scroll_castle_grounds_dl_zsplash_mesh_layer_5_vtx_0();
 extern void scroll_gfx_castle_grounds_dl_HubWorld_001_mesh_layer_1();
 extern void scroll_gfx_castle_grounds_dl_HubWorld_011_mesh_layer_5();
 extern void scroll_castle_grounds();
