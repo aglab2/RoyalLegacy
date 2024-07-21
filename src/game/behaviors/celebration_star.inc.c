@@ -37,6 +37,7 @@ void celeb_star_act_spin_around_mario(void) {
     }
 }
 
+extern char gGrandStar;
 void celeb_star_act_face_camera(void) {
     if (o->oTimer < 10) {
         if (o->oCelebStarIsBowserKey == FALSE) {
@@ -49,7 +50,8 @@ void celeb_star_act_face_camera(void) {
         o->oFaceAngleYaw = gMarioObject->header.gfx.angle[1];
     }
 
-    if (o->oTimer == 209) {
+    int timeToDespawn = gGrandStar ? 209 : 59;
+    if (o->oTimer == timeToDespawn) {
         o->activeFlags = ACTIVE_FLAG_DEACTIVATED;
     }
 }
