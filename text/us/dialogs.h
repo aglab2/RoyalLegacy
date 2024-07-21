@@ -1509,7 +1509,7 @@ accept here in Toad\n\
 Taiga is Red Coins! Go\n\
 collect them on the next\n\
 star and I'll be happy to\n\
-set up some boxes for you.")
+set up ladders for you.")
 
 DEFINE_DIALOG(DIALOG_137,1,6,30,200, "Thanks, Mario! The castle\n\
 is recovering its energy\n\
