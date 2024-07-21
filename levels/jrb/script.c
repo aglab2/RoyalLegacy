@@ -39,7 +39,7 @@ const LevelScript level_jrb_entry[] = {
 	JUMP_LINK(script_func_global_3), 
 	JUMP_LINK(script_func_global_15), 
 	LOAD_MODEL_FROM_GEO(MODEL_C3_SPIN, c3_spin_geo), 
-	LOAD_MODEL_FROM_GEO(MODEL_GEM_STAR, gem_star_red_geo),
+	LOAD_MODEL_FROM_GEO(MODEL_GEM_STAR, gem_star_red_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -82,7 +82,7 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(0, -2020, -190, -590, 0, 91, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, -8321, -211, 1482, 0, -29, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, 8092, 2759, -4468, 0, -39, 0, 0x0, bhvCoinFormation),
-		OBJECT(0, 5733, -211, 2434, 0, 97, 0, 0x40000, bhvCoinFormation),
+		OBJECT(0, 5230, 2079, -12216, 0, 50, 0, 0x40000, bhvCoinFormation),
 		OBJECT(0, 1167, 78, -1136, 0, 49, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, 4798, 2237, 7521, 0, 0, 0, 0x110000, bhvCoinFormation),
 		OBJECT(0, 2515, 2237, 8501, 0, 0, 0, 0x110000, bhvCoinFormation),
@@ -183,7 +183,7 @@ const LevelScript level_jrb_entry[] = {
 		MARIO_POS(0x01, -120, 8024, 1896, -8575),
 		TERRAIN(jrb_area_1_collision),
 		MACRO_OBJECTS(jrb_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, 0x30),
+		SET_BACKGROUND_MUSIC(0x00, 40),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
