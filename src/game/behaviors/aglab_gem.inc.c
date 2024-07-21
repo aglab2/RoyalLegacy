@@ -17,28 +17,32 @@ static void set_color(Gfx* gfx, u8 r, u8 g, u8 b) {
     color[2] = b;
 }
 
+extern char gGrandStar;
 void bhv_gem_init()
 {
     o->header.gfx.sharedChild = gLoadedGraphNodes[MODEL_GEM_STAR];
     obj_set_hitbox(o, &sCollectStarHitbox);
     o->oInteractionSubtype |= (INT_SUBTYPE_NO_EXIT | INT_SUBTYPE_GEM);
 
-    uint32_t flags = save_file_get_flags();
-    if (!(flags & SAVE_FILE_RL_BOWSER_DEAD)) {
-        o->activeFlags = 0;
-        return;
-    }
-
-    if (gMarioStates->numStars < 30)
+    if (!gGrandStar)
     {
-        o->activeFlags = 0;
-        return;
-    }
+        uint32_t flags = save_file_get_flags();
+        if (!(flags & SAVE_FILE_RL_BOWSER_DEAD)) {
+            o->activeFlags = 0;
+            return;
+        }
 
-    if (save_file_is_gem_collected())
-    {
-        o->activeFlags = 0;
-        return;
+        if (gMarioStates->numStars < 30)
+        {
+            o->activeFlags = 0;
+            return;
+        }
+
+        if (save_file_is_gem_collected())
+        {
+            o->activeFlags = 0;
+            return;
+        }
     }
 
     u8 darkR = 0, darkG = 0, darkB = 0;
