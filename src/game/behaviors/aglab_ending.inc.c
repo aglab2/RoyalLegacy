@@ -25,3 +25,14 @@ void bhv_ending_player_loop()
         cur_obj_play_sound_2(SOUND_MENU_THANK_YOU_PLAYING_MY_GAME);
     }
 }
+
+void bhv_sparkler_loop()
+{
+    if ((o->oTimer % 16) == 0)
+    {
+        struct Object* spark = spawn_object(o, MODEL_NONE, bhvSparkleSpawn);
+        spark->oPosX = o->oPosX + random_f32_around_zero(100.f);
+        spark->oPosY = o->oPosY + random_f32_around_zero(100.f);
+        spark->oPosZ = o->oPosZ + random_f32_around_zero(100.f);
+    }
+}

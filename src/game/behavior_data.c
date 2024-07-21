@@ -6184,3 +6184,11 @@ extern const BehaviorScript bhvEndingPlayer[] = {
         CALL_NATIVE(bhv_ending_player_loop),
     END_LOOP(),
 };
+
+extern void bhv_sparkler_loop();
+extern const BehaviorScript bhvSparkler[] = {
+    BEGIN(OBJ_LIST_SPAWNER),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_sparkler_loop),
+    END_LOOP(),
+};
