@@ -211,14 +211,11 @@ void bhv_toad_message_init(void) {
             }
             break;
     }
-    if (enoughStars) {
-        o->oToadMessageDialogId = dialogId;
-        o->oToadMessageRecentlyTalked = FALSE;
-        o->oToadMessageState = TOAD_MESSAGE_FADED;
-        o->oOpacity = 81;
-    } else {
-        obj_mark_for_deletion(o);
-    }
+
+    o->oToadMessageDialogId = dialogId;
+    o->oToadMessageRecentlyTalked = FALSE;
+    o->oToadMessageState = TOAD_MESSAGE_FADED;
+    o->oOpacity = 81;
 }
 
 static void star_door_unlock_spawn_particles(s16 angleOffset) {
