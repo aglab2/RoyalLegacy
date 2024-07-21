@@ -127,8 +127,8 @@ static void toad_message_opaque(void) {
 static void toad_message_talking(void) {
     if (cur_obj_update_dialog_with_cutscene(MARIO_DIALOG_LOOK_DOWN,
         DIALOG_FLAG_TURN_TO_MARIO, CUTSCENE_DIALOG, o->oToadMessageDialogId)) {
-        o->oToadMessageRecentlyTalked = TRUE;
-        o->oToadMessageState = TOAD_MESSAGE_FADING;
+        // o->oToadMessageRecentlyTalked = TRUE;
+        o->oToadMessageState = TOAD_MESSAGE_OPAQUE;
         switch (o->oToadMessageDialogId) {
             case TOAD_STAR_1_DIALOG:
                 o->oToadMessageDialogId = TOAD_STAR_1_DIALOG_AFTER;
