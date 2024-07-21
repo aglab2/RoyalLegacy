@@ -4,8 +4,23 @@ extern const Collision beta_door_l_collision[];
 #define oCrystal0 oObjF4
 #define oCrystal1 oObjF8
 
+static void kill_beta_warp()
+{
+    uint32_t flags = save_file_get_flags();
+    if ((flags & SAVE_FILE_RL_BOWSER_DEAD) && gMarioStates->numStars >= 30) {
+        return;
+    }
+
+    struct Object* warp = cur_obj_nearest_object_with_behavior(bhvFadingWarp);
+    if (warp)
+    {
+        warp->activeFlags = 0;
+    }
+}
+
 void bhv_epic_door_init()
 {
+    kill_beta_warp();
     int flags[2];
     int models[2];
     if (0 == o->oBehParams2ndByte)
