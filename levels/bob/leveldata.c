@@ -11,3 +11,4 @@
 
 #include "levels/bob/c1_leaf/collision.inc.c"
 #include "levels/bob/c1_leaf/model.inc.c"
+#include "levels/bob/c1_leaf_tr/model.inc.c"

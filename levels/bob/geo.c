@@ -16,3 +16,4 @@
 #include "levels/bob/geo.inc.c"
 
 #include "levels/bob/c1_leaf/geo.inc.c"
+#include "levels/bob/c1_leaf_tr/geo.inc.c"

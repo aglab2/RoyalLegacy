@@ -78,6 +78,33 @@ static const void * kCollisions[] = {
     c4_platform_collision,
 };
 
+static void hb_set_rendering(int enabled)
+{
+    if (enabled)
+    {
+        if (1 == o->oBehParams2ndByte)
+        {
+            obj_set_model(o, MODEL_C1_LEAF);
+        }
+        else
+        {
+            cur_obj_enable_rendering();
+        }
+    }
+    else
+    {
+        if (1 == o->oBehParams2ndByte)
+        {
+            o->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
+            obj_set_model(o, MODEL_C1_LEAF_TR);
+        }
+        else
+        {
+            cur_obj_disable_rendering();
+        }
+    }
+}
+
 void hidden_unbreakable_box_actions(void) {
     struct Object *switchObj;
     if (o->oOpacity != 0)
@@ -87,7 +114,7 @@ void hidden_unbreakable_box_actions(void) {
 
     switch (o->oAction) {
         case BREAKABLE_BOX_ACT_HIDDEN:
-            cur_obj_disable_rendering();
+            hb_set_rendering(0);
             cur_obj_become_intangible();
             if (o->oHiddenObjectSwitchObj == NULL) {
                 o->oHiddenObjectSwitchObj = cur_obj_nearest_object_with_behavior(bhvFloorSwitchHiddenObjects);
@@ -95,7 +122,7 @@ void hidden_unbreakable_box_actions(void) {
             switchObj = o->oHiddenObjectSwitchObj;
             if ((switchObj != NULL) && (switchObj->oAction == PURPLE_SWITCH_ACT_TICKING)) {
                 o->oAction = BREAKABLE_BOX_ACT_ACTIVE;
-                cur_obj_enable_rendering();
+                hb_set_rendering(1);
                 cur_obj_unhide();
             }
             break;

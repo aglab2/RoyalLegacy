@@ -16,4 +16,6 @@ extern const LevelScript level_bob_entry[];
 
 #include "levels/bob/c1_leaf/geo_header.h"
 
+#include "levels/bob/c1_leaf_tr/geo_header.h"
+
 #endif
