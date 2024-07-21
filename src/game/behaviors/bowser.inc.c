@@ -4,7 +4,7 @@
  * Behavior for Bowser and it's actions (Tail, Flame, Body)
  */
 
-#define BOWSER_DEBUG
+// #define BOWSER_DEBUG
 
 // Bowser's Tail
 

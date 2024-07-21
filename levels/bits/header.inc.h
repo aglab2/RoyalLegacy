@@ -83,7 +83,7 @@ extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_19[59];
 extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_20[182];
 extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_21[212];
 extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_22[8];
-extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_23[208];
+extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_23[207];
 extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_24[44];
 extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_25[72];
 extern Vtx bits_dl_Bowser_Level_mesh_layer_1_vtx_26[14];
