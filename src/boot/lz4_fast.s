@@ -53,8 +53,8 @@ decompress_lz4_full_fast:
 
 .Lloop:
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
+    bgezal $t0, dma_read_ctx                    # if inbuf >= dma_ptr, wait for dma
+     move $a0, dma_ctx
     lbu token, 0(inbuf)                         # read token byte
     addiu inbuf, 1
     srl match_len, token, 4                     # extract literal length
@@ -65,8 +65,8 @@ decompress_lz4_full_fast:
     move v0_st, inbuf                            # store start of literals into v0_st
     add inbuf, match_len                        # advance inbuf to end of literals
     sub $t0, inbuf, dma_ptr                     # check if all the literals have been DMA'd
-    bgezal $t0, .Lwaitdma                       # if not, wait for DMA
-     nop
+    bgezal $t0, dma_read_ctx                       # if not, wait for DMA
+     move $a0, dma_ctx
 .Lcopy_lit:
     ldl $t0, 0(v0_st)                             # load 8 bytes of literals
     ldr $t0, 7(v0_st)
@@ -153,23 +153,12 @@ decompress_lz4_full_fast:
     sw $ra, 0x14($sp)
 .Lread_match_len_loop:
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, .Lwaitdma                       # if inbuf >= dma_ptr, wait for dma
-     nop
+    bgezal $t0, dma_read_ctx                       # if inbuf >= dma_ptr, wait for dma
+     move $a0, dma_ctx
     lbu $t0, 0(inbuf)                           # read 1 byte
     addiu inbuf, 1
     beq $t0, 0xFF, .Lread_match_len_loop        # if byte is 0xFF, continue reading
      add match_len, $t0                         # add to match_len
-    lw $ra, 0x14($sp)
-    jr $ra
-    addiu $sp, $sp, 0x18
-
-.Lwaitdma:
-    addiu $sp, $sp, -0x18
-    sw $ra, 0x14($sp)
-
-    jal dma_read_ctx
-    move $a0, dma_ctx
-
     lw $ra, 0x14($sp)
     jr $ra
     addiu $sp, $sp, 0x18
