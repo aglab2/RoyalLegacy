@@ -21,6 +21,7 @@
 #include "src/game/texscroll/bbh_texscroll.inc.c"
 #include "src/game/texscroll/ccm_texscroll.inc.c"
 #include "src/game/texscroll/bowser_3_texscroll.inc.c"
+#include "src/game/texscroll/pss_texscroll.inc.c"
 void scroll_textures() {
 	if(SCROLL_CONDITION(sSegmentROMTable[0x7] == (uintptr_t)_bob_segment_7SegmentRomStart)) {
 		scroll_textures_bob();
@@ -52,6 +53,10 @@ void scroll_textures() {
 
 	if(SCROLL_CONDITION(sSegmentROMTable[0x7] == (uintptr_t)_bowser_3_segment_7SegmentRomStart)) {
 		scroll_textures_bowser_3();
+	}
+
+	if(SCROLL_CONDITION(sSegmentROMTable[0x7] == (uintptr_t)_pss_segment_7SegmentRomStart)) {
+		scroll_textures_pss();
 	}
 
 }
