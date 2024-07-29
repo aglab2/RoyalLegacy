@@ -6196,7 +6196,6 @@ extern const BehaviorScript bhvSparkler[] = {
 
 const BehaviorScript bhvbreakwindow[] = {
     BEGIN(OBJ_LIST_SURFACE),
-    OR_LONG(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_DONT_CALC_COLL_DIST)),
     LOAD_COLLISION_DATA(breakwindow_collision),
     SET_FLOAT(oCollisionDistance, 1000),
     CALL_NATIVE(bhv_init_room),
@@ -6205,4 +6204,15 @@ const BehaviorScript bhvbreakwindow[] = {
         CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
     BREAK(),
+};
+
+extern void bhv_sa_ladder_init();
+extern void bhv_sa_ladder_loop();
+extern const BehaviorScript bhvSALadder[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    LOAD_COLLISION_DATA(sa_ladder_collision),
+    CALL_NATIVE(bhv_sa_ladder_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_sa_ladder_loop),
+    END_LOOP(),
 };

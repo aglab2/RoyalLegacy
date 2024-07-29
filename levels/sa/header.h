@@ -12,4 +12,8 @@ extern const LevelScript level_sa_entry[];
 
 #include "levels/sa/breakwindow/geo_header.h"
 
+#include "levels/sa/sa_ladder/geo_header.h"
+
+#include "levels/sa/sa_ladder/collision_header.h"
+
 #endif

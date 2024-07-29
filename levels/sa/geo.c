@@ -16,3 +16,4 @@
 #include "levels/sa/geo.inc.c"
 
 #include "levels/sa/breakwindow/geo.inc.c"
+#include "levels/sa/sa_ladder/geo.inc.c"

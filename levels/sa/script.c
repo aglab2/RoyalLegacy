@@ -37,15 +37,17 @@ const LevelScript level_sa_entry[] = {
 	JUMP_LINK(script_func_global_18), 
 	JUMP_LINK(script_func_vo_bob), 
 	LOAD_MODEL_FROM_GEO(MODEL_BREAKWINDOW, breakwindow_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_SA_LADDER, sa_ladder_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
 
 	AREA(1, sa_area_1),
-		WARP_NODE(241, LEVEL_PSS, 1, 12, WARP_NO_CHECKPOINT),
+		WARP_NODE(241, LEVEL_CASTLE_GROUNDS, 1, 22, WARP_NO_CHECKPOINT),
 		WARP_NODE(240, LEVEL_CASTLE, 1, 50, WARP_NO_CHECKPOINT),
 		WARP_NODE(10, LEVEL_BOB, 1, 0, WARP_NO_CHECKPOINT),
 		WARP_NODE(33, LEVEL_SA, 2, 33, WARP_NO_CHECKPOINT),
+		OBJECT(MODEL_SA_LADDER, 0, 0, 0, 0, 0, 0, 0x0, bhvSALadder),
 		OBJECT(212, 2341, 2742, 1699, 0, 90, 0, 0x0, bhv1Up),
 		OBJECT(212, -965, 5112, -6339, 0, -90, 0, 0x0, bhv1Up),
 		OBJECT(0, 712, 2770, 12267, 0, -180, 0, 0x0, bhvBetaFishSplashSpawner),
@@ -136,7 +138,7 @@ const LevelScript level_sa_entry[] = {
 	END_AREA(),
 
 	FREE_LEVEL_POOL(),
-	MARIO_POS(1, 0, 0, 82, 0),
+	MARIO_POS(0x01, 0, 4216, 120, -6481),
 	CALL(0, lvl_init_or_update),
 	CALL_LOOP(1, lvl_init_or_update),
 	CLEAR_LEVEL(),

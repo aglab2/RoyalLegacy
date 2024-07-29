@@ -224,7 +224,7 @@ extern Vtx sa_dl_zone4_mesh_layer_5_vtx_1[4];
 extern Vtx sa_dl_zone4water_mesh_layer_5_vtx_cull[8];
 extern Vtx sa_dl_zone4water_mesh_layer_5_vtx_0[21];
 extern Vtx sa_dl_zonepaths_mesh_layer_1_vtx_cull[8];
-extern Vtx sa_dl_zonepaths_mesh_layer_1_vtx_0[38];
+extern Vtx sa_dl_zonepaths_mesh_layer_1_vtx_0[24];
 extern Vtx sa_dl_zonepaths_mesh_layer_1_vtx_1[31];
 extern Vtx sa_dl_zonepaths_mesh_layer_1_vtx_2[14];
 extern Vtx sa_dl_zonepaths_mesh_layer_1_vtx_3[97];

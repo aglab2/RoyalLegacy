@@ -9,3 +9,5 @@
 
 #include "levels/sa/breakwindow/collision.inc.c"
 #include "levels/sa/breakwindow/model.inc.c"
+#include "levels/sa/sa_ladder/model.inc.c"
+#include "levels/sa/sa_ladder/collision.inc.c"
