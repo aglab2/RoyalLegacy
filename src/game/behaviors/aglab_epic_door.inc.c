@@ -4,6 +4,8 @@ extern const Collision beta_door_l_collision[];
 #define oCrystal0 oObjF4
 #define oCrystal1 oObjF8
 
+extern u8 gCheatingTranslucency;
+
 static void kill_beta_warp()
 {
     uint32_t flags = save_file_get_flags();
@@ -83,6 +85,29 @@ static void adjust_crystal(struct Object* crystal)
     // crystal->oPosY = o->oPosY + amt;
 }
 
+static void checkWarp()
+{
+    int floorType = 0;
+    if (gMarioStates->floor)
+        floorType = gMarioStates->floor->type;
+    
+    if (floorType == SURFACE_VANISH_CAP_WALLS)
+    {
+        if (gMarioStates->numStars < 30)
+        {
+            if (gCheatingTranslucency < 255)
+                gCheatingTranslucency += 5;
+
+            return;
+        }
+        else
+        {
+            gMarioStates->usedObj = o;
+            level_trigger_warp(gMarioState, WARP_OP_TELEPORT);
+        }
+    }
+}
+
 void bhv_epic_door_loop()
 {
     if (0 == o->oBehParams2ndByte)
@@ -148,4 +173,9 @@ void bhv_epic_door_loop()
 
     adjust_crystal(o->oCrystal0);
     adjust_crystal(o->oCrystal1);
+
+    if (1 == o->oBehParams2ndByte)
+    {
+        checkWarp();
+    }
 }

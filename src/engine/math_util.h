@@ -44,7 +44,7 @@ f32x2 sincos(s16 angle) __attribute__ ((const));
 #define sins(x) (__real__(sincos((s16) x)))
 #define coss(x) (__imag__(sincos((s16) x)))
 #else
-extern f32 gSineTable[];
+extern const f32 gSineTable[];
 #define gCosineTable (gSineTable + 0x400)
 #define sins(x) gSineTable[  (u16) (x) >> 4]
 #define coss(x) gCosineTable[(u16) (x) >> 4]

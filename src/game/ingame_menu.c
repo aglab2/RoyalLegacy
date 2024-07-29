@@ -2329,10 +2329,26 @@ s32 render_course_complete_screen(void) {
     return MENU_OPT_NONE;
 }
 
+u8 gCheatingTranslucency = 0;
+static void fancy_print(int y, const char* line, int tr)
+{
+    gDPSetEnvColor(gDisplayListHead++, 0, 0, 0, tr);
+    print_generic_string_aligned(160, y, line, TEXT_ALIGN_CENTER);
+    gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, tr);
+    print_generic_string_aligned(160 + 2, y + 2, line, TEXT_ALIGN_CENTER);
+}
+
 s32 render_menus_and_dialogs(void) {
     s32 mode = MENU_OPT_NONE;
 
     create_dl_ortho_matrix();
+
+    if (__builtin_expect(gCheatingTranslucency, 0))
+    {
+        gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
+        fancy_print(20, "Did you really expect this to work?", gCheatingTranslucency);
+        gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+    }
 
     if (gMenuMode != MENU_MODE_NONE) {
         switch (gMenuMode) {
