@@ -10,6 +10,7 @@
 #include "src/game/texscroll/ccm_texscroll.inc.h"
 #include "src/game/texscroll/bowser_3_texscroll.inc.h"
 #include "src/game/texscroll/pss_texscroll.inc.h"
+#include "src/game/texscroll/sa_texscroll.inc.h"
 extern void scroll_textures();
 
 #endif

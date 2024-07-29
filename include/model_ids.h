@@ -444,6 +444,7 @@
 #define MODEL_UNKNOWN_7D                  0x7D        // referenced in macro presets. Unknown usage
 #define MODEL_B3_CROWN                    0xE4        // new grand star is crown
 #define MODEL_C4_PLATFORM                 0xE5        // platform for c4 switch
+#define MODEL_BREAKWINDOW                 0xE6        // breakable window
 // find me
 #define MODEL_CANNON_BARREL               0x7F        // cannon_barrel_geo
 #define MODEL_CANNON_BASE                 0x80        // cannon_base_geo

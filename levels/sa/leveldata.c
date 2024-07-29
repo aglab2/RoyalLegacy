@@ -6,3 +6,6 @@
 
 #include "make_const_nonconst.h"
 #include "levels/sa/leveldata.inc.c"
+
+#include "levels/sa/breakwindow/collision.inc.c"
+#include "levels/sa/breakwindow/model.inc.c"
