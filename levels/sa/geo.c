@@ -14,3 +14,5 @@
 #include "levels/sa/header.h"
 
 #include "levels/sa/geo.inc.c"
+
+#include "levels/sa/breakwindow/geo.inc.c"

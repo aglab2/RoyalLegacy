@@ -53,6 +53,7 @@
 #include "actors/group17.h"
 #include "levels/bowser_2/header.h"
 #include "levels/bowser_3/header.h"
+#include "levels/sa/header.h"
 
 #include "make_const_nonconst.h"
 #include "behavior_data.h"
@@ -6191,4 +6192,17 @@ extern const BehaviorScript bhvSparkler[] = {
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_sparkler_loop),
     END_LOOP(),
+};
+
+const BehaviorScript bhvbreakwindow[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    OR_LONG(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_DONT_CALC_COLL_DIST)),
+    LOAD_COLLISION_DATA(breakwindow_collision),
+    SET_FLOAT(oCollisionDistance, 1000),
+    CALL_NATIVE(bhv_init_room),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_breakable_box_loop),
+        CALL_NATIVE(load_object_collision_model),
+    END_LOOP(),
+    BREAK(),
 };
