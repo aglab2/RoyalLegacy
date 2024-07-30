@@ -7,6 +7,8 @@
  * the environment.
  */
 
+#define oPurpleSwitchHasSpawned oF4 
+
 void bhv_purple_switch_loop(void) {
     switch (o->oAction) {
         /**
@@ -30,6 +32,14 @@ void bhv_purple_switch_loop(void) {
          * Immediately transition to the ticking state.
          */
         case PURPLE_SWITCH_ACT_PRESSED:
+            if (gCurrCourseNum == COURSE_SA)
+            {
+                if (o->behavior != segmented_to_virtual(bhvFloorSwitchGrills))
+                {
+                    struct Object* goomba = spawn_object(o, MODEL_GOOMBA, bhvGoomba);
+                    goomba->parentObj = goomba;
+                }
+            }
             cur_obj_scale_over_time(SCALE_AXIS_Y, 3, 1.5f, 0.2f);
             if (o->oTimer == 3) {
                 cur_obj_play_sound_2(SOUND_GENERAL2_PURPLE_SWITCH);

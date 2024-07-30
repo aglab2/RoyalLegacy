@@ -6210,7 +6210,6 @@ extern void bhv_sa_ladder_init();
 extern void bhv_sa_ladder_loop();
 extern const BehaviorScript bhvSALadder[] = {
     BEGIN(OBJ_LIST_SURFACE),
-    LOAD_COLLISION_DATA(sa_ladder_collision),
     CALL_NATIVE(bhv_sa_ladder_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_sa_ladder_loop),

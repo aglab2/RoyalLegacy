@@ -29,6 +29,9 @@ void bhv_sa_ladder_init()
     o->oDrawingDistance = 30000.0f;
 }
 
+extern const Collision sa_ladder2_collision[];
+extern const Collision sa_ladder_collision[];
+
 void bhv_sa_ladder_loop()
 {
     struct Object** objs = &o->oSACoin0;
@@ -46,13 +49,35 @@ void bhv_sa_ladder_loop()
         struct Object* coin = objs[i];
         if (coin && !coin->activeFlags)
         {
-            coin = NULL;
+            objs[i] = NULL;
         }
     }
 
     if (4 == o->oAction)
     {
         cur_obj_unhide();
-        load_object_collision_model();
+        if (0 == o->oTimer)
+        {
+            play_sound(SOUND_MENU_COLLECT_SECRET, gGlobalSoundSource);
+        }
     }
+
+    if (gMarioStates->floor && gMarioStates->floor->type == SURFACE_VANISH_CAP_WALLS)
+    {
+        if (gMarioStates->capTimer > 65)
+        {
+            gMarioStates->capTimer = 65;
+        }
+    }
+    
+    if (4 == o->oAction)
+    {
+        obj_set_collision_data(o, sa_ladder_collision);
+    }
+    else
+    {
+        obj_set_collision_data(o, sa_ladder2_collision);
+    }
+    load_object_collision_model();
+    o->oCollisionDistance = 30000.0f;
 }

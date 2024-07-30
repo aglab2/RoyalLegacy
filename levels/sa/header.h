@@ -16,4 +16,6 @@ extern const LevelScript level_sa_entry[];
 
 #include "levels/sa/sa_ladder/collision_header.h"
 
+#include "levels/sa/sa_ladder2/collision_header.h"
+
 #endif
