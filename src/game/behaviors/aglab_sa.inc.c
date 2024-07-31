@@ -62,7 +62,7 @@ void bhv_sa_ladder_loop()
         }
     }
 
-    if (gMarioStates->floor && gMarioStates->floor->type == SURFACE_VANISH_CAP_WALLS)
+    if (gMarioStates->floor && gMarioStates->floor->type == SURFACE_HARD_NOT_SLIPPERY)
     {
         if (gMarioStates->capTimer > 65)
         {
