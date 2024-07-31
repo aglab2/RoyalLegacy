@@ -49,5 +49,6 @@
     "2E_c4": ["2C_c4"],
     "2F_fight": ["2D_fight"],
     "30_c3": ["2F_c3"],
-    "31_file_select": [ "23" ]
+    "31_file_select": [ "23" ],
+    "32_fc": [ "20_fc" ]
 }
