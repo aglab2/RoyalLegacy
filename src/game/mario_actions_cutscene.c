@@ -191,13 +191,10 @@ Gfx *geo_switch_peach_eyes(s32 callContext, struct GraphNode *node, UNUSED s32 c
  * numStars has reached a milestone and prevNumStarsForDialog has not reached it.
  */
 s32 get_star_collection_dialog(struct MarioState *m) {
-    s32 i;
     s32 dialogID = 0;
-    s32 numStarsRequired;
-
-    numStarsRequired = 31;
+    s32 numStarsRequired = 31;
     if (m->prevNumStarsForDialog < numStarsRequired && m->numStars >= numStarsRequired) {
-        dialogID = i + DIALOG_141;
+        dialogID = DIALOG_141;
     }
 
     m->prevNumStarsForDialog = m->numStars;
@@ -1932,6 +1929,7 @@ static void jumbo_star_cutscene_flying(struct MarioState *m) {
 enum { JUMBO_STAR_CUTSCENE_FALLING, JUMBO_STAR_CUTSCENE_TAKING_OFF, JUMBO_STAR_CUTSCENE_FLYING };
 
 static s32 act_jumbo_star_cutscene(struct MarioState *m) {
+    return 0;
 }
 
 void generate_yellow_sparkles(s16 x, s16 y, s16 z, f32 radius) {
