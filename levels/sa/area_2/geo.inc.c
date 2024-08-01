@@ -5,8 +5,6 @@ const GeoLayout sa_area_2_geo[] = {
 	GEO_OPEN_NODE(),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, sa_dl_door_mesh_layer_1),
 		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, 0, 2457, 1221, 90, 0, 90, sa_dl_gems_mesh_layer_1),
-		GEO_DISPLAY_LIST(LAYER_OPAQUE, sa_dl_ground_mesh_layer_1),
-		GEO_TRANSLATE_ROTATE_WITH_DL(LAYER_OPAQUE, 0, 0, 1000, 0, -90, 0, sa_dl_ground_001_mesh_layer_1),
 		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, 0, 1512, 1221, sa_dl_platform_mesh_layer_1),
 		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, -1122, 0, 2581, sa_dl_platform_challenge_mesh_layer_1),
 		GEO_TRANSLATE_NODE_WITH_DL(LAYER_TRANSPARENT, 0, 1512, 1221, sa_dl_platform_glass_mesh_layer_5),

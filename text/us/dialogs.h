@@ -1608,7 +1608,11 @@ deactivated the lava, so\n\
 feel free to explore to\n\
 your heart's content.")
 
-DEFINE_DIALOG(DIALOG_141,1,5,150,200, "")
+DEFINE_DIALOG(DIALOG_141,1,3,150,200, "Thank you so much\n\
+for playing the hack!\n\
+Hope you enjoyed it!\n\
+Made by Stunning Cactus\n\
+Nobbie and aglab2")
 
 DEFINE_DIALOG(DIALOG_142,1,5,150,200, "You've recovered three\n\
 Power Stars! Now you can\n\

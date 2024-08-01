@@ -19,14 +19,14 @@ void scroll_sa_dl_zone1water_mesh_layer_5_vtx_0() {
 	currentY += deltaY;
 }
 
-void scroll_sa_dl_zone3_mesh_layer_1_vtx_9() {
+void scroll_sa_dl_zone3_mesh_layer_1_vtx_8() {
 	int i = 0;
 	int count = 79;
 	int height = 64 * 0x20;
 
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(sa_dl_zone3_mesh_layer_1_vtx_9);
+	Vtx *vertices = segmented_to_virtual(sa_dl_zone3_mesh_layer_1_vtx_8);
 
 	deltaY = (int)(-0.5 * 0x20) % height;
 
@@ -126,7 +126,7 @@ void scroll_sa_dl_skybox4sh_mesh_layer_0_vtx_0() {
 
 void scroll_sa() {
 	scroll_sa_dl_zone1water_mesh_layer_5_vtx_0();
-	scroll_sa_dl_zone3_mesh_layer_1_vtx_9();
+	scroll_sa_dl_zone3_mesh_layer_1_vtx_8();
 	scroll_sa_dl_zone3_extra_cull_mesh_layer_1_vtx_6();
 	scroll_sa_dl_zone3_extra_cull_2_mesh_layer_1_vtx_2();
 	scroll_sa_dl_zone4water_mesh_layer_5_vtx_0();

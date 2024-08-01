@@ -780,6 +780,9 @@ u32 interact_star_or_key(struct MarioState *m, UNUSED u32 interactType, struct O
     gGrandStar = (obj->oInteractionSubtype & INT_SUBTYPE_GRAND_STAR) != 0;
     u32 gem = (obj->oInteractionSubtype & INT_SUBTYPE_GEM) != 0;
 
+    if (gCurrCourseNum == COURSE_SA)
+        noExit = 1;
+
     if (m->health >= 0x100) {
         mario_stop_riding_and_holding(m);
 #if ENABLE_RUMBLE
@@ -1607,7 +1610,7 @@ u32 interact_cap(struct MarioState *m, UNUSED u32 interactType, struct Object *o
         play_sound(SOUND_MENU_STAR_SOUND, m->marioObj->header.gfx.cameraToObject);
         play_sound(SOUND_MARIO_HERE_WE_GO, m->marioObj->header.gfx.cameraToObject);
 
-        if (capMusic != 0) {
+        if (gCurrCourseNum != COURSE_SA && capMusic != 0) {
             play_cap_music(capMusic);
         }
 
