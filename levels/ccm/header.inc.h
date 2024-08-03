@@ -194,7 +194,7 @@ extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_009_mesh_layer_1_vtx_2[48];
 extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_009_mesh_layer_1_vtx_3[102];
 extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_009_mesh_layer_1_vtx_4[92];
 extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_010_mesh_layer_1_vtx_cull[8];
-extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_010_mesh_layer_1_vtx_0[56];
+extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_010_mesh_layer_1_vtx_0[55];
 extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_010_mesh_layer_1_vtx_1[30];
 extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_010_mesh_layer_1_vtx_2[10];
 extern Vtx ccm_dl_Desert_Ruins_Definitive_Edition_011_mesh_layer_1_vtx_cull[8];

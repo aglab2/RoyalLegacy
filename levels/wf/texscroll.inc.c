@@ -64,7 +64,7 @@ void scroll_wf_dl_zzWinterLevel_2020version_013_mesh_layer_0_vtx_1() {
 void scroll_gfx_wf_dl_WinterLevel_2020version_001_mesh_layer_5() {
 	Gfx *mat = segmented_to_virtual(wf_dl_WinterLevel_2020version_001_mesh_layer_5);
 
-	shift_s(mat, 17, PACK_TILESIZE(0, 1));
+	shift_s(mat, 18, PACK_TILESIZE(0, 1));
 
 };
 

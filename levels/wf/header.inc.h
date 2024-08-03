@@ -285,7 +285,7 @@ extern Vtx wf_dl_CityHall_Doubled__World_2__mesh_layer_1_vtx_9[39];
 extern Vtx wf_dl_CityHall_Doubled__World_2__mesh_layer_1_vtx_10[4];
 extern Vtx wf_dl_CityHall_Doubled__World_2__mesh_layer_1_vtx_11[16];
 extern Vtx wf_dl_CityHall_Doubled__World_2__mesh_layer_5_vtx_cull[8];
-extern Vtx wf_dl_CityHall_Doubled__World_2__mesh_layer_5_vtx_0[16];
+extern Vtx wf_dl_CityHall_Doubled__World_2__mesh_layer_5_vtx_0[8];
 extern Vtx wf_dl_CityHall_Doubled__World_2__mesh_layer_5_vtx_1[40];
 extern Gfx wf_dl_aWinterLevel_2020version_013_mesh_layer_1[];
 extern Gfx wf_dl_bWinterLevel_2020version_mesh_layer_1[];

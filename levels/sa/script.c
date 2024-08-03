@@ -77,7 +77,7 @@ const LevelScript level_sa_entry[] = {
 		OBJECT(0, -4220, 2758, 5920, 0, 0, 0, 0x0, bhvFlamethrower),
 		OBJECT(207, 3564, 88, -4270, 0, -180, 0, 0x0, bhvFloorSwitchAnimatesObject),
 		OBJECT(207, 5025, 0, -3060, 0, -180, 0, 0x0, bhvFloorSwitchGrills),
-		OBJECT(207, 5160, -72, -5560, 0, -180, 0, 0x0, bhvFloorSwitchHiddenObjects),
+		OBJECT(207, 5160, -72, -5560, 0, -180, 0, 0x0, bhvFloorSwitchAnimatesObject),
 		OBJECT(MODEL_GOOMBA, 4854, 78, -4701, 0, -180, 0, 0x0, bhvGoomba),
 		OBJECT(MODEL_GOOMBA, 4854, 143, -4886, 0, -180, 0, 0x0, bhvGoomba),
 		OBJECT(MODEL_GOOMBA, 3499, 78, -4383, 0, -180, 0, 0x0, bhvGoomba),
@@ -107,7 +107,7 @@ const LevelScript level_sa_entry[] = {
 		OBJECT(MODEL_BREAKWINDOW, 3406, 264, -3274, 0, 0, 0, 0x00000000, bhvbreakwindow),
 		TERRAIN(sa_area_1_collision),
 		MACRO_OBJECTS(sa_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, 0x32),
+		SET_BACKGROUND_MUSIC(0x00, 0x20),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -128,20 +128,20 @@ const LevelScript level_sa_entry[] = {
 		WARP_NODE(12, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_HEART, -312, 1699, 5065, 0, 0, 0, 0x00000000, bhvRecoveryHeart),
 		OBJECT(MODEL_HEART, 2, 87, 774, 0, 0, 0, 0x00000000, bhvRecoveryHeart),
-		MARIO_POS(1, 0, 0, 82, 0),
+		
 		OBJECT(MODEL_STAR, 0, 1979, 1221, 0, 0, 0, 0x000A0000, bhvStar),
 		OBJECT(MODEL_NONE, 0, 0, 0, 0, 0, 0, (33 << 16), bhvSpinAirborneWarp),
 		OBJECT(MODEL_NONE, 5, 1918, 987, 0, 0, 0, (12 << 16), bhvDeathWarp),
 		TERRAIN(sa_area_2_collision),
 		MACRO_OBJECTS(sa_area_2_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, 0x32),
+		SET_BACKGROUND_MUSIC(0x00, 0x20),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
 	END_AREA(),
 
 	FREE_LEVEL_POOL(),
-	MARIO_POS(1, 0, 0, 82, 0),
+	
 	CALL(0, lvl_init_or_update),
 	CALL_LOOP(1, lvl_init_or_update),
 	CLEAR_LEVEL(),
