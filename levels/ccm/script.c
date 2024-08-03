@@ -61,7 +61,6 @@ const LevelScript level_ccm_entry[] = {
 		WARP_NODE(4, LEVEL_CCM, 1, 3, WARP_NO_CHECKPOINT),
 		WARP_NODE(10, LEVEL_CCM, 1, 0, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_NONE, 1045, 3317, -6355, 0, 0, 0, 0x00000000, bhvCS),
-		OBJECT(MODEL_NONE, 5815, 1176, -8243, 0, 0, 0, 0x0, bhvGem),
 		OBJECT(212, -153, 762, 3144, 0, -85, 0, 0x0, bhv1Up),
 		OBJECT(140, -13322, 2397, 2389, 0, 0, 0, 0x0, bhvBlueCoinSwitch),
 		OBJECT(188, 6480, 1154, 4530, 0, 0, 0, 0x0, bhvBobomb),

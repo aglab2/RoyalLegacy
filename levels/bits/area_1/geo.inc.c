@@ -9,6 +9,7 @@ const GeoLayout bits_area_1_geo[] = {
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, bits_dl_Bowser_Level_001_mesh_layer_1),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, bits_dl_Bowser_Level_002_mesh_layer_1),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, bits_dl_Bowser_Level_003_mesh_layer_1),
+		GEO_DISPLAY_LIST(LAYER_OPAQUE, bits_dl_Bowser_Level_005_mesh_layer_1),
 		GEO_DISPLAY_LIST(LAYER_FORCE, bits_dl_Icosphere_mesh_layer_0),
 		GEO_DISPLAY_LIST(LAYER_FORCE, bits_dl_Icosphere_001_mesh_layer_0),
 		GEO_DISPLAY_LIST(LAYER_FORCE, bits_dl_Icosphere_002_mesh_layer_0),

@@ -608,9 +608,9 @@ static void koopa_the_quick_act_race(void) {
                         // cheated by shooting from cannon
                         o->oKoopaAgility = 8.0f;
                     } else if (o->oKoopaTheQuickRaceIndex != KOOPA_THE_QUICK_BOB_INDEX) {
-                        o->oKoopaAgility = 5.0f;
+                        o->oKoopaAgility = 7.0f;
                     } else {
-                        o->oKoopaAgility = 5.0f;
+                        o->oKoopaAgility = 7.0f;
                     }
 
                     obj_forward_vel_approach(o->oKoopaAgility * 6.0f * downhillSteepness,

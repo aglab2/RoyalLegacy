@@ -54,6 +54,7 @@ const LevelScript level_bits_entry[] = {
 		WARP_NODE(39, LEVEL_BITS, 1, 0, WARP_NO_CHECKPOINT),
 		WARP_NODE(10, LEVEL_BOB, 1, 0, WARP_NO_CHECKPOINT),
 		WARP_NODE(0x69, LEVEL_ENDING, 0x01, 0x0A, WARP_NO_CHECKPOINT),
+		OBJECT(MODEL_HEART, 4496, 5016, -5040, 0, 0, 0, 0x00000000, bhvRecoveryHeart),
 		OBJECT(212, -7270, 2454, 1180, 0, -90, 0, 0x0, bhv1Up),
 		OBJECT(212, 1135, 5267, -12010, 0, -90, 0, 0x0, bhv1Up),
 		OBJECT(65, 4500, 6138, 10183, 0, -90, 0, 0x0, bhvAnimatesOnFloorSwitchPress),

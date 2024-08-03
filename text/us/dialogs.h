@@ -492,8 +492,8 @@ them down!")
 DEFINE_DIALOG(DIALOG_043,1,5,30,200, "Thanks for the red coins,\n\
 Mario! As promised, I\n\
 had my team place\n\
-boxes leading further up\n\
-the mountain. \n\
+ladders leading further \n\
+up the mountain. \n\
 Why don't you climb up \n\
 there and see if you can \n\
 find the Elder? We have\n\
@@ -1464,8 +1464,9 @@ wonder if you can get to \n\
 the top and grab it...")
 
 DEFINE_DIALOG(DIALOG_135,1,5,30,200, "Mario! The mayor had\n\
-his crew place boxes so \n\
-you can climb further \n\
+his crew place ladders and \n\
+materials so you \n\
+can climb further \n\
 up the mountain.\n\
 \n\
 You don't need to go \n\
@@ -1474,7 +1475,7 @@ time either. Just climb\n\
 the snow cliffs behind\n\
 you and use the trail\n\
 we made with some\n\
-boxes. It's a shortcut!\n\
+materials. It's a shortcut!\n\
 \n\
 \n\
 \n\

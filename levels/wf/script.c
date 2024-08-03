@@ -142,7 +142,6 @@ const LevelScript level_wf_entry[] = {
 		OBJECT(25, -1330, 456, 6235, 0, 170, 0, 0x0, bhvTree),
 		OBJECT(25, 2489, 456, 4559, 0, 170, 0, 0x0, bhvTree),
 		OBJECT(MODEL_RED_COIN_ARROW, 852, -388, -358, 0, 0, 0, (3 << 16), bhvRedCoinRadar),
-		OBJECT_WITH_ACTS(0, 391, 459, 4726, 0, 0, 0, 0, bhvSparkler, ACT_5),
 		OBJECT_WITH_ACTS(MODEL_C2_STAIRS, 0, 0, 0, 0, 0, 0, 0x00000000, bhvC2Stairs, ACT_4 | ACT_5 | ACT_6),
 		TERRAIN(wf_area_1_collision),
 		MACRO_OBJECTS(wf_area_1_macro_objs),

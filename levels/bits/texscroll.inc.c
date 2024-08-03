@@ -105,7 +105,7 @@ void scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_25() {
 
 void scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_30() {
 	int i = 0;
-	int count = 76;
+	int count = 164;
 	int height = 32 * 0x20;
 
 	static int currentY = 0;
@@ -113,27 +113,6 @@ void scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_30() {
 	Vtx *vertices = segmented_to_virtual(bits_dl_Bowser_Level_mesh_layer_1_vtx_30);
 
 	deltaY = (int)(0.1899999976158142 * 0x20) % height;
-
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[1] += deltaY;
-	}
-	currentY += deltaY;
-}
-
-void scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_31() {
-	int i = 0;
-	int count = 4;
-	int height = 64 * 0x20;
-
-	static int currentY = 0;
-	int deltaY;
-	Vtx *vertices = segmented_to_virtual(bits_dl_Bowser_Level_mesh_layer_1_vtx_31);
-
-	deltaY = (int)(-0.5 * 0x20) % height;
 
 	if (absi(currentY) > height) {
 		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
@@ -261,21 +240,21 @@ void scroll_bits_dl_Icosphere_002_mesh_layer_0_vtx_0() {
 void scroll_gfx_bits_dl_Bowser_Level_003_mesh_layer_1() {
 	Gfx *mat = segmented_to_virtual(bits_dl_Bowser_Level_003_mesh_layer_1);
 
-	shift_t(mat, 19, PACK_TILESIZE(0, 4));
+	shift_t(mat, 20, PACK_TILESIZE(0, 4));
 
 };
 
 void scroll_gfx_bits_dl_Icosphere_mesh_layer_0() {
 	Gfx *mat = segmented_to_virtual(bits_dl_Icosphere_mesh_layer_0);
 
-	shift_s(mat, 13, PACK_TILESIZE(0, 1));
+	shift_s(mat, 14, PACK_TILESIZE(0, 1));
 
 };
 
 void scroll_gfx_bits_dl_Icosphere_002_mesh_layer_0() {
 	Gfx *mat = segmented_to_virtual(bits_dl_Icosphere_002_mesh_layer_0);
 
-	shift_s(mat, 13, PACK_TILESIZE(0, 1));
+	shift_s(mat, 14, PACK_TILESIZE(0, 1));
 
 };
 
@@ -286,7 +265,6 @@ void scroll_bits() {
 	scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_22();
 	scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_25();
 	scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_30();
-	scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_31();
 	scroll_bits_dl_Bowser_Level_001_mesh_layer_1_vtx_0();
 	scroll_bits_dl_Bowser_Level_003_mesh_layer_1_vtx_0();
 	scroll_bits_dl_Icosphere_mesh_layer_0_vtx_0();
