@@ -23,12 +23,7 @@
  */
 SpatialPartitionCell gStaticSurfacePartition[NUM_CELLS][NUM_CELLS];
 SpatialPartitionCell gDynamicSurfacePartition[NUM_CELLS][NUM_CELLS];
-struct CellCoords {
-    u8 z;
-    u8 x;
-    u8 partition;
-};
-struct CellCoords sCellsUsed[NUM_CELLS];
+u16 sCellsUsedOffsets[NUM_CELLS];
 u16 sNumCellsUsed;
 u8 sClearAllCells;
 
@@ -96,27 +91,11 @@ static struct Surface *alloc_surface(u32 dynamic) {
 }
 
 /**
- * Iterates through the entire partition, clearing the surfaces.
- */
-static void clear_spatial_partition(SpatialPartitionCell *cells) {
-    register s32 i = sqr(NUM_CELLS);
-
-    while (i--) {
-        (*cells)[SPATIAL_PARTITION_FLOORS] = NULL;
-        (*cells)[SPATIAL_PARTITION_CEILS] = NULL;
-        (*cells)[SPATIAL_PARTITION_WALLS] = NULL;
-        (*cells)[SPATIAL_PARTITION_WATER] = NULL;
-
-        cells++;
-    }
-}
-
-/**
  * Clears the static (level) surface partitions for new use.
  */
 static void clear_static_surfaces(void) {
     gTotalStaticSurfaceData = 0;
-    clear_spatial_partition(&gStaticSurfacePartition[0][0]);
+    bzero(&gStaticSurfacePartition[0][0], sizeof(gStaticSurfacePartition));
 }
 
 /**
@@ -151,13 +130,11 @@ static void add_surface_to_cell(s32 dynamic, s32 cellX, s32 cellZ, struct Surfac
 
     if (dynamic) {
         list = &gDynamicSurfacePartition[cellZ][cellX][listIndex];
-        if (sNumCellsUsed >= sizeof(sCellsUsed) / sizeof(struct CellCoords)) {
+        if (sNumCellsUsed >= sizeof(sCellsUsedOffsets) / sizeof(*sCellsUsedOffsets)) {
             sClearAllCells = TRUE;
         } else {
             if (*list == NULL) {
-                sCellsUsed[sNumCellsUsed].z = cellZ;
-                sCellsUsed[sNumCellsUsed].x = cellX;
-                sCellsUsed[sNumCellsUsed].partition = listIndex;
+                sCellsUsedOffsets[sNumCellsUsed] = list - &gDynamicSurfacePartition[0][0][0];
                 sNumCellsUsed++;
             }
         }
@@ -503,7 +480,6 @@ void load_area_terrain(TerrainData *data, RoomData *surfaceRooms) {
     gEnvironmentRegions = NULL;
     gSurfaceNodesAllocated = 0;
     gSurfacesAllocated = 0;
-    bzero(&sCellsUsed, sizeof(sCellsUsed));
     sNumCellsUsed = 0;
     sClearAllCells = TRUE;
 
@@ -548,10 +524,11 @@ void clear_dynamic_surfaces(void) {
         gSurfaceNodesAllocated = gNumStaticSurfaceNodes;
         gDynamicSurfacePoolEnd = gDynamicSurfacePool;
         if (sClearAllCells) {
-            clear_spatial_partition(&gDynamicSurfacePartition[0][0]);
+            bzero(&gDynamicSurfacePartition[0][0], sizeof(gDynamicSurfacePartition));
         } else {
+            struct SurfaceNode **list = &gDynamicSurfacePartition[0][0][0];
             for (u32 i = 0; i < sNumCellsUsed; i++) {
-                gDynamicSurfacePartition[sCellsUsed[i].z][sCellsUsed[i].x][sCellsUsed[i].partition] = NULL;
+                list[sCellsUsedOffsets[i]] = NULL;
             }
         }
         sNumCellsUsed = 0;
