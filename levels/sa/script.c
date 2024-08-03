@@ -107,7 +107,7 @@ const LevelScript level_sa_entry[] = {
 		OBJECT(MODEL_BREAKWINDOW, 3406, 264, -3274, 0, 0, 0, 0x00000000, bhvbreakwindow),
 		TERRAIN(sa_area_1_collision),
 		MACRO_OBJECTS(sa_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, 0x20),
+		SET_BACKGROUND_MUSIC(0x00, 0x32),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -134,7 +134,7 @@ const LevelScript level_sa_entry[] = {
 		OBJECT(MODEL_NONE, 5, 1918, 987, 0, 0, 0, (12 << 16), bhvDeathWarp),
 		TERRAIN(sa_area_2_collision),
 		MACRO_OBJECTS(sa_area_2_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, 0x20),
+		SET_BACKGROUND_MUSIC(0x00, 0x32),
 		TERRAIN_TYPE(TERRAIN_STONE),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
