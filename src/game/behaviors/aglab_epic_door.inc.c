@@ -93,7 +93,7 @@ static void checkWarp()
     
     if (floorType == SURFACE_VANISH_CAP_WALLS)
     {
-        if ((save_file_get_flags() & SAVE_FILE_RL_GEMS) == SAVE_FILE_RL_GEMS)
+        if ((save_file_get_flags() & SAVE_FILE_RL_GEMS) != SAVE_FILE_RL_GEMS)
         {
             if (gCheatingTranslucency < 255)
                 gCheatingTranslucency += 5;
