@@ -128,7 +128,7 @@ const LevelScript level_sa_entry[] = {
 		WARP_NODE(12, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_HEART, -312, 1699, 5065, 0, 0, 0, 0x00000000, bhvRecoveryHeart),
 		OBJECT(MODEL_HEART, 2, 87, 774, 0, 0, 0, 0x00000000, bhvRecoveryHeart),
-		
+		MARIO_POS(1, 0, 0, 82, 0),
 		OBJECT(MODEL_STAR, 0, 1979, 1221, 0, 0, 0, 0x000A0000, bhvStar),
 		OBJECT(MODEL_NONE, 0, 0, 0, 0, 0, 0, (33 << 16), bhvSpinAirborneWarp),
 		OBJECT(MODEL_NONE, 5, 1918, 987, 0, 0, 0, (12 << 16), bhvDeathWarp),
@@ -141,7 +141,7 @@ const LevelScript level_sa_entry[] = {
 	END_AREA(),
 
 	FREE_LEVEL_POOL(),
-	
+	MARIO_POS(1, 0, 0, 82, 0),
 	CALL(0, lvl_init_or_update),
 	CALL_LOOP(1, lvl_init_or_update),
 	CLEAR_LEVEL(),
