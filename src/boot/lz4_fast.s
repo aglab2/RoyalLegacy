@@ -47,9 +47,9 @@ decompress_lz4_full_fast:
     move dma_ctx, $a3
 
     add $s1, $s0                                # calculate end of input buffer
-    li offsets, 0x01210444                      # inc32table compressed
+    li offsets, 0x000fc123                      # dec64table compressed
     dsll offsets, offsets, 32
-    li $t0, 0x000fc123                          # dec64table compressed
+    li $t0, 0x01210444                          # inc32table compressed
     or offsets, $t0                             # offsets have combined inc32table+dec64table
     move dma_ptr, $a0
     addiu dma_ptr, dma_ptr, -16
@@ -142,10 +142,11 @@ decompress_lz4_full_fast:
     sb $t0, 2(outbuf)
     sb $t1, 3(outbuf)
     dsllv $t4, offsets, $t3                     # fetch an offset from 'offsets' constant
-    dsra $t5, $t4, 60                          # $t5 is inc32table[offset]
+    dsra $t5, $t4, 28                          # $t5 is inc32table[offset]
+    andi $t5, $t5, 0xf
     add v0_st, v0_st, $t5
     lwl $t0, 0(v0_st)
-    sra $t6, $t4, 28                           # $t6 is dec64table[offset]
+    dsra $t6, $t4, 60                           # $t6 is dec64table[offset]
     lwr $t0, 3(v0_st)
     sub v0_st, v0_st, $t6
     swl $t0, 4(outbuf)
