@@ -82,7 +82,6 @@ const LevelScript level_jrb_entry[] = {
 		OBJECT(0, -2020, -190, -590, 0, 91, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, -8321, -211, 1482, 0, -29, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, 8092, 2759, -4468, 0, -39, 0, 0x0, bhvCoinFormation),
-		OBJECT(0, 5230, 2079, -12216, 0, 50, 0, 0x40000, bhvCoinFormation),
 		OBJECT(0, 1167, 78, -1136, 0, 49, 0, 0x0, bhvCoinFormation),
 		OBJECT(0, 4798, 2237, 7521, 0, 0, 0, 0x110000, bhvCoinFormation),
 		OBJECT(0, 2515, 2237, 8501, 0, 0, 0, 0x110000, bhvCoinFormation),

@@ -19,14 +19,14 @@ void scroll_sa_dl_zone1water_mesh_layer_5_vtx_0() {
 	currentY += deltaY;
 }
 
-void scroll_sa_dl_zone3_mesh_layer_1_vtx_8() {
+void scroll_sa_dl_zone3_mesh_layer_1_vtx_7() {
 	int i = 0;
 	int count = 63;
 	int height = 64 * 0x20;
 
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(sa_dl_zone3_mesh_layer_1_vtx_8);
+	Vtx *vertices = segmented_to_virtual(sa_dl_zone3_mesh_layer_1_vtx_7);
 
 	deltaY = (int)(-0.5 * 0x20) % height;
 
@@ -103,10 +103,18 @@ void scroll_sa_dl_skybox4sh_mesh_layer_0_vtx_0() {
 	currentX += deltaX;
 }
 
+void scroll_gfx_sa_dl_zone3_mesh_layer_1() {
+	Gfx *mat = segmented_to_virtual(sa_dl_zone3_mesh_layer_1);
+
+	shift_t(mat, 219, PACK_TILESIZE(0, 1));
+
+};
+
 void scroll_sa() {
 	scroll_sa_dl_zone1water_mesh_layer_5_vtx_0();
-	scroll_sa_dl_zone3_mesh_layer_1_vtx_8();
+	scroll_sa_dl_zone3_mesh_layer_1_vtx_7();
 	scroll_sa_dl_zone3_extra_cull_2_mesh_layer_1_vtx_2();
 	scroll_sa_dl_zone4water_mesh_layer_5_vtx_0();
 	scroll_sa_dl_skybox4sh_mesh_layer_0_vtx_0();
+	scroll_gfx_sa_dl_zone3_mesh_layer_1();
 };
