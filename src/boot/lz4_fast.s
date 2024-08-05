@@ -113,15 +113,16 @@ decompress_lz4_full_fast:
      addu outbuf, match_len                     # adjust pointer remove extra bytes
 
 .Lmatch1_memset:                                # prepare memset loop (value in t0)
-    dsll $t1, $t0, 8                            # duplicate the LSB into all bytes
-    or $t0, $t1
-    dsll $t1, $t0, 16
-    or $t0, $t1
-    dsll $t1, $t0, 32
-    or $t0, $t1
+    dsll $t7, $t0, 8                            # duplicate the LSB into all bytes
+    or $t0, $t7
+    dsll $t7, $t0, 16
+    or $t0, $t7
+    dsll $t7, $t0, 32
+    or $t7, $t0
 .Lmatch1_memset_loop:                           # memset loop
-    sdl $t0, 0(outbuf)                          # store 8 bytes
-    sdr $t0, 7(outbuf)                           
+    sdl $t7, 0(outbuf)                          # store 8 bytes
+    sdr $t7, 7(outbuf)                           
+.Lfixuped_memset:
     addiu match_len, -8                         # adjust match_len
     bgtz match_len, .Lmatch1_memset_loop        # check we went past match_len
      addiu outbuf, 8
@@ -129,12 +130,13 @@ decompress_lz4_full_fast:
      addu outbuf, match_len                     # adjust pointer remove extra bytes
 
 .Lslow_path:                                    # We are on a slow potentially, check offsets
-    beq match_off, 1, .Lmatch1_memset           # if match_off is 1, it's a memset
-    lbu $t0, 0(v0_st)                             # load 1 byte
+    addiu $t8, match_off, -1                    # keep $t8=match_off - 1 for later
+    beqz $t8, .Lmatch1_memset                   # if match_off is 1, it's a memset
+    lbu $t0, 0(v0_st)                           # load 1 byte
     slti $t9, match_off, 8                      # Check if offset is >=8, in this case can still fast path 
     beqz $t9, .Lmatch8_loop                     # the chance of this condition is incredibly low
     sll $t3, match_off, 2                       # from here on, offset is between 2 and 7
-    lbu $t1, 1(v0_st)                           # converge this case to fast memcpy, unroll copy 4 bytes
+    lbu $t1, 1(v0_st)                           # converge this case to fast memcpy, carefully copy 8 bytes (LZ4_memcpy_using_offset_base)
     sb $t0, 0(outbuf)
     sb $t1, 1(outbuf)
     lbu $t0, 2(v0_st)
@@ -150,8 +152,13 @@ decompress_lz4_full_fast:
     lwr $t0, 3(v0_st)
     sub v0_st, v0_st, $t6
     swl $t0, 4(outbuf)
-    b .Lfixuped_wild_copy
+    and $t2, match_off, $t8                     # t2=match_off & (match_off - 1) which will be 0 if match_off is power of 2
+    bnez $t2, .Lfixuped_wild_copy               # not power of 2, do the regular wildcopy
     swr $t0, 7(outbuf)
+    dsll $t7, $t0, 32                           # create $t7 that will have $t0 twice consider sign extension from lwl/lwr
+    dsrl $t0, $t7, 32                           # zero out $t0 top bits
+    b .Lfixuped_memset
+    or $t7, $t0
 
 .Lend:
     lw $ra, 0x14($sp)
