@@ -1,30 +1,9 @@
-Lights1 sa_dl_Fence_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 sa_dl_auto1_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 sa_dl_auto3_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 sa_dl_auto2_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 sa_dl_Waterfall_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 sa_dl_Metal_2_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 sa_dl_Transparentish_f3d_lights = gdSPDefLights1(
-	0x49, 0x34, 0x2E,
-	0x97, 0x70, 0x63, 0x49, 0x49, 0x49);
 
 Gfx sa_dl_a_ci4_aligner[] = {gsSPEndDisplayList()};
 u8 sa_dl_a_ci4[] = {
@@ -29201,7 +29180,8 @@ Gfx sa_dl_zone1_mesh_layer_4[] = {
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_RGBA16 | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsSPTexture(65535, 65535, 0, 0, 1),
-	gsSPSetLights1(sa_dl_Fence_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, sa_dl_Fence_pal_rgba16),
 	gsDPSetTile(0, 0, 0, 256, 5, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadTLUTCmd(5, 15),
@@ -29246,7 +29226,8 @@ Gfx sa_dl_zone1flowers_mesh_layer_1[] = {
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsSPTexture(65535, 65535, 0, 0, 1),
-	gsSPSetLights1(sa_dl_auto1_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, sa_dl_auto1_rgba16),
 	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadBlock(7, 0, 0, 1023, 256),
@@ -29423,7 +29404,8 @@ Gfx sa_dl_zone1flowers_mesh_layer_1[] = {
 	gsSP2Triangles(0, 1, 2, 0, 1, 0, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 5, 4, 7, 0),
 	gsDPPipeSync(),
-	gsSPSetLights1(sa_dl_auto3_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, sa_dl_auto3_rgba16),
 	gsDPLoadBlock(7, 0, 0, 1023, 256),
 	gsSPVertex(sa_dl_zone1flowers_mesh_layer_1_vtx_1 + 0, 30, 0),
@@ -29487,7 +29469,8 @@ Gfx sa_dl_zone1flowers_mesh_layer_1[] = {
 	gsSP2Triangles(4, 5, 6, 0, 5, 4, 7, 0),
 	gsSP2Triangles(8, 9, 10, 0, 9, 8, 11, 0),
 	gsDPPipeSync(),
-	gsSPSetLights1(sa_dl_auto2_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, sa_dl_auto2_rgba16),
 	gsDPLoadBlock(7, 0, 0, 1023, 256),
 	gsSPVertex(sa_dl_zone1flowers_mesh_layer_1_vtx_2 + 0, 30, 0),
@@ -29532,7 +29515,8 @@ Gfx sa_dl_zone1water_mesh_layer_5[] = {
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsSPTexture(65535, 65535, 0, 0, 1),
 	gsDPSetPrimColor(0, 0, 255, 255, 255, 117),
-	gsSPSetLights1(sa_dl_Waterfall_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, sa_dl_Waterfall_rgba16),
 	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadBlock(7, 0, 0, 2047, 256),
@@ -29994,7 +29978,8 @@ Gfx sa_dl_zone2_mesh_layer_1[] = {
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
-	gsSPSetLights1(sa_dl_Metal_2_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, sa_dl_Metal_2_rgba16),
 	gsDPSetTile(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 0, 0, 7, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0, G_TX_WRAP | G_TX_NOMIRROR, 0, 0),
 	gsDPLoadBlock(7, 0, 0, 1023, 256),
@@ -32543,7 +32528,8 @@ Gfx sa_dl_zone4_mesh_layer_5[] = {
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
 	gsSPTexture(65535, 65535, 0, 0, 1),
 	gsDPSetEnvColor(255, 255, 255, 102),
-	gsSPSetLights1(sa_dl_Transparentish_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0x977063ff),
+    gsSPLightColor(LIGHT_2, 0x49342eff),
 	gsSPVertex(sa_dl_zone4_mesh_layer_5_vtx_0 + 0, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
