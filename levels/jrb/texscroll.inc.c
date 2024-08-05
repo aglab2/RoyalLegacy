@@ -1,4 +1,4 @@
-void scroll_jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_33() {
+void scroll_jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_32() {
 	int i = 0;
 	int count = 109;
 	int width = 64 * 0x20;
@@ -8,7 +8,7 @@ void scroll_jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_33() {
 	int deltaX;
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_33);
+	Vtx *vertices = segmented_to_virtual(jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_32);
 
 	deltaX = (int)(0.0 * 0x20) % width;
 	deltaY = (int)(-1.0 * 0x20) % height;
@@ -81,7 +81,7 @@ void scroll_gfx_mat_jrb_dl_f3dlite_material_005_layer0() {
 };
 
 void scroll_jrb() {
-	scroll_jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_33();
+	scroll_jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_32();
 	scroll_jrb_dl_skybox2_mesh_layer_0_vtx_0();
 	scroll_gfx_mat_jrb_dl_LavaPools__noflow__001_f3d_001();
 	scroll_gfx_mat_jrb_dl_AlsoFlowingLava_001_f3d_001();
