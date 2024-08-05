@@ -39,7 +39,8 @@ decompress_lz4_full_fast:
     sw $s5, 0x2C($sp)
     sw $s7, 0x30($sp)
     sw $s8, 0x34($sp)
-    sd $s6, 0x38($sp)
+    sdl $s6, 0x38($sp)
+    sdr $s6, 0x3f($sp)
 
     move $s0, $a0
     move $s1, $a1
@@ -170,7 +171,8 @@ decompress_lz4_full_fast:
     lw $s5, 0x2C($sp)
     lw $s7, 0x30($sp)
     lw $s8, 0x34($sp)
-    ld $s6, 0x38($sp)
+    ldl $s6, 0x38($sp)
+    ldr $s6, 0x3f($sp)
     jr $ra
     addiu $sp, $sp, 0x40
 
