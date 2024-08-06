@@ -557,5 +557,6 @@ extern const BehaviorScript bhvEndingPlayer[];
 extern const BehaviorScript bhvSparkler[];
 extern const BehaviorScript bhvbreakwindow[];
 extern const BehaviorScript bhvSALadder[];
+extern const BehaviorScript bhvGemmies[];
 
 #endif // BEHAVIOR_DATA_H

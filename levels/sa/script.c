@@ -38,6 +38,7 @@ const LevelScript level_sa_entry[] = {
 	JUMP_LINK(script_func_vo_bob), 
 	LOAD_MODEL_FROM_GEO(MODEL_BREAKWINDOW, breakwindow_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_SA_LADDER, sa_ladder_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_GEMMIES, gemmies_geo), 
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */

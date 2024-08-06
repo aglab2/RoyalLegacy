@@ -27,7 +27,7 @@ const GeoLayout bits_area_1[] = {
 				GEO_OPEN_NODE(),
 					GEO_BRANCH(1, bits_area_1_geo),
 					GEO_RENDER_OBJ(),
-					GEO_ASM(ENVFX_MODE_NONE, geo_envfx_main),
+					GEO_ASM(ENVFX_SNOW_NORMAL, geo_envfx_main),
 				GEO_CLOSE_NODE(),
 			GEO_CLOSE_NODE(),
 		GEO_CLOSE_NODE(),

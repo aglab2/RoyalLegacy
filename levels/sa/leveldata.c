@@ -12,3 +12,5 @@
 #include "levels/sa/sa_ladder/model.inc.c"
 #include "levels/sa/sa_ladder/collision.inc.c"
 #include "levels/sa/sa_ladder2/collision.inc.c"
+#include "levels/sa/gemmies/collision.inc.c"
+#include "levels/sa/gemmies/model.inc.c"

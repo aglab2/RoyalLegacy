@@ -95,7 +95,7 @@ extern Vtx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_2[4];
 extern Gfx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_tri_2[];
 extern Vtx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_3[292];
 extern Gfx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_tri_3[];
-extern Vtx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_4[20];
+extern Vtx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_4[6];
 extern Gfx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_tri_4[];
 extern Vtx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_vtx_5[1084];
 extern Gfx jrb_dl_Brimstone_Banks_Definitive_Edition_mesh_layer_1_tri_5[];
