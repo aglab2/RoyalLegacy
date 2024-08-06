@@ -204,6 +204,10 @@ s32 envfx_is_snowflake_alive(s32 index, s32 snowCylinderX, s32 snowCylinderY, s3
  * have been done because larger, further away snowflakes are occluded easily
  * by level geometry, wasting many particles.
  */
+
+/**
+ * This is now rain, there is no normal snow.
+ */
 void envfx_update_snow_normal(s32 snowCylinderX, s32 snowCylinderY, s32 snowCylinderZ) {
     s32 i;
     s32 deltaX = snowCylinderX - gSnowCylinderLastPos[0];
@@ -218,11 +222,11 @@ void envfx_update_snow_normal(s32 snowCylinderX, s32 snowCylinderY, s32 snowCyli
                 400.0f * random_float() - 200.0f + snowCylinderX + (s16)(deltaX * 2);
             (gEnvFxBuffer + i)->zPos =
                 400.0f * random_float() - 200.0f + snowCylinderZ + (s16)(deltaZ * 2);
-            (gEnvFxBuffer + i)->yPos = 200.0f * random_float() + snowCylinderY;
+            (gEnvFxBuffer + i)->yPos = 400.0f * random_float() - 200.0f + snowCylinderY;
             (gEnvFxBuffer + i)->isAlive = TRUE;
         } else {
             (gEnvFxBuffer + i)->xPos += random_float() * 2 - 1.0f + (s16)(deltaX / 1.2);
-            (gEnvFxBuffer + i)->yPos -= 2 -(s16)(deltaY * 0.8);
+            (gEnvFxBuffer + i)->yPos -= (20)  -(s16)(deltaY * 0.8);
             (gEnvFxBuffer + i)->zPos += random_float() * 2 - 1.0f + (s16)(deltaZ / 1.2);
         }
     }
@@ -438,10 +442,17 @@ Gfx *envfx_update_snow(s32 snowMode, Vec3s marioPos, Vec3s camFrom, Vec3s camTo)
 
     rotate_triangle_vertices((s16 *) &vertex1, (s16 *) &vertex2, (s16 *) &vertex3, pitch, yaw);
 
-    if (snowMode == ENVFX_SNOW_NORMAL || snowMode == ENVFX_SNOW_BLIZZARD) {
-        gSPDisplayList(gfx++, &tiny_bubble_dl_0B006A50); // snowflake with gray edge
+    if (snowMode == ENVFX_SNOW_NORMAL) {
+        gSPDisplayList(gfx++, &tiny_bubble_dl_0B006CD8); // snowflake with gray edge
     } else if (snowMode == ENVFX_SNOW_WATER) {
         gSPDisplayList(gfx++, &tiny_bubble_dl_0B006CD8); // snowflake with blue edge
+    }
+
+    
+    if (snowMode == ENVFX_SNOW_BLIZZARD) {
+        gSPDisplayList(gfx++, &tiny_bubble_dl_0B006A50); // snowflake with gray edge
+    } else if (snowMode == ENVFX_SNOW_WATER) {
+        gSPDisplayList(gfx++, &tiny_bubble_dl_0B006A50); // snowflake with blue edge
     }
 
     for (i = 0; i < gSnowParticleCount; i += 5) {

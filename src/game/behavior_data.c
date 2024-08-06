@@ -6215,3 +6215,13 @@ extern const BehaviorScript bhvSALadder[] = {
         CALL_NATIVE(bhv_sa_ladder_loop),
     END_LOOP(),
 };
+
+const BehaviorScript bhvGemmies[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    OR_LONG(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_DONT_CALC_COLL_DIST)),
+     SET_FLOAT(oDrawingDistance, 100000),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_rotating_platform_loop),
+        LOAD_COLLISION_DATA(load_object_collision_model),
+    END_LOOP(),
+};
