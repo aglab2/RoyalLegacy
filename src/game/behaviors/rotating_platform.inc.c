@@ -38,3 +38,10 @@ void bhv_rotating_platform_loop(void) {
     o->oAngleVelYaw = speed << 4;
     o->oFaceAngleYaw += o->oAngleVelYaw;
 }
+
+void bhv_gemmies_rotating_loop(void) {
+    o->oAngleVelYaw = 0x23;
+    o->oFaceAngleYaw += o->oAngleVelYaw;
+    o->oMoveAngleYaw += o->oAngleVelYaw;
+    o->oPosY = o->oHomeY + sins(o->oTimer * 0x123) * 50.0f;
+}

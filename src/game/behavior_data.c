@@ -6216,13 +6216,15 @@ extern const BehaviorScript bhvSALadder[] = {
     END_LOOP(),
 };
 
+extern void bhv_gemmies_rotating_loop();
 const BehaviorScript bhvGemmies[] = {
     BEGIN(OBJ_LIST_SURFACE),
-    OR_LONG(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_DONT_CALC_COLL_DIST)),
-    SET_FLOAT(oDrawingDistance, 100000),
+    OR_LONG(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW)),
+    SET_FLOAT(oDrawingDistance, 30000),
     LOAD_COLLISION_DATA(gemmies_collision),
+    SET_HOME(),
     BEGIN_LOOP(),
-        CALL_NATIVE(bhv_rotating_platform_loop),
+        CALL_NATIVE(bhv_gemmies_rotating_loop),
         CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
 };
