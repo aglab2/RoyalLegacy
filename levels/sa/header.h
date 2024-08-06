@@ -18,4 +18,8 @@ extern const LevelScript level_sa_entry[];
 
 #include "levels/sa/sa_ladder2/collision_header.h"
 
+#include "levels/sa/gemmies/collision_header.h"
+
+#include "levels/sa/gemmies/geo_header.h"
+
 #endif
