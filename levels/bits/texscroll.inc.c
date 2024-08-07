@@ -21,7 +21,7 @@ void scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_8() {
 
 void scroll_bits_dl_Bowser_Level_mesh_layer_1_vtx_9() {
 	int i = 0;
-	int count = 53;
+	int count = 49;
 	int height = 32 * 0x20;
 
 	static int currentY = 0;
@@ -240,21 +240,21 @@ void scroll_bits_dl_Icosphere_002_mesh_layer_0_vtx_0() {
 void scroll_gfx_bits_dl_Bowser_Level_003_mesh_layer_1() {
 	Gfx *mat = segmented_to_virtual(bits_dl_Bowser_Level_003_mesh_layer_1);
 
-	shift_t(mat, 20, PACK_TILESIZE(0, 4));
+	shift_t(mat, 19, PACK_TILESIZE(0, 4));
 
 };
 
 void scroll_gfx_bits_dl_Icosphere_mesh_layer_0() {
 	Gfx *mat = segmented_to_virtual(bits_dl_Icosphere_mesh_layer_0);
 
-	shift_s(mat, 14, PACK_TILESIZE(0, 1));
+	shift_s(mat, 13, PACK_TILESIZE(0, 1));
 
 };
 
 void scroll_gfx_bits_dl_Icosphere_002_mesh_layer_0() {
 	Gfx *mat = segmented_to_virtual(bits_dl_Icosphere_002_mesh_layer_0);
 
-	shift_s(mat, 14, PACK_TILESIZE(0, 1));
+	shift_s(mat, 13, PACK_TILESIZE(0, 1));
 
 };
 
