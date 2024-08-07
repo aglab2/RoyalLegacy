@@ -1075,7 +1075,8 @@ I'd be a liar to say I'm\n\
 not impressed.\n\
 But no matter...\n\
 I'll crush you here and \n\
-now.")
+now. My minions will\n\
+take care of you.")
 
 DEFINE_DIALOG(DIALOG_094,1,4,30,200, "Get a good run up the\n\
 slope! Do you remember\n\
