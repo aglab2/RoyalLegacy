@@ -580,6 +580,116 @@ void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
     return dest;
 }
 
+#define PACKED __attribute__((packed))
+
+#define __GET_UNALIGNED_T(type, ptr) ({						\
+	const struct { type x; } PACKED *__pptr = (typeof(__pptr))(ptr);	\
+	__pptr->x;								\
+})
+
+#define __PUT_UNALIGNED_T(type, val, ptr) do {					\
+	struct { type x; } PACKED *__pptr = (typeof(__pptr))(ptr);		\
+	__pptr->x = (val);							\
+} while (0)
+
+#define GET_UNALIGNED(ptr)	__GET_UNALIGNED_T(uint64_t, (ptr))
+#define PUT_UNALIGNED(val, ptr) __PUT_UNALIGNED_T(uint64_t, (val), (ptr))
+
+#define EXPECT(expr,value)    (__builtin_expect ((expr),(value)) )
+#define LIKELY(expr)     EXPECT((expr) != 0, 1)
+#define UNLIKELY(expr)   EXPECT((expr) != 0, 0)
+
+static int lz4_read_length(const uint8_t** inbuf, const uint8_t** dmaLimit, struct DMAContext* ctx)
+{
+    int size = 0;
+    uint8_t byte;
+
+    do
+    {
+        if (UNLIKELY(*inbuf > *dmaLimit)) { *dmaLimit = dma_read_ctx(ctx); }
+        byte = **inbuf;
+        (*inbuf)++;
+        size += byte;
+    }
+    while (UNLIKELY(byte == 0xFF));
+
+    return size;
+}
+
+static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct DMAContext* ctx)
+{
+    const uint8_t* inbufEnd = inbuf + inbufSize;
+    const uint8_t* dmaLimit = inbuf - 16; 
+    while (1)
+    {
+        if (UNLIKELY(inbuf > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
+        uint8_t token = *inbuf;
+        inbuf++;
+
+        {
+            int literalSize = token >> 4;
+            if (LIKELY(literalSize))
+            {
+                if (UNLIKELY(literalSize == 0xF))
+                    literalSize += lz4_read_length(&inbuf, &dmaLimit, ctx);
+
+                const uint8_t* copySrc = inbuf;
+                inbuf += literalSize;
+                do
+                {
+                    if (UNLIKELY((uint8_t*) copySrc > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
+                    uint64_t data = GET_UNALIGNED(copySrc);
+                    copySrc += 8;
+                    PUT_UNALIGNED(data, dst);
+                    dst += 8;
+                    literalSize -= 8;
+                } while (literalSize > 0);
+                dst += literalSize;
+            }
+        }
+
+        if (UNLIKELY(inbuf >= inbufEnd)) break;
+
+        {
+            if (UNLIKELY(inbuf > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
+            uint8_t b0 = inbuf[0];
+            inbuf += 2;
+            uint8_t b1 = inbuf[-1];
+            uint16_t matchOffset = b0 | (b1 << 8);
+            
+            int matchSize = token & 0xF;
+            if (UNLIKELY(matchSize == 0xF))
+                matchSize += lz4_read_length(&inbuf, &dmaLimit, ctx);
+            
+            matchSize += 4;
+            const uint8_t* copySrc = dst - matchOffset;
+            if (matchOffset > matchSize || matchOffset >= 8)
+            {
+                do
+                {
+                    uint64_t data = GET_UNALIGNED(copySrc);
+                    copySrc += 8;
+                    PUT_UNALIGNED(data, dst);
+                    dst += 8;
+                    matchSize -= 8;
+                } while (matchSize > 0);
+                dst += matchSize;
+            }
+            else
+            {
+                do
+                {
+                    uint8_t data = *copySrc;
+                    copySrc++;
+                    *dst = data;
+                    dst++;
+                    matchSize--;
+                } while (matchSize > 0);
+            }
+        }
+    }
+}
+
 /**
  * Decompress the block of ROM data from srcStart to srcEnd and return a
  * pointer to an allocated buffer holding the decompressed data. Set the

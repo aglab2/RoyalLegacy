@@ -64,10 +64,10 @@ decompress_lz4_full_fast:
      nop
     move v0_st, inbuf                            # store start of literals into v0_st
     add inbuf, match_len                        # advance inbuf to end of literals
-    sub $t0, inbuf, dma_ptr                     # check if all the literals have been DMA'd
+.Lcopy_lit:
+    sub $t0, v0_st, dma_ptr                     # check if all the literals have been DMA'd
     bgezal $t0, dma_read_ctx                       # if not, wait for DMA
      move $a0, dma_ctx
-.Lcopy_lit:
     ldl $t0, 0(v0_st)                             # load 8 bytes of literals
     ldr $t0, 7(v0_st)
     addiu v0_st, 8
