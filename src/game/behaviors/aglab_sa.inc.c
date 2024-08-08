@@ -80,4 +80,12 @@ void bhv_sa_ladder_loop()
     }
     load_object_collision_model();
     o->oCollisionDistance = 30000.0f;
+
+    if (SURFACE_HARD == gMarioStates->floor->type)
+    {
+        o->oBehParams2ndByte = 33;
+        o->oBehParams = 33 << 16;
+        gMarioStates->usedObj = o;
+        level_trigger_warp(gMarioState, WARP_OP_TELEPORT);
+    }
 }
