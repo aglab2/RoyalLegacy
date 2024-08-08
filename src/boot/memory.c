@@ -616,7 +616,7 @@ static int lz4_read_length(const uint8_t** inbuf, const uint8_t** dmaLimit, stru
     return size;
 }
 
-static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct DMAContext* ctx)
+static inline void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct DMAContext* ctx)
 {
     const uint8_t* inbufEnd = inbuf + inbufSize;
     const uint8_t* dmaLimit = inbuf - 16; 
@@ -652,10 +652,11 @@ static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct
 
         {
             if (UNLIKELY(inbuf > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
-            uint8_t b0 = inbuf[0];
+            uint16_t b1 = inbuf[1];
             inbuf += 2;
-            uint8_t b1 = inbuf[-1];
-            uint16_t matchOffset = b0 | (b1 << 8);
+            uint16_t b0 = inbuf[-2];
+            b1 <<= 8;
+            uint16_t matchOffset = b0 | b1;
             
             int matchSize = token & 0xF;
             if (UNLIKELY(matchSize == 0xF))

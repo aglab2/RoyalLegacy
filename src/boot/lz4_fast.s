@@ -92,7 +92,7 @@ decompress_lz4_full_fast:
      addiu match_len, MINMATCH                  # add implicit MINMATCH to match length
 
 .Lmatch:
-    blt match_off, match_len, .Lmatch1_loop_check   # check if we can do 8-byte copy
+    blt match_off, match_len, .Lmatch1_loop     # check if we can do 8-byte copy
      sub v0_st, outbuf, match_off                 # calculate start of match
 .Lmatch8_loop:                                  # 8-byte copy loop
     ldl $t0, 0(v0_st)                             # load 8 bytes
@@ -106,24 +106,6 @@ decompress_lz4_full_fast:
     b .Lloop                                    # jump to main loop
      addu outbuf, match_len                     # adjust pointer remove extra bytes
 
-.Lmatch1_memset:                                # prepare memset loop (value in t0)
-    dsll $t1, $t0, 8                            # duplicate the LSB into all bytes
-    or $t0, $t1
-    dsll $t1, $t0, 16
-    or $t0, $t1
-    dsll $t1, $t0, 32
-    or $t0, $t1
-.Lmatch1_memset_loop:                           # memset loop
-    sdl $t0, 0(outbuf)                          # store 8 bytes
-    sdr $t0, 7(outbuf)                           
-    addiu match_len, -8                         # adjust match_len
-    bgtz match_len, .Lmatch1_memset_loop        # check we went past match_len
-     addiu outbuf, 8
-    b .Lloop                                    # jump to main loop
-     addu outbuf, match_len                     # adjust pointer remove extra bytes
-
-.Lmatch1_loop_check:                            # 1-byte copy loop
-    beq match_off, 1, .Lmatch1_memset           # if match_off is 1, it's a memset
 .Lmatch1_loop:                                  # 1-byte copy loop
     lbu $t0, 0(v0_st)                             # load 1 byte
     addiu v0_st, 1
