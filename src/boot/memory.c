@@ -592,8 +592,10 @@ void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
 	__pptr->x = (val);							\
 } while (0)
 
-#define GET_UNALIGNED(ptr)	__GET_UNALIGNED_T(uint64_t, (ptr))
-#define PUT_UNALIGNED(val, ptr) __PUT_UNALIGNED_T(uint64_t, (val), (ptr))
+#define GET_UNALIGNED8(ptr)	__GET_UNALIGNED_T(uint64_t, (ptr))
+#define PUT_UNALIGNED8(val, ptr) __PUT_UNALIGNED_T(uint64_t, (val), (ptr))
+#define GET_UNALIGNED4(ptr)	__GET_UNALIGNED_T(uint32_t, (ptr))
+#define PUT_UNALIGNED4(val, ptr) __PUT_UNALIGNED_T(uint32_t, (val), (ptr))
 
 #define EXPECT(expr,value)    (__builtin_expect ((expr),(value)) )
 #define LIKELY(expr)     EXPECT((expr) != 0, 1)
@@ -616,7 +618,7 @@ static int lz4_read_length(const uint8_t** inbuf, const uint8_t** dmaLimit, stru
     return size;
 }
 
-static inline void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct DMAContext* ctx)
+__attribute__((noinline)) static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct DMAContext* ctx)
 {
     const uint8_t* inbufEnd = inbuf + inbufSize;
     const uint8_t* dmaLimit = inbuf - 16; 
@@ -638,10 +640,24 @@ static inline void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst,
                 do
                 {
                     if (UNLIKELY((uint8_t*) copySrc > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
-                    uint64_t data = GET_UNALIGNED(copySrc);
+                    // this a lie, data is actually 64bit register
+                    register uint32_t data;
+                    __asm__ volatile (
+                        "ldl %0, 0(%1)\n\t"
+                        "ldr %0, 7(%1)\n\t"
+                        : "=&r" (data)
+                        : "r" (copySrc)
+                        : "memory"
+                    );
                     copySrc += 8;
-                    PUT_UNALIGNED(data, dst);
                     dst += 8;
+                    __asm__ volatile (
+                        "sdl %1, -8(%0)\n\t"
+                        "sdr %1, -1(%0)\n\t"
+                        :
+                        : "r" (dst), "r" (data)
+                        : "memory"
+                    );
                     literalSize -= 8;
                 } while (literalSize > 0);
                 dst += literalSize;
@@ -668,10 +684,23 @@ static inline void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst,
             {
                 do
                 {
-                    uint64_t data = GET_UNALIGNED(copySrc);
+                    register uint32_t data;
+                    __asm__ volatile (
+                        "ldl %0, 0(%1)\n\t"
+                        "ldr %0, 7(%1)\n\t"
+                        : "=&r" (data)
+                        : "r" (copySrc)
+                        : "memory"
+                    );
                     copySrc += 8;
-                    PUT_UNALIGNED(data, dst);
                     dst += 8;
+                    __asm__ volatile (
+                        "sdl %1, -8(%0)\n\t"
+                        "sdr %1, -1(%0)\n\t"
+                        :
+                        : "r" (dst), "r" (data)
+                        : "memory"
+                    );
                     matchSize -= 8;
                 } while (matchSize > 0);
                 dst += matchSize;
@@ -789,7 +818,7 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             u32 lz4CompSize = *(u32 *) (compressed + 8);
             dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
             extern int decompress_lz4_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
-            decompress_lz4_full_fast(compressed + 16, lz4CompSize, dest, &ctx);
+            lz4_unpack(compressed + 16, lz4CompSize, dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;
