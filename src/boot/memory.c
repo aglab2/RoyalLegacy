@@ -18,9 +18,6 @@
 #if defined(RNC1) || defined(RNC2)
 #include <rnc.h>
 #endif
-#ifdef LZ4
-#include "lz4.h"
-#endif
 #ifdef UNF
 #include "usb/usb.h"
 #include "usb/debug.h"
@@ -595,12 +592,14 @@ void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
 #define GET_UNALIGNED8(ptr)	__GET_UNALIGNED_T(uint64_t, (ptr))
 #define PUT_UNALIGNED8(val, ptr) __PUT_UNALIGNED_T(uint64_t, (val), (ptr))
 #define GET_UNALIGNED4(ptr)	__GET_UNALIGNED_T(uint32_t, (ptr))
+#define GET_UNALIGNED4S(ptr)	__GET_UNALIGNED_T(int32_t, (ptr))
 #define PUT_UNALIGNED4(val, ptr) __PUT_UNALIGNED_T(uint32_t, (val), (ptr))
 
 #define EXPECT(expr,value)    (__builtin_expect ((expr),(value)) )
 #define LIKELY(expr)     EXPECT((expr) != 0, 1)
 #define UNLIKELY(expr)   EXPECT((expr) != 0, 0)
 
+#ifdef LZ4
 static int lz4_read_length(const uint8_t** inbuf, const uint8_t** dmaLimit, struct DMAContext* ctx)
 {
     int size = 0;
@@ -719,6 +718,166 @@ __attribute__((noinline)) static void lz4_unpack(const uint8_t* inbuf, u32 inbuf
         }
     }
 }
+#endif
+
+#define LZ4T 1
+#ifdef LZ4T
+static inline void lz4t_unpack(const uint8_t* inbuf, u32, uint8_t* dst, struct DMAContext* ctx)
+{
+    const uint8_t* dmaLimit = inbuf - 16; 
+    int32_t nibbles = *(int32_t*) (inbuf - 4);
+    while (1)
+    {
+        // we will need to read the data so might as well do it unconditionally from the start
+        if (UNLIKELY(inbuf > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
+
+        if (UNLIKELY(nibbles == 0))
+        {
+            nibbles = GET_UNALIGNED4S(inbuf);
+            inbuf += 4;
+            if (UNLIKELY(!nibbles)) break;
+        }
+
+        if (nibbles < 0)
+        {
+            // literal
+            int amount = 7 & (nibbles >> 28);
+            if (amount)
+            {
+                // this a lie, data is actually 64bit register
+                register uint32_t data;
+                __asm__ volatile (
+                    "ldl %0, 0(%1)\n\t"
+                    "ldr %0, 7(%1)\n\t"
+                    : "=&r" (data)
+                    : "r" (inbuf)
+                    : "memory"
+                );
+                inbuf += amount;
+                __asm__ volatile (
+                    "sdl %1, 0(%0)\n\t"
+                    "sdr %1, 7(%0)\n\t"
+                    :
+                    : "r" (dst), "r" (data)
+                    : "memory"
+                );
+                dst += amount;
+            }
+            else
+            {
+                int shift = 0;
+                while (1)
+                {
+                    int8_t next = *(int8_t*) (inbuf);
+                    inbuf++;
+                    amount |= (next & 0x7f) << shift;
+                    shift += 7;
+                    if (next >= 0)
+                    {
+                        break;
+                    }
+                }
+
+                amount += 21;
+                const uint8_t* copySrc = inbuf;
+                inbuf += amount;
+                do
+                {
+                    if (UNLIKELY((uint8_t*) copySrc > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
+                    register uint32_t data;
+                    __asm__ volatile (
+                        "ldl %0, 0(%1)\n\t"
+                        "ldr %0, 7(%1)\n\t"
+                        : "=&r" (data)
+                        : "r" (copySrc)
+                        : "memory"
+                    );
+                    copySrc += 8;
+                    dst += 8;
+                    __asm__ volatile (
+                        "sdl %1, -8(%0)\n\t"
+                        "sdr %1, -1(%0)\n\t"
+                        :
+                        : "r" (dst), "r" (data)
+                        : "memory"
+                    );
+                    amount -= 8;
+                } while (amount > 0);
+                dst += amount;
+            }
+        }
+        else
+        {
+            // match
+            uint16_t b1 = inbuf[1];
+            inbuf += 2;
+            uint16_t b0 = inbuf[-2];
+            b1 <<= 8;
+            uint16_t matchOffset = b0 | b1;
+
+            int amount = 2 + (7 & (nibbles >> 28));
+            if (amount == 9)
+            {
+                amount = 0;
+                int shift = 0;
+                while (1)
+                {
+                    int8_t next = *(int8_t*) (inbuf);
+                    inbuf++;
+                    amount |= (next & 0x7f) << shift;
+                    shift += 7;
+                    if (next >= 0)
+                    {
+                        break;
+                    }
+                }
+
+                amount += 8;
+            }
+
+            const uint8_t* copySrc = dst - matchOffset;
+            if (matchOffset > amount || matchOffset >= 8)
+            {
+                do
+                {
+                    register uint32_t data;
+                    __asm__ volatile (
+                        "ldl %0, 0(%1)\n\t"
+                        "ldr %0, 7(%1)\n\t"
+                        : "=&r" (data)
+                        : "r" (copySrc)
+                        : "memory"
+                    );
+                    copySrc += 8;
+                    dst += 8;
+                    __asm__ volatile (
+                        "sdl %1, -8(%0)\n\t"
+                        "sdr %1, -1(%0)\n\t"
+                        :
+                        : "r" (dst), "r" (data)
+                        : "memory"
+                    );
+                    amount -= 8;
+                } while (amount > 0);
+                dst += amount;
+            }
+            else
+            {
+                do
+                {
+                    uint8_t data = *copySrc;
+                    copySrc++;
+                    *dst = data;
+                    dst++;
+                    amount--;
+                } while (amount > 0);
+            }
+        }
+
+        nibbles <<= 4;
+    }
+}
+#endif
 
 /**
  * Decompress the block of ROM data from srcStart to srcEnd and return a
@@ -782,11 +941,11 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
         dest = main_pool_alloc_aligned(*size, 0);
 #else
         u32 margin = 0;
-#ifdef LZ4
+#if defined(LZ4) || defined(LZ4T)
         margin = 16;
 #endif
 
-#if defined(LZ4) || defined(YAZ0)
+#if defined(LZ4) || defined(LZ4T) || defined(YAZ0)
         // read the header for LZ4 decompression
         dma_read(compressed, srcStart, srcStart + 16);
 #else
@@ -818,7 +977,14 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             u32 lz4CompSize = *(u32 *) (compressed + 8);
             dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
             extern int decompress_lz4_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
-            lz4_unpack(compressed + 16, lz4CompSize, dest, &ctx);
+            decompress_lz4_full_fast(compressed + 16, lz4CompSize, dest, &ctx);
+#elif LZ4T
+            struct DMAContext ctx;
+            u32 lz4CompSize = *(u32 *) (compressed + 8);
+            dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
+            extern int decompress_lz4t_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
+            // lz4t_unpack(compressed + 16, lz4CompSize, dest, &ctx);
+            decompress_lz4t_full_fast(compressed + 16, *(u32 *) (compressed + 12), dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;

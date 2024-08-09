@@ -7,7 +7,7 @@
 
 #define MAX_COMP_SIZE (8*1024*1024)
 
-#define FAVOR_DECOMPRESSION_SPEED
+// #define FAVOR_DECOMPRESSION_SPEED
 #define COMPRESSION_LEVEL LZ4HC_CLEVEL_MAX
 
 #ifdef DEBUG
@@ -100,6 +100,7 @@ static void patch_lz4_block(unsigned char* data, size_t data_size, unsigned char
                     memcpy(pmatch_offset, &off, 2);
                 }
             }
+#if 0
             if (0 == (match_offset % 2))
             {
                 int looks_like_memset2 = 1;
@@ -124,6 +125,7 @@ static void patch_lz4_block(unsigned char* data, size_t data_size, unsigned char
                     memcpy(pmatch_offset, &off, 2);
                 }
             }
+#endif
         }
 
         // Copy match
@@ -170,9 +172,11 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+#if 0
     char* buf = malloc(8 * 1024 * 1024);
     patch_lz4_block(dst, compSize, buf, 8 * 1024 * 1024);
     free(buf);
+#endif
 
     FILE* out = fopen(argv[2], "wb");
     if (out == NULL)

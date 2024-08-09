@@ -239,11 +239,20 @@ void  LZ4_free(void* p);
 /*-************************************
 *  Common Constants
 **************************************/
+#ifdef LZ4T
 #define MINMATCH 4
+#else
+#define MINMATCH 4
+#endif
 
 #define WILDCOPYLENGTH 8
+#ifndef LZ4T
 #define LASTLITERALS   5   /* see ../doc/lz4_Block_format.md#parsing-restrictions */
 #define MFLIMIT       12   /* see ../doc/lz4_Block_format.md#parsing-restrictions */
+#else
+#define LASTLITERALS 1
+#define MFLIMIT 8
+#endif
 #define MATCH_SAFEGUARD_DISTANCE  ((2*WILDCOPYLENGTH) - MINMATCH)   /* ensure it's possible to write 2 x wildcopyLength without overflowing output buffer */
 #define FASTLOOP_SAFE_DISTANCE 64
 static const int LZ4_minLength = (MFLIMIT+1);

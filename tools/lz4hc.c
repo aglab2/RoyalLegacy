@@ -87,7 +87,7 @@ typedef enum { noDictCtx, usingDictCtxHc } dictCtx_directive;
 
 /*===   Hashing   ===*/
 #define LZ4HC_HASHSIZE 4
-#define HASH_FUNCTION(i)         (((i) * 2654435761U) >> ((MINMATCH*8)-LZ4HC_HASH_LOG))
+#define HASH_FUNCTION(i)         (((i) * 2654435761U) >> ((4*8)-LZ4HC_HASH_LOG))
 static U32 LZ4HC_hashPtr(const void* ptr) { return HASH_FUNCTION(LZ4_read32(ptr)); }
 
 #if defined(LZ4_FORCE_MEMORY_ACCESS) && (LZ4_FORCE_MEMORY_ACCESS==2)
@@ -229,6 +229,7 @@ static void LZ4HC_init_internal (LZ4HC_CCtx_internal* hc4, const BYTE* start)
 /* LZ4HC_encodeSequence() :
  * @return : 0 if ok,
  *           1 if buffer issue detected */
+#ifndef LZ4T
 LZ4_FORCE_INLINE int LZ4HC_encodeSequence (
     const BYTE** _ip,
     BYTE** _op,
@@ -316,6 +317,16 @@ LZ4_FORCE_INLINE int LZ4HC_encodeSequence (
 #undef op
 #undef anchor
 }
+#else
+extern int LZ4HC_encodeSequence (
+    const BYTE** _ip,
+    BYTE** _op,
+    const BYTE** _anchor,
+    int matchLength,
+    int offset,
+    limitedOutput_directive limit,
+    BYTE* oend);
+#endif
 
 
 typedef struct {
@@ -1689,6 +1700,7 @@ typedef struct {
     int litlen;
 } LZ4HC_optimal_t;
 
+#ifndef LZ4T
 /* price in bytes */
 LZ4_FORCE_INLINE int LZ4HC_literalsPrice(int const litlen)
 {
@@ -1714,7 +1726,10 @@ LZ4_FORCE_INLINE int LZ4HC_sequencePrice(int litlen, int mlen)
 
     return price;
 }
-
+#else
+extern int LZ4HC_literalsPrice(int const litlen);
+extern int LZ4HC_sequencePrice(int litlen, int mlen);
+#endif
 
 
 LZ4_FORCE_INLINE LZ4HC_match_t
@@ -1975,6 +1990,7 @@ encode: /* cur, last_match_pos, best_mlen, best_off must be set */
      }  /* while (ip <= mflimit) */
 
 _last_literals:
+#ifndef LZ4T
      /* Encode Last Literals */
      {   size_t lastRunSize = (size_t)(iend - anchor);  /* literals */
          size_t llAdd = (lastRunSize + 255 - RUN_MASK) / 255;
@@ -2004,6 +2020,16 @@ _last_literals:
          LZ4_memcpy(op, anchor, lastRunSize);
          op += lastRunSize;
      }
+#else
+extern int LZ4T_lastLiterals (
+    const BYTE** _ip,
+    BYTE** _op,
+    const BYTE** _anchor,
+    limitedOutput_directive limit,
+    BYTE* oend,
+    size_t length);
+     LZ4T_lastLiterals(UPDATABLE(ip, op, anchor), limit, oend, (size_t)(iend - anchor));
+#endif
 
      /* End */
      *srcSizePtr = (int) (((const char*)ip) - source);

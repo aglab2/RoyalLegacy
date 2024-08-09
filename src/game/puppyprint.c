@@ -458,9 +458,9 @@ void append_puppyprint_log(const char *str, ...) {
 
 #define LINE_HEIGHT (8 + ((LOG_BUFFER_SIZE - 1) * 12))
 void print_console_log(void) {
-    prepare_blank_box();
-    render_blank_box(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 96);
-    finish_blank_box();
+    // prepare_blank_box();
+    // render_blank_box(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 96);
+    // finish_blank_box();
 
     for (u8 i = 0; i < LOG_BUFFER_SIZE; i++) {
         if (consoleLogTable[i][0] == '\0') {
@@ -1093,6 +1093,8 @@ void puppyprint_render_profiler(void) {
 
     bzero(&gCurrEnvCol, sizeof(ColorRGBA));
     print_set_envcolour(255, 255, 255, 255);
+
+    print_console_log();
 
     if (!fDebug) {
         profiler_update(PROFILER_TIME_PUPPYPRINT1, osGetCount() - first);
