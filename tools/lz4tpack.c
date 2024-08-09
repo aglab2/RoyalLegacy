@@ -262,6 +262,10 @@ static char* lz4t_unpack(const char* in)
     uint32_t compSize = __builtin_bswap32(*src++);
     int32_t nibbles = 0;
     int nibblesHandled = 0;
+    int largeLiteralsCounts = 0;
+    int largeMatchesCounts = 0;
+    int literalsCounts = 0;
+    int matchesCounts = 0;
 
     char* dst = malloc(srcSize + 16);
     in = in + 12;
@@ -284,10 +288,12 @@ static char* lz4t_unpack(const char* in)
         {
             LOG("%d: Handle literal nibble 0x%x\n", nibblesHandled, ((uint32_t) nibbles) >> 28);
             // literal
+            literalsCounts++;
             int amount = 7 & (nibbles >> 28);
             LOG("Amount: %d\n", amount);
             if (amount == 0)
             {
+                largeLiteralsCounts++;
                 LOG("Amount is 0, unpacking extras\n");
                 int shift = 0;
                 while (1)
@@ -326,6 +332,7 @@ static char* lz4t_unpack(const char* in)
         {
             LOG("%d: Handle match nibble 0x%x\n", nibblesHandled, ((uint32_t) nibbles) >> 28);
             // match
+            matchesCounts++;
             uint16_t offset = *(uint16_t*)in;
             in += 2;
 
@@ -335,6 +342,7 @@ static char* lz4t_unpack(const char* in)
             if (amount == 9)
             {
                 LOG("Amount is 9, unpacking extras\n");
+                largeMatchesCounts++;
                 amount = 0;
                 int shift = 0;
                 while (1)
@@ -368,6 +376,9 @@ static char* lz4t_unpack(const char* in)
 
         nibbles <<= 4;
     }
+
+    printf("Literals: %d (%d large)\n", literalsCounts, largeLiteralsCounts);
+    printf("Matches: %d (%d large)\n", matchesCounts, largeMatchesCounts);
 
     return dst;
 }

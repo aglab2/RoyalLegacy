@@ -36,8 +36,6 @@ decompress_lz4t_full_fast:
     sw $s2, 0x20($sp)
     sw $s3, 0x24($sp)
     sw $s4, 0x28($sp)
-    sw $s5, 0x2C($sp)
-    sw $s6, 0x30($sp)
     sw $s7, 0x34($sp)
     sw $s8, 0x38($sp)
 
@@ -54,11 +52,17 @@ decompress_lz4t_full_fast:
     sll nibbles, 4
 .Lstart:
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
-    bgezal $t0, dma_read_ctx                    # if inbuf >= dma_ptr, wait for dma
+    bgezall $t0, dma_read_ctx                    # if inbuf >= dma_ptr, wait for dma
      move $a0, dma_ctx
 
-    beqz nibbles, .Lload_nibbles
+    bnez nibbles, .Lprocess_nibbles
      nop
+     
+.Lload_nibbles:
+    lwl nibbles, 0(inbuf)
+    lwr nibbles, 3(inbuf)
+    beqz nibbles, .Lend
+    add inbuf, 4
 
 .Lprocess_nibbles:
     bgez nibbles, .Lmatches
@@ -66,8 +70,8 @@ decompress_lz4t_full_fast:
 
 .Lliterals:
     andi match_len, 7
-    beqz match_len, .Llarge_literals
-     nop
+    beqzl match_len, .Llarge_literals
+     lb match_len, 0(inbuf)
 
 .Lsmall_literal:
     ldl $t0, 0(inbuf)
@@ -79,9 +83,8 @@ decompress_lz4t_full_fast:
     add outbuf, match_len
 
 .Llarge_literals:
-    lb match_len, 0(inbuf)
     add inbuf, 1
-    bltzal match_len, .Lread_large_amount
+    bltzall match_len, .Lread_large_amount
      andi match_len, 0x7f
 
     move v0_st, inbuf                            # store start of literals into v0_st
@@ -89,7 +92,7 @@ decompress_lz4t_full_fast:
     add inbuf, match_len                        # advance inbuf to end of literals
 .Lcopy_lit:
     sub $t0, v0_st, dma_ptr                     # check if all the literals have been DMA'd
-    bgezal $t0, dma_read_ctx                       # if not, wait for DMA
+    bgezall $t0, dma_read_ctx                       # if not, wait for DMA
      move $a0, dma_ctx
     ldl $t0, 0(v0_st)                             # load 8 bytes of literals
     ldr $t0, 7(v0_st)
@@ -115,7 +118,7 @@ decompress_lz4t_full_fast:
 
     lb match_len, 0(inbuf)
     add inbuf, 1
-    bltzal match_len, .Lread_large_amount
+    bltzall match_len, .Lread_large_amount
      andi match_len, 0x7f
 
     addiu match_len, 8
@@ -145,13 +148,6 @@ decompress_lz4t_full_fast:
     b .Lloop                                    # jump to main loop
      nop
 
-.Lload_nibbles:
-    lwl nibbles, 0(inbuf)
-    lwr nibbles, 3(inbuf)
-    add inbuf, 4
-    bnez nibbles, .Lprocess_nibbles
-    nop
-
 .Lend:
     lw $ra, 0x14($sp)
     lw $s0, 0x18($sp)
@@ -159,8 +155,6 @@ decompress_lz4t_full_fast:
     lw $s2, 0x20($sp)
     lw $s3, 0x24($sp)
     lw $s4, 0x28($sp)
-    lw $s5, 0x2C($sp)
-    lw $s6, 0x30($sp)
     lw $s7, 0x34($sp)
     lw $s8, 0x38($sp)
     jr $ra
