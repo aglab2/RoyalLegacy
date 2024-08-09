@@ -818,7 +818,7 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             u32 lz4CompSize = *(u32 *) (compressed + 8);
             dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
             extern int decompress_lz4_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
-            lz4_unpack(compressed + 16, lz4CompSize, dest, &ctx);
+            decompress_lz4_full_fast(compressed + 16, lz4CompSize, dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;
