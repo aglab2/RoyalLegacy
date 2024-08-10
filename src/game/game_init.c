@@ -846,24 +846,51 @@ void thread5_game_loop(UNUSED void *arg) {
         puppyprint_profiler_process();
 #endif
 
+#ifdef DEBUG_AA
+        static u8 enabled = 0;
         if (gControllers->buttonPressed & L_TRIG)
         {
-            static u8 enabled = 0;
-            enabled = !enabled;
+            enabled++;
 
             register u32 saveMask = __osDisableInt();
-            if (enabled)
+            if (enabled & 1)
+            {
+                __osViNext->control |= VI_CTRL_ANTIALIAS_MODE_1;
+            }
+            else
+            {
+                __osViNext->control &= ~VI_CTRL_ANTIALIAS_MODE_1;
+            }
+
+            if (enabled & 2)
             {
                 __osViNext->control |= VI_CTRL_ANTIALIAS_MODE_2;
-                __osViNext->control &= ~VI_CTRL_DITHER_FILTER_ON;
             }
             else
             {
                 __osViNext->control &= ~VI_CTRL_ANTIALIAS_MODE_2;
+            }
+
+            if (enabled & 4)
+            {
+                __osViNext->control &= ~VI_CTRL_DITHER_FILTER_ON;
+            }
+            else
+            {
                 __osViNext->control |= VI_CTRL_DITHER_FILTER_ON;
             }
+
             __osRestoreInt(saveMask);
         }
+
+        char lmfao[10];
+        lmfao[0] = (enabled & 1) ? '1' : ' ';
+        lmfao[1] = (enabled & 2) ? '2' : ' ';
+        lmfao[2] = (enabled & 4) ? 'A' : ' ';
+        lmfao[3] = '%';
+        lmfao[4] = 'd';
+        print_text_fmt_int(20, 20, lmfao, enabled & 7);
+#endif
 
         display_and_vsync();
 #ifdef VANILLA_DEBUG
