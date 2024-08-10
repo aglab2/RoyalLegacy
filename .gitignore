@@ -2161,3 +2161,5 @@ include/config/config_local.h
 # Tools
 
 tools/shrinkler/build/native/Shrinkler
+tools/lz4pack
+tools/lz4tpack
