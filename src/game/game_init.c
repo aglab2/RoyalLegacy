@@ -758,6 +758,28 @@ void setup_game_memory(void) {
     load_segment_decompress(SEGMENT_SEGMENT2, _segment2_mio0SegmentRomStart, _segment2_mio0SegmentRomEnd);
 }
 
+typedef struct
+{
+    /* 0x0 */ f32 factor;
+    /* 0x4 */ u16 offset;
+    /* 0x8 */ u32 scale;
+} __OSViScale;
+
+typedef struct
+{
+    /* 0x0 */ u16 state;
+    /* 0x2 */ u16 retraceCount;
+    /* 0x4 */ void *framep;
+    /* 0x8 */ OSViMode *modep;
+    /* 0xC */ u32 control;
+    /* 0x10 */ OSMesgQueue *msgq;
+    /* 0x14 */ OSMesg msg;
+    /* 0x18 */ __OSViScale x;
+    /* 0x24 */ __OSViScale y;
+} __OSViContext; // 0x30 bytes
+
+extern __OSViContext *__osViNext __attribute__((section(".data")));
+
 /**
  * Main game loop thread. Runs forever as long as the game continues.
  */
@@ -823,6 +845,25 @@ void thread5_game_loop(UNUSED void *arg) {
 #ifdef PUPPYPRINT_DEBUG
         puppyprint_profiler_process();
 #endif
+
+        if (gControllers->buttonPressed & L_TRIG)
+        {
+            static u8 enabled = 0;
+            enabled = !enabled;
+
+            register u32 saveMask = __osDisableInt();
+            if (enabled)
+            {
+                __osViNext->control |= VI_CTRL_ANTIALIAS_MODE_2;
+                __osViNext->control &= ~VI_CTRL_DITHER_FILTER_ON;
+            }
+            else
+            {
+                __osViNext->control &= ~VI_CTRL_ANTIALIAS_MODE_2;
+                __osViNext->control |= VI_CTRL_DITHER_FILTER_ON;
+            }
+            __osRestoreInt(saveMask);
+        }
 
         display_and_vsync();
 #ifdef VANILLA_DEBUG
