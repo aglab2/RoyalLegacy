@@ -82,6 +82,28 @@ decompress_lz4t_full_fast:
     b .Lloop
     add outbuf, match_len
 
+.Lmatches:
+    lbu match_off, 1(inbuf)                     # read 16-bit match offset (little endian)
+    lbu $t1, 0(inbuf)
+    sll match_off, 8
+    
+    addiu $t0, match_len, -7                    # check if match length is 7
+    beqz $t0, .Llarge_match                     # if match length is 15, read more
+    or match_off, $t1
+
+    addiu match_len, 2                         # add implicit 2 to match length
+    blt match_off, match_len, .Lmatch1_loop_fix_inbuf # check if we can do 8-byte copy
+     sub v0_st, outbuf, match_off               # calculate start of match
+
+.Lsmall_match_copy:
+    ldl $t0, 0(v0_st)                           # load 8 bytes
+    ldr $t0, 7(v0_st)
+    addiu inbuf, 2
+    sdl $t0, 0(outbuf)                          # store 8 bytes
+    sdr $t0, 7(outbuf)
+    b .Lloop
+    add outbuf, match_len
+
 .Llarge_literals:
     lb match_len, 0(inbuf)
     add inbuf, 1
@@ -106,26 +128,14 @@ decompress_lz4t_full_fast:
     b .Lloop
     addu outbuf, match_len                      # adjust outbuf to roll back extra copied bytes
 
-.Lmatches:
-    lbu match_off, 1(inbuf)                     # read 16-bit match offset (little endian)
-    lbu $t0, 0(inbuf)
-    addiu inbuf, 2
-    sll match_off, 8
-    or match_off, $t0
-    
-    addiu $t0, match_len, -7                    # check if match length is 7
-    bnez $t0, .Lmatch                           # if match length is 15, read more
-     addiu match_len, 2                         # add implicit 2 to match length
-
-    lb match_len, 0(inbuf)
-    add inbuf, 1
+.Llarge_match:
+    lb match_len, 2(inbuf)
+    add inbuf, 3
     bltzal match_len, .Lread_large_amount
      andi match_len, 0x7f
-
     addiu match_len, 8
 
-.Lmatch:
-    blt match_off, match_len, .Lmatch1_loop     # check if we can do 8-byte copy
+    blt match_off, 8, .Lmatch1_loop               # check if we can do 8-byte copy
      sub v0_st, outbuf, match_off                 # calculate start of match
 .Lmatch8_loop:                                  # 8-byte copy loop
     ldl $t0, 0(v0_st)                             # load 8 bytes
@@ -139,6 +149,8 @@ decompress_lz4t_full_fast:
     b .Lloop                                    # jump to main loop
      addu outbuf, match_len                     # adjust pointer remove extra bytes
 
+.Lmatch1_loop_fix_inbuf:
+    addiu inbuf, 2
 .Lmatch1_loop:                                  # 1-byte copy loop
     lbu $t0, 0(v0_st)                             # load 1 byte
     addiu v0_st, 1
