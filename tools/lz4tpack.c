@@ -99,12 +99,11 @@ int LZ4HC_encodeSequence (
     }
 
     /* Encode Offset */
-    if (matchLength > 8) {
+    if (matchLength > 9) {
         // 7 means that matchLength is extended
         pushNibble(&op, 7);
     } else {
-        // matchLength in [3, 8] so matchLength - 2 in [1, 6] - just enough for encoding
-        pushNibble(&op, matchLength - 2);
+        pushNibble(&op, matchLength - 3);
     }
     assert(offset <= LZ4_DISTANCE_MAX );
     assert(offset > 0);
@@ -114,8 +113,8 @@ int LZ4HC_encodeSequence (
     /* Encode MatchLength */
     assert(matchLength >= MINMATCH);
     LOG("Encoding match: %d\n", matchLength);
-    if (matchLength > 8) {
-        size_t len = matchLength - 8;
+    if (matchLength > 9) {
+        size_t len = matchLength - 9;
         while (len) {
             // bitcode the length
             if (len <= 127) {
@@ -241,9 +240,9 @@ int LZ4HC_sequencePrice(int litlen, int mlen)
     price += LZ4HC_literalsPrice(litlen);
     // nibble for encoding match
     price += 1;
-    if (mlen > 8) {
+    if (mlen > 9) {
         // ex size encoding
-        int len = mlen - 8;
+        int len = mlen - 9;
         while (len)
         {
             // each ex size byte is 2 nibbles
@@ -337,11 +336,11 @@ static char* lz4t_unpack(const char* in)
             in += 2;
 
             LOG("Offset: %d\n", offset);
-            int amount = 2 + (7 & (nibbles >> 28));
+            int amount = 3 + (7 & (nibbles >> 28));
             LOG("Amount: %d\n", amount);
-            if (amount == 9)
+            if (amount == 10)
             {
-                LOG("Amount is 9, unpacking extras\n");
+                LOG("Amount is 10, unpacking extras\n");
                 largeMatchesCounts++;
                 amount = 0;
                 int shift = 0;
@@ -363,7 +362,7 @@ static char* lz4t_unpack(const char* in)
                     }
                 }
 
-                amount += 8;
+                amount += 9;
             }
 
             LOG("Copying amount %d: %p %p\n", amount, out, out - offset);

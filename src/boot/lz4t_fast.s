@@ -115,14 +115,14 @@ decompress_lz4t_full_fast:
     
     addiu $t0, match_len, -7                    # check if match length is 7
     bnez $t0, .Lmatch                           # if match length is 15, read more
-     addiu match_len, 2                         # add implicit 2 to match length
+     addiu match_len, 3                         # add implicit 2 to match length
 
     lb match_len, 0(inbuf)
     add inbuf, 1
     bltzal match_len, .Lread_large_amount
      andi match_len, 0x7f
 
-    addiu match_len, 8
+    addiu match_len, 9
 
 .Lmatch:
     blt match_off, match_len, .Lmatch1_loop     # check if we can do 8-byte copy
