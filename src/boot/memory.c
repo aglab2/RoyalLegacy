@@ -722,8 +722,9 @@ __attribute__((noinline)) static void lz4_unpack(const uint8_t* inbuf, u32 inbuf
 
 #define LZ4T 1
 #ifdef LZ4T
-static inline void lz4t_unpack(const uint8_t* inbuf, u32, uint8_t* dst, struct DMAContext* ctx)
+static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, struct DMAContext* ctx)
 {
+    (void) xxx;
     const uint8_t* dmaLimit = inbuf - 16; 
     int32_t nibbles = *(int32_t*) (inbuf - 4);
     while (1)
