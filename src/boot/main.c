@@ -491,9 +491,16 @@ void turn_off_audio(void) {
     }
 }
 
+// #define KILL_AA
+
 void change_vi(OSViMode *mode, int width, int height) {
     mode->comRegs.width  = width;
     mode->comRegs.xScale = ((width * 512) / 320);
+#ifdef KILL_AA
+    mode->comRegs.ctrl |= VI_CTRL_ANTIALIAS_MODE_2;
+    mode->comRegs.ctrl &= ~VI_CTRL_DITHER_FILTER_ON;
+#endif
+    mode->comRegs.ctrl &= ~VI_CTRL_DIVOT_ON;
     if (height > 240) {
         mode->comRegs.ctrl     |= 0x40;
         mode->fldRegs[0].origin = (width * 2);
@@ -526,6 +533,29 @@ void get_audio_frequency(void) {
 /**
  * Initialize hardware, start main thread, then idle.
  */
+typedef struct
+{
+    /* 0x0 */ f32 factor;
+    /* 0x4 */ u16 offset;
+    /* 0x8 */ u32 scale;
+} __OSViScale;
+
+typedef struct
+{
+    /* 0x0 */ u16 state;
+    /* 0x2 */ u16 retraceCount;
+    /* 0x4 */ void *framep;
+    /* 0x8 */ OSViMode *modep;
+    /* 0xC */ u32 control;
+    /* 0x10 */ OSMesgQueue *msgq;
+    /* 0x14 */ OSMesg msg;
+    /* 0x18 */ __OSViScale x;
+    /* 0x24 */ __OSViScale y;
+} __OSViContext; // 0x30 bytes
+
+extern __OSViContext *__osViNext;
+#define VI_STATE_CTRL_UPDATED 0x08   // related to control regs changing
+
 void thread1_idle(UNUSED void *arg) {
     setgp();
     osCreateViManager(OS_PRIORITY_VIMGR);
@@ -552,6 +582,15 @@ void thread1_idle(UNUSED void *arg) {
     osViBlack(TRUE);
     osViSetSpecialFeatures(OS_VI_DITHER_FILTER_ON);
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
+    {
+        register u32 saveMask = __osDisableInt();
+#ifdef KILL_AA
+        __osViNext->control |= VI_CTRL_ANTIALIAS_MODE_2;
+        __osViNext->control &= ~VI_CTRL_DITHER_FILTER_ON;
+#endif
+        __osViNext->control &= ~VI_CTRL_DIVOT_ON;
+        __osRestoreInt(saveMask);
+    }
     osCreatePiManager(OS_PRIORITY_PIMGR, &gPIMesgQueue, gPIMesgBuf, ARRAY_COUNT(gPIMesgBuf));
     create_thread(&gMainThread, THREAD_3_MAIN, thread3_main, NULL, gThread3Stack + THREAD3_STACK, 100);
     osStartThread(&gMainThread);
