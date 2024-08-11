@@ -235,6 +235,33 @@ int LZ4HC_sequencePrice(int litlen, int mlen)
     return price;
 }
 
+static int lz4t_unpack_size(const char** _in)
+{
+#define in (*_in)
+    int amount = 0;
+    int shift = 0;
+    while (1)
+    {
+        int8_t next = *(int8_t*) (in++);
+        LOG("Next: %d\n", next);
+        if (next < 0)
+        {
+            amount |= (next & 0x7f) << shift;
+            shift += 7;
+            LOG("New amount: %d\n", amount);
+        }
+        else
+        {
+            amount |= (next << shift);
+            LOG("Amount is %d\n", amount);
+            break;
+        }
+    }
+
+    return amount;
+#undef in
+}
+
 static char* lz4t_unpack(const char* in)
 {
     const uint32_t* src = (const uint32_t*)in;
@@ -276,26 +303,7 @@ static char* lz4t_unpack(const char* in)
             {
                 largeLiteralsCounts++;
                 LOG("Amount is 0, unpacking extras\n");
-                int shift = 0;
-                while (1)
-                {
-                    int8_t next = *(int8_t*) (in++);
-                    LOG("Next: %d\n", next);
-                    if (next < 0)
-                    {
-                        amount |= (next & 0x7f) << shift;
-                        shift += 7;
-                        LOG("New partial amount: %x\n", amount);
-                    }
-                    else
-                    {
-                        amount |= (next << shift);
-                        LOG("Amount is %d\n", amount);
-                        break;
-                    }
-                }
-
-                amount += TINY_LITERAL_LIMIT;
+                amount = lz4t_unpack_size(&in) + TINY_LITERAL_LIMIT;
                 LOG("Copying amount %d via memcpy: %p %p\n", amount, out, in);
                 memcpy(out, in, amount);
                 out += amount;
@@ -324,27 +332,7 @@ static char* lz4t_unpack(const char* in)
             {
                 LOG("Amount is 10, unpacking extras\n");
                 largeMatchesCounts++;
-                amount = 0;
-                int shift = 0;
-                while (1)
-                {
-                    int8_t next = *(int8_t*) (in++);
-                    LOG("Next: %d\n", next);
-                    if (next < 0)
-                    {
-                        amount |= (next & 0x7f) << shift;
-                        shift += 7;
-                        LOG("New amount: %d\n", amount);
-                    }
-                    else
-                    {
-                        amount |= (next << shift);
-                        LOG("Amount is %d\n", amount);
-                        break;
-                    }
-                }
-
-                amount += 9;
+                amount = lz4t_unpack_size(&in) + TINY_MATCH_LIMIT;
             }
 
             LOG("Copying amount %d: %p %p\n", amount, out, out - offset);
