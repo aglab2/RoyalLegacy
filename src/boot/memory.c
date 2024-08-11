@@ -779,7 +779,7 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
                     }
                 }
 
-                amount += 21;
+                amount += 22;
                 const uint8_t* copySrc = inbuf;
                 inbuf += amount;
                 do
@@ -816,8 +816,8 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
             b1 <<= 8;
             uint16_t matchOffset = b0 | b1;
 
-            int amount = 2 + (7 & (nibbles >> 28));
-            if (amount == 9)
+            int amount = 3 + (7 & (nibbles >> 28));
+            if (amount == 10)
             {
                 amount = 0;
                 int shift = 0;
@@ -833,7 +833,7 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
                     }
                 }
 
-                amount += 8;
+                amount += 10;
             }
 
             const uint8_t* copySrc = dst - matchOffset;

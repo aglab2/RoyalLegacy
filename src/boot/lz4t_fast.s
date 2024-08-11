@@ -89,7 +89,7 @@ decompress_lz4t_full_fast:
      andi match_len, 0x7f
 
     move v0_st, inbuf                            # store start of literals into v0_st
-    addiu match_len, 21
+    addiu match_len, 22
     add inbuf, match_len                        # advance inbuf to end of literals
 .Lcopy_lit:
     sub $t0, v0_st, dma_ptr                     # check if all the literals have been DMA'd
@@ -140,7 +140,7 @@ decompress_lz4t_full_fast:
     bltzal match_len, .Lread_large_amount
      andi match_len, 0x7f
 
-    addiu match_len, 9
+    addiu match_len, 10
 
 .Lmatch:
     blt match_off, match_len, .Lmatch1_loop     # check if we can do 8-byte copy
