@@ -103,8 +103,26 @@ decompress_lz4t_full_fast:
     addiu match_len, -8
     bgez match_len, .Lcopy_lit                  # check if we went past the end of literals
      addiu outbuf, 8
-    b .Lloop
     addu outbuf, match_len                      # adjust outbuf to roll back extra copied bytes
+
+# fallthru to matches - it works only for long matches.
+# TODO: encoder should be aware of this and use full nibble for match size
+    sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
+    bgezal $t0, dma_read_ctx                    # if inbuf >= dma_ptr, wait for dma
+     move $a0, dma_ctx
+
+    sll nibbles, 4
+    bnez nibbles, .Lprocess_nibbles2
+     nop
+     
+.Lload_nibbles2:
+    lwl nibbles, 0(inbuf)
+    lwr nibbles, 3(inbuf)
+    beqz nibbles, .Lend
+    add inbuf, 4
+
+.Lprocess_nibbles2:
+    srl match_len, nibbles, 28
 
 .Lmatches:
     lbu match_off, 1(inbuf)                     # read 16-bit match offset (little endian)
