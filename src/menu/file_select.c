@@ -2219,7 +2219,24 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
  * When a save file is selected, it returns fileNum value
  * defined in load_main_menu_save_file.
  */
+extern const Gfx dl_vertex_menu_main_button[];
+extern const Gfx dl_vertex_menu_main_button2[];
 s32 lvl_update_obj_and_load_file_selected(UNUSED s32 arg, UNUSED s32 unused) {
+    {
+        u32* gfx = segmented_to_virtual(dl_vertex_menu_main_button2);
+        u32 amt = 0x3f + 0x20 * (1 + sins(gGlobalTimer * 0x1c3));
+        u32 color = (amt << 24) | (amt << 16) | (amt << 8) | 0xff;
+        gfx[1] = color;
+        gfx[3] = color;
+    }
+    {
+        u32* gfx = segmented_to_virtual(dl_vertex_menu_main_button);
+        u32 amt = 0x3f + 0x20 * (1 + coss(gGlobalTimer * 0x1c3));
+        u32 color = (amt << 24) | (amt << 16) | (amt << 8) | 0xff;
+        gfx[1] = color;
+        gfx[3] = color;
+    }
+
     area_update_objects();
     return sSelectedFileNum;
 }
