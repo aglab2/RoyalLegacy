@@ -23,6 +23,9 @@ static uint32_t sCurrentNibble = 0;
 static uint32_t sCurrentNibbleShift = 8;
 static uint32_t sNibblesPushed = 0;
 
+#define TINY_LITERAL_LIMIT 21
+#define TINY_MATCH_LIMIT 9
+
 static void pushNibble(BYTE** _op, uint32_t newNibble)
 {
     sNibblesPushed++;
@@ -45,6 +48,21 @@ static void pushNibble(BYTE** _op, uint32_t newNibble)
     LOG("New nibble batch: 0x%x\n", sCurrentNibble);
 }
 
+static void LZ4T_encodeBitLen(BYTE** _op, int len)
+{
+#define op      (*_op)   
+    while (len) {
+        if (len <= 127) {
+            LOG("Pushing final len: %d\n", len);
+            *op++ = len;
+        } else {
+            LOG("Pushing partial len: %d\n", len & 127);
+            *op++ = 128 | (len & 127);
+        }
+        len >>= 7;
+    }
+}
+
 int LZ4HC_encodeSequence (
     const BYTE** _ip,
     BYTE** _op,
@@ -63,28 +81,16 @@ int LZ4HC_encodeSequence (
     LOG("Encoding literals: %d\n", length);
     if (length)
     {
-        if (length > 21) {
+        if (length > TINY_LITERAL_LIMIT) {
             // means that encoding is extended
             pushNibble(&op, 8);
-            size_t len = length - 21;
-            while (len) {
-                // bitcode the length
-                if (len <= 127) {
-                    LOG("Pushing final len: %d\n", len);
-                    *op++ = len;
-                } else {
-                    LOG("Pushing partial len: %d\n", len & 127);
-                    *op++ = 128 | (len & 127);
-                }
-                len >>= 7;
-            }
-
+            LZ4T_encodeBitLen(&op, length - TINY_LITERAL_LIMIT);
             LOG("Copying literals wildly: %p %p %u\n", op, anchor, length);
             LZ4_wildCopy8(op, anchor, op + length);
             op += length;
         } else {
             size_t len = length;
-            void* src = anchor;
+            const void* src = anchor;
             // put raw nibbles
             while (len) {
                 LOG("Copying literals sizely: %p %p %u\n", op, anchor, length);
@@ -99,11 +105,11 @@ int LZ4HC_encodeSequence (
     }
 
     /* Encode Offset */
-    if (matchLength > 9) {
+    if (matchLength > TINY_MATCH_LIMIT) {
         // 7 means that matchLength is extended
         pushNibble(&op, 7);
     } else {
-        pushNibble(&op, matchLength - 3);
+        pushNibble(&op, matchLength - MINMATCH + 1);
     }
     assert(offset <= LZ4_DISTANCE_MAX );
     assert(offset > 0);
@@ -113,19 +119,8 @@ int LZ4HC_encodeSequence (
     /* Encode MatchLength */
     assert(matchLength >= MINMATCH);
     LOG("Encoding match: %d\n", matchLength);
-    if (matchLength > 9) {
-        size_t len = matchLength - 9;
-        while (len) {
-            // bitcode the length
-            if (len <= 127) {
-                LOG("Pushing final len: %d\n", len);
-                *op++ = len;
-            } else {
-                LOG("Pushing partial len: %d\n", len & 127);
-                *op++ = 128 | (len & 127);
-            }
-            len >>= 7;
-        }
+    if (matchLength > TINY_MATCH_LIMIT) {
+        LZ4T_encodeBitLen(&op, matchLength - TINY_MATCH_LIMIT);
     }
 
     /* Prepare next loop */
@@ -153,28 +148,16 @@ int LZ4T_lastLiterals (
 
     if (length)
     {
-        LOG("Encoding literals: %d\n", length);
-        if (length > 21) {
+        LOG("Encoding last literals: %d\n", length);
+        if (length > TINY_LITERAL_LIMIT) {
             // means that encoding is extended
             pushNibble(&op, 8);
-            size_t len = length - 21;
-            while (len) {
-                // bitcode the length
-                if (len <= 127) {
-                    LOG("Pushing final len: %d\n", len);
-                    *op++ = len;
-                } else {
-                    LOG("Pushing partial len: %d\n", len & 127);
-                    *op++ = 128 | (len & 127);
-                }
-                len >>= 7;
-            }
-
+            LZ4T_encodeBitLen(&op, length - TINY_LITERAL_LIMIT);
             LZ4_wildCopy8(op, anchor, op + length);
             op += length;
         } else {
             size_t len = length;
-            void* src = anchor;
+            const void* src = anchor;
             // put raw nibbles
             while (len) {
                 uint32_t cut = len > 7 ? 7 : len;
@@ -185,7 +168,6 @@ int LZ4T_lastLiterals (
                 len -= cut;
             }
         }
-        
     }
 
     // push ending marker
@@ -209,8 +191,8 @@ int LZ4HC_literalsPrice(int const litlen)
 {
     int price = litlen * 2;
     assert(litlen >= 0);
-    if (litlen > 21) {
-        int len = litlen - 21;
+    if (litlen > TINY_LITERAL_LIMIT) {
+        int len = litlen - TINY_LITERAL_LIMIT;
         // encode 1 nibble for ex size
         price += 1;
         while (len)
@@ -240,9 +222,9 @@ int LZ4HC_sequencePrice(int litlen, int mlen)
     price += LZ4HC_literalsPrice(litlen);
     // nibble for encoding match
     price += 1;
-    if (mlen > 9) {
+    if (mlen > TINY_MATCH_LIMIT) {
         // ex size encoding
-        int len = mlen - 9;
+        int len = mlen - TINY_MATCH_LIMIT;
         while (len)
         {
             // each ex size byte is 2 nibbles
@@ -313,7 +295,7 @@ static char* lz4t_unpack(const char* in)
                     }
                 }
 
-                amount += 21;
+                amount += TINY_LITERAL_LIMIT;
                 LOG("Copying amount %d via memcpy: %p %p\n", amount, out, in);
                 memcpy(out, in, amount);
                 out += amount;
