@@ -570,8 +570,11 @@ void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
 #endif
         osWritebackDCacheAll();
         dma_read(dest, srcStart, srcEnd);
-        osInvalICache(dest, destSize);
-        osInvalDCache(dest, destSize);
+        if (EMU_WIIVC != gEmulator)
+        {
+            osInvalICache(dest, destSize);
+            osInvalDCache(dest, destSize);
+        }
     } else {
         DEBUG_ASSERT("Fixed addr is not be loaded");
     }
