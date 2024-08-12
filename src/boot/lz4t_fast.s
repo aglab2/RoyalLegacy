@@ -82,8 +82,10 @@ decompress_lz4t_full_fast:
     add inbuf, match_len
     sdl $t0, 0(outbuf)
     sdr $t0, 7(outbuf)
-    b .Lloop
+    beq match_len, match_lim, .Lloop
     add outbuf, match_len
+    b .Lmatches_ex
+    nop
 
 .Llarge_literals:
     lb match_len, 0(inbuf)
@@ -110,6 +112,7 @@ decompress_lz4t_full_fast:
 
 # fallthru to matches - it works only for long matches.
 # TODO: this condition can be removed or moved in Lload_nibbles2
+.Lmatches_ex:
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
     bgezal $t0, dma_read_ctx                    # if inbuf >= dma_ptr, wait for dma
      move $a0, dma_ctx

@@ -3,6 +3,7 @@
 #include "lz4hc.h"
 #include "lz4.c"
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -12,7 +13,7 @@
 // #define FAVOR_DECOMPRESSION_SPEED
 #define COMPRESSION_LEVEL LZ4HC_CLEVEL_MAX
 
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define LOG(...) printf(__VA_ARGS__)
 #else
@@ -91,30 +92,32 @@ int LZ4HC_encodeSequence (
     size_t length = (size_t)(ip - anchor);
     LOG("Encoding literals: %d\n", length);
     int tinyMatchLimit = TINY_MATCH_LIMIT;
-    if (length)
-    {
-        if (length > TINY_LITERAL_LIMIT) {
-            // means that encoding is extended
-            pushNibble(&op, 8);
-            LZ4T_encodeBitLen(&op, length - TINY_LITERAL_LIMIT - 1);
-            LOG("Copying literals wildly: %p %p %u\n", op, anchor, length);
-            LZ4_wildCopy8(op, anchor, op + length);
-            op += length;
-            tinyMatchLimit = TINY_MATCH_LIMIT_EX;
-        } else {
-            size_t len = length;
-            const void* src = anchor;
-            // put raw nibbles
-            while (len) {
-                LOG("Copying literals sizely: %p %p %u\n", op, anchor, length);
-                uint32_t cut = len > 7 ? 7 : len;
-                pushNibble(&op, 8 | cut);
-                *(uint64_t*) op = *(uint64_t*)src;
-                op += cut;
-                src += cut;
-                len -= cut;
-            }
+    if (length > TINY_LITERAL_LIMIT) {
+        // means that encoding is extended
+        pushNibble(&op, 8);
+        LZ4T_encodeBitLen(&op, length - TINY_LITERAL_LIMIT - 1);
+        LOG("Copying literals wildly: %p %p %u\n", op, anchor, length);
+        LZ4_wildCopy8(op, anchor, op + length);
+        op += length;
+        tinyMatchLimit = TINY_MATCH_LIMIT_EX;
+    } else {
+        size_t len = length;
+        const void* src = anchor;
+        // put raw nibbles
+        while (len) {
+            LOG("Copying literals sizely: %p %p %u\n", op, anchor, length);
+            uint32_t cut = len > 7 ? 7 : len;
+            pushNibble(&op, 8 | cut);
+            *(uint64_t*) op = *(uint64_t*)src;
+            op += cut;
+            src += cut;
+            len -= cut;
         }
+
+        if ((length % 7) == 0)
+            tinyMatchLimit = TINY_MATCH_LIMIT;
+        else
+            tinyMatchLimit = TINY_MATCH_LIMIT_EX;
     }
 
     /* Encode Offset */
@@ -245,7 +248,12 @@ int LZ4HC_sequencePrice(int litlen, int mlen)
     price += LZ4HC_literalsPrice(litlen);
     // nibble for encoding match
     price += 1;
-    int tinyMatchLimit = litlen <= TINY_LITERAL_LIMIT ? TINY_MATCH_LIMIT : TINY_MATCH_LIMIT_EX;
+    int tinyMatchLimit = TINY_MATCH_LIMIT_EX;
+    if (litlen <= TINY_LITERAL_LIMIT) {
+        if ((litlen % 7) == 0)
+            tinyMatchLimit = TINY_MATCH_LIMIT;
+    }
+
     if (mlen > tinyMatchLimit) {
         // ex size encoding
         int len = mlen - tinyMatchLimit - 1;
@@ -357,6 +365,7 @@ static char* lz4t_unpack(const char* in)
             literalsCounts++;
             int amount = 7 & (nibbles >> 28);
             LOG("Amount: %d\n", amount);
+            bool loadExMatch = false;
             if (amount == 0)
             {
                 largeLiteralsCounts++;
@@ -366,7 +375,19 @@ static char* lz4t_unpack(const char* in)
                 memcpy(out, in, amount);
                 out += amount;
                 in += amount;
+                loadExMatch = true;
+            }
+            else
+            {
+                *(uint64_t*)out = *(uint64_t*)in;
+                LOG("Copying amount %d wildly: %p %p\n", amount, out, in);
+                out += amount;
+                in += amount;
+                loadExMatch = (7 != amount);
+            }
 
+            if (loadExMatch)
+            {
                 nibbles <<= 4;
                 if (0 == nibbles)
                 {
@@ -380,13 +401,6 @@ static char* lz4t_unpack(const char* in)
                 }
                 nibblesHandled++;
                 lz4t_handle_match(&out, &in, &nibblesHandled, &matchesCounts, &largeMatchesCounts, &nibbles, TINY_MATCH_LIMIT_EX);
-            }
-            else
-            {
-                *(uint64_t*)out = *(uint64_t*)in;
-                LOG("Copying amount %d wildly: %p %p\n", amount, out, in);
-                out += amount;
-                in += amount;
             }
         }
         else
