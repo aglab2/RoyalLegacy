@@ -60,6 +60,9 @@ void bhv_cs_init()
 
 void bhv_cs_loop()
 {
+    if (!o->activeFlags)
+        return;
+
     if (gCurrCourseNum == COURSE_NONE)
     {
         resetFlags();

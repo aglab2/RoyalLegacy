@@ -4,6 +4,7 @@
 
 #include "buffers/buffers.h"
 #include "slidec.h"
+#include "game/emutest.h"
 #include "game/game_init.h"
 #include "game/main.h"
 #include "game/memory.h"
@@ -599,6 +600,27 @@ void *load_to_fixed_pool_addr(u8 *destAddr, u8 *srcStart, u8 *srcEnd) {
 #define LIKELY(expr)     EXPECT((expr) != 0, 1)
 #define UNLIKELY(expr)   EXPECT((expr) != 0, 0)
 
+// For testing purposes the following inline asm can be used for 64bit ops
+#if 0
+// this a lie, data is actually 64bit register
+register uint32_t data;
+__asm__ volatile (
+    "ldl %0, 0(%1)\n\t"
+    "ldr %0, 7(%1)\n\t"
+    : "=&r" (data)
+    : "r" (copySrc)
+    : "memory"
+);
+
+__asm__ volatile (
+    "sdl %1, -8(%0)\n\t"
+    "sdr %1, -1(%0)\n\t"
+    :
+    : "r" (dst), "r" (data)
+    : "memory"
+);
+#endif
+
 #ifdef LZ4
 static int lz4_read_length(const uint8_t** inbuf, const uint8_t** dmaLimit, struct DMAContext* ctx)
 {
@@ -617,7 +639,7 @@ static int lz4_read_length(const uint8_t** inbuf, const uint8_t** dmaLimit, stru
     return size;
 }
 
-__attribute__((noinline)) static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct DMAContext* ctx)
+static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct DMAContext* ctx)
 {
     const uint8_t* inbufEnd = inbuf + inbufSize;
     const uint8_t* dmaLimit = inbuf - 16; 
@@ -639,24 +661,10 @@ __attribute__((noinline)) static void lz4_unpack(const uint8_t* inbuf, u32 inbuf
                 do
                 {
                     if (UNLIKELY((uint8_t*) copySrc > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
-                    // this a lie, data is actually 64bit register
-                    register uint32_t data;
-                    __asm__ volatile (
-                        "ldl %0, 0(%1)\n\t"
-                        "ldr %0, 7(%1)\n\t"
-                        : "=&r" (data)
-                        : "r" (copySrc)
-                        : "memory"
-                    );
+                    const uint64_t data = GET_UNALIGNED8(copySrc);
                     copySrc += 8;
+                    PUT_UNALIGNED8(data, dst);
                     dst += 8;
-                    __asm__ volatile (
-                        "sdl %1, -8(%0)\n\t"
-                        "sdr %1, -1(%0)\n\t"
-                        :
-                        : "r" (dst), "r" (data)
-                        : "memory"
-                    );
                     literalSize -= 8;
                 } while (literalSize > 0);
                 dst += literalSize;
@@ -683,23 +691,10 @@ __attribute__((noinline)) static void lz4_unpack(const uint8_t* inbuf, u32 inbuf
             {
                 do
                 {
-                    register uint32_t data;
-                    __asm__ volatile (
-                        "ldl %0, 0(%1)\n\t"
-                        "ldr %0, 7(%1)\n\t"
-                        : "=&r" (data)
-                        : "r" (copySrc)
-                        : "memory"
-                    );
+                    const uint64_t data = GET_UNALIGNED8(copySrc);
                     copySrc += 8;
+                    PUT_UNALIGNED8(data, dst);
                     dst += 8;
-                    __asm__ volatile (
-                        "sdl %1, -8(%0)\n\t"
-                        "sdr %1, -1(%0)\n\t"
-                        :
-                        : "r" (dst), "r" (data)
-                        : "memory"
-                    );
                     matchSize -= 8;
                 } while (matchSize > 0);
                 dst += matchSize;
@@ -722,11 +717,9 @@ __attribute__((noinline)) static void lz4_unpack(const uint8_t* inbuf, u32 inbuf
 
 #define LZ4T 1
 #ifdef LZ4T
-static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, struct DMAContext* ctx)
+static inline void lz4t_unpack(const uint8_t* inbuf, int32_t nibbles, uint8_t* dst, struct DMAContext* ctx)
 {
-    (void) xxx;
-    const uint8_t* dmaLimit = inbuf - 16; 
-    int32_t nibbles = *(int32_t*) (inbuf - 4);
+    const uint8_t* dmaLimit = dma_read_ctx(ctx);
     while (1)
     {
         // we will need to read the data so might as well do it unconditionally from the start
@@ -745,23 +738,9 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
             int amount = 7 & (nibbles >> 28);
             if (amount)
             {
-                // this a lie, data is actually 64bit register
-                register uint32_t data;
-                __asm__ volatile (
-                    "ldl %0, 0(%1)\n\t"
-                    "ldr %0, 7(%1)\n\t"
-                    : "=&r" (data)
-                    : "r" (inbuf)
-                    : "memory"
-                );
+                const uint64_t data = GET_UNALIGNED8(inbuf);
                 inbuf += amount;
-                __asm__ volatile (
-                    "sdl %1, 0(%0)\n\t"
-                    "sdr %1, 7(%0)\n\t"
-                    :
-                    : "r" (dst), "r" (data)
-                    : "memory"
-                );
+                PUT_UNALIGNED8(data, dst);
                 dst += amount;
             }
             else
@@ -785,23 +764,10 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
                 do
                 {
                     if (UNLIKELY((uint8_t*) copySrc > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
-                    register uint32_t data;
-                    __asm__ volatile (
-                        "ldl %0, 0(%1)\n\t"
-                        "ldr %0, 7(%1)\n\t"
-                        : "=&r" (data)
-                        : "r" (copySrc)
-                        : "memory"
-                    );
+                    const uint64_t data = GET_UNALIGNED8(copySrc);
                     copySrc += 8;
+                    PUT_UNALIGNED8(data, dst);
                     dst += 8;
-                    __asm__ volatile (
-                        "sdl %1, -8(%0)\n\t"
-                        "sdr %1, -1(%0)\n\t"
-                        :
-                        : "r" (dst), "r" (data)
-                        : "memory"
-                    );
                     amount -= 8;
                 } while (amount > 0);
                 dst += amount;
@@ -816,8 +782,8 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
             b1 <<= 8;
             uint16_t matchOffset = b0 | b1;
 
-            int amount = 2 + (7 & (nibbles >> 28));
-            if (amount == 9)
+            int amount = 3 + (7 & (nibbles >> 28));
+            if (amount == 10)
             {
                 amount = 0;
                 int shift = 0;
@@ -833,7 +799,7 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
                     }
                 }
 
-                amount += 8;
+                amount += 9;
             }
 
             const uint8_t* copySrc = dst - matchOffset;
@@ -841,23 +807,10 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
             {
                 do
                 {
-                    register uint32_t data;
-                    __asm__ volatile (
-                        "ldl %0, 0(%1)\n\t"
-                        "ldr %0, 7(%1)\n\t"
-                        : "=&r" (data)
-                        : "r" (copySrc)
-                        : "memory"
-                    );
+                    const uint64_t data = GET_UNALIGNED8(copySrc);
                     copySrc += 8;
+                    PUT_UNALIGNED8(data, dst);
                     dst += 8;
-                    __asm__ volatile (
-                        "sdl %1, -8(%0)\n\t"
-                        "sdr %1, -1(%0)\n\t"
-                        :
-                        : "r" (dst), "r" (data)
-                        : "memory"
-                    );
                     amount -= 8;
                 } while (amount > 0);
                 dst += amount;
@@ -984,8 +937,10 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             u32 lz4CompSize = *(u32 *) (compressed + 8);
             dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
             extern int decompress_lz4t_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
-            // lz4t_unpack(compressed + 16, lz4CompSize, dest, &ctx);
-            decompress_lz4t_full_fast(compressed + 16, *(u32 *) (compressed + 12), dest, &ctx);
+            if (LIKELY(gIsConsole))
+                decompress_lz4t_full_fast(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
+            else
+                lz4t_unpack(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;
