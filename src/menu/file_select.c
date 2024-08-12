@@ -2101,7 +2101,7 @@ void print_save_file_scores(s8 fileIndex) {
     gSPDisplayList(gDisplayListHead++, dl_menu_ia8_text_begin);
     gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, gDialogTextAlpha);
 
-    for ((i = 0); (i < COURSE_STAGES_MAX); (i++)) {
+    for ((i = 0); (i < 4); (i++)) {
         s32 lineY = 35 + (12 * i);
         format_int_to_string(str, i + 1);
         print_menu_generic_string(41, lineY, segmented_to_virtual(levelNameTable[i]));
