@@ -14,12 +14,14 @@
 
 #define match_off   $s3
 #define match_len   $s4
+#define match_lim   $s5
 #define v0_st       $s7
 
 #define dma_ctx     $s8
 #define dma_ptr     $v0
 
 #define shift       $t9
+#define match_len_add $t8
 
     .section .text.decompress_lz4t_full_fast
 	.p2align 5
@@ -36,6 +38,7 @@ decompress_lz4t_full_fast:
     sw $s2, 0x20($sp)
     sw $s3, 0x24($sp)
     sw $s4, 0x28($sp)
+    sw $s5, 0x2C($sp)
     sw $s7, 0x34($sp)
     sw $s8, 0x38($sp)
 
@@ -56,7 +59,7 @@ decompress_lz4t_full_fast:
      move $a0, dma_ctx
 
     bnez nibbles, .Lprocess_nibbles
-     nop
+     li match_lim, 7
      
 .Lload_nibbles:
     lwl nibbles, 0(inbuf)
@@ -106,14 +109,14 @@ decompress_lz4t_full_fast:
     addu outbuf, match_len                      # adjust outbuf to roll back extra copied bytes
 
 # fallthru to matches - it works only for long matches.
-# TODO: encoder should be aware of this and use full nibble for match size
+# TODO: this condition can be removed or moved in Lload_nibbles2
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
     bgezal $t0, dma_read_ctx                    # if inbuf >= dma_ptr, wait for dma
      move $a0, dma_ctx
 
     sll nibbles, 4
-    bnez nibbles, .Lprocess_nibbles2
-     nop
+    bnez nibbles, .Lprocess_ex_match_nibble
+     li match_lim, 15
      
 .Lload_nibbles2:
     lwl nibbles, 0(inbuf)
@@ -121,7 +124,7 @@ decompress_lz4t_full_fast:
     beqz nibbles, .Lend
     add inbuf, 4
 
-.Lprocess_nibbles2:
+.Lprocess_ex_match_nibble:
     srl match_len, nibbles, 28
 
 .Lmatches:
@@ -130,17 +133,17 @@ decompress_lz4t_full_fast:
     addiu inbuf, 2
     sll match_off, 8
     or match_off, $t0
-    
-    addiu $t0, match_len, -7                    # check if match length is 7
-    bnez $t0, .Lmatch                           # if match length is 15, read more
-     addiu match_len, 3                         # add implicit 2 to match length
 
+    bne match_len, match_lim, .Lmatch
+     addiu match_len, 3
+
+    move match_len_add, match_len
     lb match_len, 0(inbuf)
     add inbuf, 1
     bltzal match_len, .Lread_large_amount
      andi match_len, 0x7f
 
-    addiu match_len, 10
+    add match_len, match_len_add
 
 .Lmatch:
     blt match_off, match_len, .Lmatch1_loop     # check if we can do 8-byte copy
@@ -174,6 +177,7 @@ decompress_lz4t_full_fast:
     lw $s2, 0x20($sp)
     lw $s3, 0x24($sp)
     lw $s4, 0x28($sp)
+    lw $s5, 0x2C($sp)
     lw $s7, 0x34($sp)
     lw $s8, 0x38($sp)
     jr $ra

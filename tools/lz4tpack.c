@@ -12,6 +12,7 @@
 // #define FAVOR_DECOMPRESSION_SPEED
 #define COMPRESSION_LEVEL LZ4HC_CLEVEL_MAX
 
+#define DEBUG
 #ifdef DEBUG
 #define LOG(...) printf(__VA_ARGS__)
 #else
@@ -24,7 +25,11 @@ static uint32_t sCurrentNibbleShift = 8;
 static uint32_t sNibblesPushed = 0;
 
 #define TINY_LITERAL_LIMIT 21
-#define TINY_MATCH_LIMIT 9
+#define TINY_MINMATCH (MINMATCH - 1)
+// 0b0000 and 0b0111 are reserved
+#define TINY_MATCH_LIMIT (6 + TINY_MINMATCH)
+// 0b0000 and 0b1111 are reserved
+#define TINY_MATCH_LIMIT_EX (14 + TINY_MINMATCH)
 
 static void pushNibble(BYTE** _op, uint32_t newNibble)
 {
@@ -85,6 +90,7 @@ int LZ4HC_encodeSequence (
     /* Encode Literal length */
     size_t length = (size_t)(ip - anchor);
     LOG("Encoding literals: %d\n", length);
+    int tinyMatchLimit = TINY_MATCH_LIMIT;
     if (length)
     {
         if (length > TINY_LITERAL_LIMIT) {
@@ -94,6 +100,7 @@ int LZ4HC_encodeSequence (
             LOG("Copying literals wildly: %p %p %u\n", op, anchor, length);
             LZ4_wildCopy8(op, anchor, op + length);
             op += length;
+            tinyMatchLimit = TINY_MATCH_LIMIT_EX;
         } else {
             size_t len = length;
             const void* src = anchor;
@@ -111,22 +118,22 @@ int LZ4HC_encodeSequence (
     }
 
     /* Encode Offset */
-    if (matchLength > TINY_MATCH_LIMIT) {
-        // 7 means that matchLength is extended
-        pushNibble(&op, 7);
+    LOG("Encoding match with tiny limit %d at offset %d for length %d\n", tinyMatchLimit, offset, matchLength);
+    if (matchLength > tinyMatchLimit) {
+        // 7 or 15 means that matchLength is extended
+        pushNibble(&op, tinyMatchLimit - TINY_MINMATCH + 1);
     } else {
-        pushNibble(&op, matchLength - MINMATCH + 1);
+        pushNibble(&op, matchLength - TINY_MINMATCH);
     }
     assert(offset <= LZ4_DISTANCE_MAX );
     assert(offset > 0);
     LZ4_writeLE16(op, (U16)(offset)); op += 2;
-    LOG("Offset: %d\n", offset);
+    LOG("Pushing offset: %d\n", offset);
 
     /* Encode MatchLength */
     assert(matchLength >= MINMATCH);
-    LOG("Encoding match: %d\n", matchLength);
-    if (matchLength > TINY_MATCH_LIMIT) {
-        LZ4T_encodeBitLen(&op, matchLength - TINY_MATCH_LIMIT - 1);
+    if (matchLength > tinyMatchLimit) {
+        LZ4T_encodeBitLen(&op, matchLength - tinyMatchLimit - 1);
     }
 
     /* Prepare next loop */
@@ -238,9 +245,10 @@ int LZ4HC_sequencePrice(int litlen, int mlen)
     price += LZ4HC_literalsPrice(litlen);
     // nibble for encoding match
     price += 1;
-    if (mlen > TINY_MATCH_LIMIT) {
+    int tinyMatchLimit = litlen <= TINY_LITERAL_LIMIT ? TINY_MATCH_LIMIT : TINY_MATCH_LIMIT_EX;
+    if (mlen > tinyMatchLimit) {
         // ex size encoding
-        int len = mlen - TINY_MATCH_LIMIT - 1;
+        int len = mlen - tinyMatchLimit - 1;
         price += LZ4T_bitCodePrice(len);
     }
     return price;
@@ -271,6 +279,45 @@ static int lz4t_unpack_size(const char** _in)
 
     return amount;
 #undef in
+}
+
+static void lz4t_handle_match(char** _out, const char** _in, int* _nibblesHandled, int* _matchesCounts, int* _largeMatchesCounts, int32_t* _nibbles, int tinyMatchLimit)
+{
+#define out (*_out)
+#define in (*_in)
+#define nibblesHandled (*_nibblesHandled)
+#define nibbles (*_nibbles)
+#define matchesCounts (*_matchesCounts)
+#define largeMatchesCounts (*_largeMatchesCounts)
+
+    LOG("%d: Handle match nibble 0x%x | 0x%x\n", nibblesHandled, ((uint32_t) nibbles) >> 28, tinyMatchLimit);
+    matchesCounts++;
+    uint16_t offset = *(uint16_t*)in;
+    in += 2;
+
+    LOG("Offset: %d\n", offset);
+    int amount = TINY_MINMATCH + (((uint32_t) nibbles) >> 28);
+    LOG("Amount: %d\n", amount);
+    if (amount == tinyMatchLimit + 1)
+    {
+        LOG("Amount is %d, unpacking extras\n", tinyMatchLimit);
+        largeMatchesCounts++;
+        amount = lz4t_unpack_size(&in) + tinyMatchLimit + 1;
+    }
+
+    LOG("Copying amount %d: %p %p\n", amount, out, out - offset);
+    for (int i = 0; i < amount; i++)
+    {
+        out[i] = out[i - offset];
+    }
+    out += amount;
+
+#undef largeMatchesCounts
+#undef matchesCounts
+#undef nibbles
+#undef nibblesHandled
+#undef in
+#undef out
 }
 
 static char* lz4t_unpack(const char* in)
@@ -319,6 +366,20 @@ static char* lz4t_unpack(const char* in)
                 memcpy(out, in, amount);
                 out += amount;
                 in += amount;
+
+                nibbles <<= 4;
+                if (0 == nibbles)
+                {
+                    nibbles = __builtin_bswap32(*(uint32_t*) in);
+                    in += 4;
+                    LOG("Loaded new pack of nibbles: %x\n", nibbles);
+                    if (!nibbles)
+                    {
+                        break;
+                    }
+                }
+                nibblesHandled++;
+                lz4t_handle_match(&out, &in, &nibblesHandled, &matchesCounts, &largeMatchesCounts, &nibbles, TINY_MATCH_LIMIT_EX);
             }
             else
             {
@@ -330,28 +391,7 @@ static char* lz4t_unpack(const char* in)
         }
         else
         {
-            LOG("%d: Handle match nibble 0x%x\n", nibblesHandled, ((uint32_t) nibbles) >> 28);
-            // match
-            matchesCounts++;
-            uint16_t offset = *(uint16_t*)in;
-            in += 2;
-
-            LOG("Offset: %d\n", offset);
-            int amount = 3 + (7 & (nibbles >> 28));
-            LOG("Amount: %d\n", amount);
-            if (amount == 10)
-            {
-                LOG("Amount is 10, unpacking extras\n");
-                largeMatchesCounts++;
-                amount = lz4t_unpack_size(&in) + TINY_MATCH_LIMIT + 1;
-            }
-
-            LOG("Copying amount %d: %p %p\n", amount, out, out - offset);
-            for (int i = 0; i < amount; i++)
-            {
-                out[i] = out[i - offset];
-            }
-            out += amount;
+            lz4t_handle_match(&out, &in, &nibblesHandled, &matchesCounts, &largeMatchesCounts, &nibbles, TINY_MATCH_LIMIT);
         }
 
         nibbles <<= 4;
