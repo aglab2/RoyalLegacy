@@ -142,7 +142,7 @@ slidstart:
      addu outbuf, match_len
 
 .Lmatch1_loop:
-    # beqz    rle_b1, .Lmemset # lbu t1 is needed for memset
+    beqz    rle_b1, .Lmemset # lbu t1 is needed for memset
     lbu cp_scr_b2, 0(cp_curr)                             # load 1 byte
     addiu cp_curr, 1
     sb cp_scr_b2, 0(outbuf)                           # store 1 byte
