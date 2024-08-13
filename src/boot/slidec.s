@@ -10,10 +10,11 @@
 #define outbuf_end  $s5
 
 #define cp_curr     $t0
-#define cp_limit    $t1
+#define match_off   $t1
 #define cp_scr_b1   $t2
 #define cp_scr_b2   $t3
 #define rle_b2      $t4
+#define match_len   $t4
 #define rle_b1      $t5
 
 #define check       $t9
@@ -106,21 +107,22 @@ slidstart:
     add     rle_b2, 18          # rle_b2 = MM + 18
 .Lprepare_memcpy2:
 
-    # rle_b1 = offset, rle_b2 = amount
-    sub     cp_curr, outbuf, rle_b1
-    sub     check, rle_b1, 7
-    bgez    check, .Lmemcpy_loop8
-    add     cp_limit, outbuf, rle_b2
-    beqz    rle_b1, .Lmemset # lbu t1 is needed for memset
+    # rle_b1 = offset - 1, rle_b2 = match_len = amount
+    addiu   match_off, rle_b1, 1
+    blt     match_off, match_len, .Lmatch1_loop
+    sub     cp_curr, outbuf, match_off
 
-.Lmemcpy_loop:
-    lbu     cp_scr_b2, -1(cp_curr)
-    add     cp_curr, 1
-    add     outbuf, 1
-    bne     outbuf, cp_limit, .Lmemcpy_loop
-    sb      cp_scr_b2, -1(outbuf)
-    b       .Lnext_bit
-    nop
+.Lmatch8_loop:
+    ldl cp_scr_b2, 0(cp_curr)                             # load 8 bytes
+    ldr cp_scr_b2, 7(cp_curr)
+    addiu cp_curr, 8
+    sdl cp_scr_b2, 0(outbuf)                          # store 8 bytes
+    sdr cp_scr_b2, 7(outbuf)
+    addiu match_len, -8
+    bgtz match_len, .Lmatch8_loop               # check we went past match_len
+     addiu outbuf, 8
+    b .Lnext_bit                                    # jump to main loop
+     addu outbuf, match_len                     # adjust pointer remove extra bytes
 
 .Lmemset:
     dsll cp_scr_b1, cp_scr_b2, 8                            # duplicate the LSB into all bytes
@@ -133,23 +135,20 @@ slidstart:
 .Lmemset_loop:
     sdl cp_scr_b1, 0(outbuf)
     sdr cp_scr_b1, 7(outbuf)
-    add outbuf, 8
-    sub check, outbuf, cp_limit
-    bltz check, .Lmemset_loop
-    nop
+    addiu match_len, -8
+    bgtz match_len, .Lmemset_loop
+    addiu outbuf, 8
     b       .Lnext_bit
-    move outbuf, cp_limit
+     addu outbuf, match_len
 
-.Lmemcpy_loop8:
-    ldl cp_scr_b2, -1(cp_curr)
-    ldr cp_scr_b2, 6(cp_curr)
-    add outbuf, 8
-    sub check, outbuf, cp_limit
-    sdl cp_scr_b2, -8(outbuf)                          # store 8 bytes
-    sdr cp_scr_b2, -1(outbuf)
-    bltz check, .Lmemcpy_loop8
-    add cp_curr, 8
-    move outbuf, cp_limit
+.Lmatch1_loop:
+    # beqz    rle_b1, .Lmemset # lbu t1 is needed for memset
+    lbu cp_scr_b2, 0(cp_curr)                             # load 1 byte
+    addiu cp_curr, 1
+    sb cp_scr_b2, 0(outbuf)                           # store 1 byte
+    addiu match_len, -1
+    bgtz match_len, .Lmatch1_loop               # check we went past match_len
+     addiu outbuf, 1
 
 .Lnext_bit:
     sll     msb_check, 1
