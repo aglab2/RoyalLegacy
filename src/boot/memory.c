@@ -946,9 +946,12 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
         margin = 16;
 #endif
 
-#if defined(LZ4) || defined(LZ4T) || defined(YAZ0)
-        // read the header for LZ4 decompression
+#if defined(LZ4) || defined(YAZ0)
+        // read the header for LZ4/YAZ0 decompression
         dma_read(compressed, srcStart, srcStart + 16);
+#elif defined(LZ4T)
+        // read the header for LZ4T decompression
+        dma_read(compressed, srcStart, srcStart + 32);
 #else
         // Read the whole compressed content
         dma_read(compressed, srcStart, srcEnd);
@@ -982,10 +985,10 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
 #elif LZ4T
             struct DMAContext ctx;
             u32 lz4CompSize = *(u32 *) (compressed + 8);
-            dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
+            dma_ctx_init(&ctx, compressed + 32, srcStart + 32, srcStart + 32 + lz4CompSize);
             extern int decompress_lz4t_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
             // lz4t_unpack(compressed + 16, lz4CompSize, dest, &ctx);
-            decompress_lz4t_full_fast(compressed + 16, *(u32 *) (compressed + 12), dest, &ctx);
+            decompress_lz4t_full_fast(compressed + 24, *(u32 *) (compressed + 12), dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;

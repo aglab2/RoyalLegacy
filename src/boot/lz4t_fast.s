@@ -12,9 +12,9 @@
 #define nibbles     $s1
 #define outbuf      $s2
 
-#define match_off   $s3
 #define match_len   $s4
 #define match_lim   $s5
+#define offsets     $s6
 #define v0_st       $s7
 
 #define dma_ctx     $s8
@@ -22,6 +22,7 @@
 
 #define shift       $t9
 #define match_len_add $t8
+#define match_off   $t7
 
     .section .text.decompress_lz4t_full_fast
 	.p2align 5
@@ -36,9 +37,9 @@ decompress_lz4t_full_fast:
     sw $s0, 0x18($sp)
     sw $s1, 0x1c($sp)
     sw $s2, 0x20($sp)
-    sw $s3, 0x24($sp)
     sw $s4, 0x28($sp)
     sw $s5, 0x2C($sp)
+    sw $s6, 0x30($sp)
     sw $s7, 0x34($sp)
     sw $s8, 0x38($sp)
 
@@ -46,6 +47,8 @@ decompress_lz4t_full_fast:
     move $s1, $a1
     move $s2, $a2
     move dma_ctx, $a3
+    ldl offsets, -8(inbuf)
+    ldr offsets, -1(inbuf)
 
     move dma_ptr, $a0
     b .Lstart
@@ -111,7 +114,6 @@ decompress_lz4t_full_fast:
     addu outbuf, match_len                      # adjust outbuf to roll back extra copied bytes
 
 # fallthru to matches - it works only for long matches.
-# TODO: this condition can be removed or moved in Lload_nibbles2
 .Lmatches_ex:
     sub $t0, inbuf, dma_ptr                     # check if we need to wait for dma
     bgezal $t0, dma_read_ctx                    # if inbuf >= dma_ptr, wait for dma
@@ -125,17 +127,20 @@ decompress_lz4t_full_fast:
     lwl nibbles, 0(inbuf)
     lwr nibbles, 3(inbuf)
     beqz nibbles, .Lend
-    add inbuf, 4
+    addiu inbuf, 4
 
 .Lprocess_ex_match_nibble:
     srl match_len, nibbles, 28
 
 .Lmatches:
-    lbu match_off, 1(inbuf)                     # read 16-bit match offset (little endian)
-    lbu $t0, 0(inbuf)
-    addiu inbuf, 2
-    sll match_off, 8
-    or match_off, $t0
+    bnez offsets, .Lload_offset
+    andi match_off, offsets, 0xffff
+    ldl offsets, 0(inbuf)
+    ldr offsets, 7(inbuf)
+    addiu inbuf, 8
+    andi match_off, offsets, 0xffff
+.Lload_offset:
+    dsrl offsets, 16
 
     bne match_len, match_lim, .Lmatch
      addiu match_len, 3
@@ -178,9 +183,9 @@ decompress_lz4t_full_fast:
     lw $s0, 0x18($sp)
     lw $s1, 0x1c($sp)
     lw $s2, 0x20($sp)
-    lw $s3, 0x24($sp)
     lw $s4, 0x28($sp)
     lw $s5, 0x2C($sp)
+    lw $s6, 0x30($sp)
     lw $s7, 0x34($sp)
     lw $s8, 0x38($sp)
     jr $ra

@@ -20,11 +20,6 @@
 #define LOG(...)
 #endif
 
-static uint32_t* sCurrentNibblePendingOutputPtr = NULL;
-static uint32_t sCurrentNibble = 0;
-static uint32_t sCurrentNibbleShift = 8;
-static uint32_t sNibblesPushed = 0;
-
 #define TINY_LITERAL_LIMIT 21
 #define TINY_MINMATCH (MINMATCH - 1)
 // 0b0000 and 0b0111 are reserved
@@ -32,26 +27,58 @@ static uint32_t sNibblesPushed = 0;
 // 0b0000 and 0b1111 are reserved
 #define TINY_MATCH_LIMIT_EX (14 + TINY_MINMATCH)
 
+static uint32_t* sCurrentNibblePendingOutputPtr = NULL;
+static uint32_t sCurrentNibble = 0;
+static uint32_t sCurrentNibbleShift = 8;
+static uint32_t sNibblesPushed = 0;
+
 static void pushNibble(BYTE** _op, uint32_t newNibble)
 {
     sNibblesPushed++;
     LOG("%d: Pushing nibble: %x\n", sNibblesPushed, newNibble);
     if (0 == sCurrentNibbleShift)
     {
-        LOG("Requesting fresh nibbles\n");
+        LOG("Requesting fresh nibbles, writing back 0x%x\n", sCurrentNibble);
         uint32_t nibbleBE = __builtin_bswap32(sCurrentNibble);
-        memcpy(sCurrentNibblePendingOutputPtr, &nibbleBE, 4);
+        memcpy(sCurrentNibblePendingOutputPtr, &nibbleBE, sizeof(nibbleBE));
         sCurrentNibblePendingOutputPtr = (uint32_t*)(*_op);
-        memset(sCurrentNibblePendingOutputPtr, 0, 4);
+        memset(sCurrentNibblePendingOutputPtr, 0, sizeof(nibbleBE));
         sCurrentNibble = 0;
         sCurrentNibbleShift = 8;
-        (*_op) += 4;
+        (*_op) += sizeof(nibbleBE);
     }
 
     sCurrentNibbleShift--;
     newNibble <<= sCurrentNibbleShift * 4;
     sCurrentNibble |= newNibble;
     LOG("New nibble batch: 0x%x\n", sCurrentNibble);
+}
+
+static uint64_t* sCurrentOffsetsPendingOutputPtr = NULL;
+static uint64_t sCurrentOffsets = 0;
+static uint32_t sCurrentOffsetsShift = 4;
+static uint32_t sOffsetsPushed = 0;
+
+static void pushOffset(BYTE** _op, uint16_t offset)
+{
+    sOffsetsPushed++;
+    LOG("O[%d]: Pushing offset: %d\n", sOffsetsPushed, offset);
+    if (0 == sCurrentOffsetsShift)
+    {
+        LOG("Requesting fresh offsets, writing back 0x%llx\n", sCurrentOffsets);
+        uint64_t offsetsBE = __builtin_bswap64(sCurrentOffsets);
+        memcpy(sCurrentOffsetsPendingOutputPtr, &offsetsBE, sizeof(offsetsBE));
+        sCurrentOffsetsPendingOutputPtr = (uint64_t*)(*_op);
+        memset(sCurrentOffsetsPendingOutputPtr, 0, sizeof(offsetsBE));
+        sCurrentOffsets = 0;
+        sCurrentOffsetsShift = 4;
+        (*_op) += sizeof(offsetsBE);
+    }
+
+    sCurrentOffsetsShift--;
+    uint64_t newOffset = offset;
+    sCurrentOffsets |= (newOffset << ((3 - sCurrentOffsetsShift) * 16));
+    LOG("New offset batch: 0x%llx\n", sCurrentOffsets);
 }
 
 static void LZ4T_encodeBitLen(BYTE** _op, int len)
@@ -130,8 +157,7 @@ int LZ4HC_encodeSequence (
     }
     assert(offset <= LZ4_DISTANCE_MAX );
     assert(offset > 0);
-    LZ4_writeLE16(op, (U16)(offset)); op += 2;
-    LOG("Pushing offset: %d\n", offset);
+    pushOffset(&op, (U16)(offset));
 
     /* Encode MatchLength */
     assert(matchLength >= MINMATCH);
@@ -187,6 +213,12 @@ int LZ4T_lastLiterals (
     }
 
     // push ending marker
+    LOG("Writing back offsets 0x%llx\n", sCurrentOffsets);
+    uint64_t offsetsBE = __builtin_bswap64(sCurrentOffsets);
+    memcpy(sCurrentOffsetsPendingOutputPtr, &offsetsBE, 8);
+    sCurrentOffsetsPendingOutputPtr = NULL;
+
+    LOG("Pushing ending marker, writing back 0x%x\n", sCurrentNibble);
     uint32_t nibbleBE = __builtin_bswap32(sCurrentNibble);
     memcpy(sCurrentNibblePendingOutputPtr, &nibbleBE, 4);
     sCurrentNibblePendingOutputPtr = (uint32_t*)(*_op);
@@ -289,7 +321,7 @@ static int lz4t_unpack_size(const char** _in)
 #undef in
 }
 
-static void lz4t_handle_match(char** _out, const char** _in, int* _nibblesHandled, int* _matchesCounts, int* _largeMatchesCounts, int32_t* _nibbles, int tinyMatchLimit)
+static void lz4t_handle_match(char** _out, const char** _in, int* _nibblesHandled, int* _matchesCounts, int* _largeMatchesCounts, int32_t* _nibbles, uint64_t* _offsets, int tinyMatchLimit)
 {
 #define out (*_out)
 #define in (*_in)
@@ -297,11 +329,18 @@ static void lz4t_handle_match(char** _out, const char** _in, int* _nibblesHandle
 #define nibbles (*_nibbles)
 #define matchesCounts (*_matchesCounts)
 #define largeMatchesCounts (*_largeMatchesCounts)
+#define offsets (*_offsets)
 
     LOG("%d: Handle match nibble 0x%x | 0x%x\n", nibblesHandled, ((uint32_t) nibbles) >> 28, tinyMatchLimit);
     matchesCounts++;
-    uint16_t offset = *(uint16_t*)in;
-    in += 2;
+    if (0 == offsets)
+    {
+        offsets = __builtin_bswap64(*(uint64_t*)in);
+        LOG("Loaded new pack of offsets: %lx\n", offsets);
+        in += 8;
+    }
+    uint16_t offset = (uint16_t) (offsets & 0xffff);
+    offsets >>= 16;
 
     LOG("Offset: %d\n", offset);
     int amount = TINY_MINMATCH + (((uint32_t) nibbles) >> 28);
@@ -320,6 +359,7 @@ static void lz4t_handle_match(char** _out, const char** _in, int* _nibblesHandle
     }
     out += amount;
 
+#undef offsets
 #undef largeMatchesCounts
 #undef matchesCounts
 #undef nibbles
@@ -334,7 +374,11 @@ static char* lz4t_unpack(const char* in)
     uint32_t magicHeader = __builtin_bswap32(*src++);
     uint32_t srcSize = __builtin_bswap32(*src++);
     uint32_t compSize = __builtin_bswap32(*src++);
-    int32_t nibbles = 0;
+    int32_t nibbles = __builtin_bswap32(*(int32_t*) (src++));
+    LOG("Initial pack of nibbles: %lx\n", nibbles);
+    uint64_t offsets = __builtin_bswap64(*(uint64_t*) src);
+    src += 2;
+    LOG("Initial pack of offsets: %llx\n", offsets);
     int nibblesHandled = 0;
     int largeLiteralsCounts = 0;
     int largeMatchesCounts = 0;
@@ -342,7 +386,7 @@ static char* lz4t_unpack(const char* in)
     int matchesCounts = 0;
 
     char* dst = malloc(srcSize + 16);
-    in = in + 12;
+    in = (const char*) src;
     char* out = dst;
     while (1)
     {
@@ -400,12 +444,12 @@ static char* lz4t_unpack(const char* in)
                     }
                 }
                 nibblesHandled++;
-                lz4t_handle_match(&out, &in, &nibblesHandled, &matchesCounts, &largeMatchesCounts, &nibbles, TINY_MATCH_LIMIT_EX);
+                lz4t_handle_match(&out, &in, &nibblesHandled, &matchesCounts, &largeMatchesCounts, &nibbles, &offsets, TINY_MATCH_LIMIT_EX);
             }
         }
         else
         {
-            lz4t_handle_match(&out, &in, &nibblesHandled, &matchesCounts, &largeMatchesCounts, &nibbles, TINY_MATCH_LIMIT);
+            lz4t_handle_match(&out, &in, &nibblesHandled, &matchesCounts, &largeMatchesCounts, &nibbles, &offsets, TINY_MATCH_LIMIT);
         }
 
         nibbles <<= 4;
@@ -453,6 +497,7 @@ int main(int argc, char *argv[])
     fclose(in);
 
     uint32_t firstNibble = 0;
+    uint64_t firstOffsets = 0;
     char* dst = malloc(MAX_COMP_SIZE);
     LZ4_streamHC_t* state = LZ4_createStreamHC();
 #ifdef FAVOR_DECOMPRESSION_SPEED
@@ -460,12 +505,18 @@ int main(int argc, char *argv[])
 #endif
     LZ4_setCompressionLevel(state, COMPRESSION_LEVEL);  
     sCurrentNibblePendingOutputPtr = &firstNibble;
+    sCurrentOffsetsPendingOutputPtr = &firstOffsets;
     LOG("src=%p dst=%p srcSize=%u", src, dst, srcSize);
     int compSize = LZ4_compress_HC_continue(state, (char*)src, dst, srcSize, MAX_COMP_SIZE);
     LZ4_freeStreamHC(state);
     if (sCurrentNibblePendingOutputPtr)
     {
         printf("Error: Nibble output pointer is not NULL after compression\n");
+        abort();
+    }
+    if (sCurrentOffsetsPendingOutputPtr)
+    {
+        printf("Error: Offsets output pointer is not NULL after compression\n");
         abort();
     }
     if (0 == compSize)
@@ -491,10 +542,11 @@ int main(int argc, char *argv[])
     uint32_t srcSizeBE = __builtin_bswap32(srcSize);
     uint32_t magicHeader = 'LZ4T';
 
-    fwrite(&magicHeader  , 1, sizeof(magicHeader), out);
-    fwrite(&srcSizeBE    , 1, sizeof(srcSizeBE)  , out);
-    fwrite(&compSizeBE   , 1, sizeof(compSizeBE) , out);
-    fwrite(&firstNibble  , 1, sizeof(firstNibble), out);
+    fwrite(&magicHeader  , 1, sizeof(magicHeader) , out);
+    fwrite(&srcSizeBE    , 1, sizeof(srcSizeBE)   , out);
+    fwrite(&compSizeBE   , 1, sizeof(compSizeBE)  , out);
+    fwrite(&firstNibble  , 1, sizeof(firstNibble) , out);
+    fwrite(&firstOffsets , 1, sizeof(firstOffsets), out);
 
     fwrite(dst, compSize, 1, out);
 
