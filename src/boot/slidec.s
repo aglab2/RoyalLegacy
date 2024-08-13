@@ -84,6 +84,9 @@ slidstart:
     bne     outbuf, outbuf_end, .Lloop
     sub     bits_left, 1
 
+    b .Lend
+    nop
+
 # RLE from decompressed output
 .Lbackref:
     # need to parse NRRR or 0RRRMM
@@ -105,7 +108,7 @@ slidstart:
 
     # rle_b1 = offset, rle_b2 = amount
     sub     cp_curr, outbuf, rle_b1
-    sub     check, rle_b1, 6
+    sub     check, rle_b1, 7
     bgez    check, .Lmemcpy_loop8
     add     cp_limit, outbuf, rle_b2
     beqz    rle_b1, .Lmemset # lbu t1 is needed for memset
@@ -153,6 +156,7 @@ slidstart:
     bne     outbuf, outbuf_end, .Lloop
     sub     bits_left, 1
 
+.Lend:
     lw $ra, 0x14($sp)
     lw $s0, 0x18($sp)
     lw $s1, 0x1c($sp)
