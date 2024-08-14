@@ -32,6 +32,7 @@ default: all
 filesizer_SOURCES	:= filesizer.c
 
 lz4pack_SOURCES	:= lz4.c lz4hc.c lz4pack.c
+lz4pack_CFLAGS  := -flto
 lz4tpack_SOURCES	:= lz4.c lz4hc.c lz4tpack.c
 lz4tpack_CFLAGS  := -DLZ4T -flto
 rncpack_SOURCES	:= rncpack.c

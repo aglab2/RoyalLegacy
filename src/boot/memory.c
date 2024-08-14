@@ -722,56 +722,97 @@ __attribute__((noinline)) static void lz4_unpack(const uint8_t* inbuf, u32 inbuf
 
 #define LZ4T 1
 #ifdef LZ4T
-static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, struct DMAContext* ctx)
+/*
+ LZ4T is a format that mimicks LZ4 very closely but attempts to introduce fast decompression loop for
+ platforms that do not allow to load 16 bytes at once for literals but can load 8 bytes at once.
+
+Nibbles:
+ To allow this, instead of having 2 nibbles encoded like LLLLMMMM, where LLLL is literal length and MMMM is match length,
+ use a different encoding. If the highest bit of the nibble is set, then it is a literal length, otherwise it is a match length.
+ To facilitate such a change, a single byte is not enough so for performance reasons, a full 4 bytes with 8 'nibbles' (4bits) is used.
+ Nibble pack is encoded in Big Endian, nibbles start from hi bits to low bits. (0x12345678 yields nibbles 0x1, 0x2....)
+ 
+ Nibble 0000 is reserved so when 'nibbles' is 0, it is a signal to load a new 4 bytes from the input stream.
+ If new loaded nibble is 0, stop the loop and return the result.
+
+Literals:
+ When loop is started, a nibble can be either a literal (1xxx) or a match length (0yyy).
+
+ For literals, if length is 0, it is an extended literal length. In that case, the next byte is read and if the highest bit is set,
+ next pack 7 bits is added to result  until the highest bit is not set. The length is then 22 + the bits read.
+ 22 is a convenient number because 3*7 bits can be loaded with just nibbles but 4 nibbles is more than 1 nibble + 1 byte.
+
+ Notice the redundancy in this encoding - for example size 16 can be encoded as 7+7+2 or something like 5+5+4 with 3 nibbles.
+ Packer is required to always use encoding like 7+7+2 to avoid redundancy.
+ 
+ Such packing also allows for 'extended match length'. If last literal nibble loaded did not have size==7,
+ it is guaranteed that the next nibble will be a match: less than 7 is either final literal size encoded or ex size encoding.
+
+Matches:
+ For matches, next 2 bytes are 'offset', which is stored in Big Endian format.
+
+ For the size nibble can be either 0xxx or xxxx depending on 'extended match length' case. For convenience sake,
+ we use 'matchLim' variable which is 7 or 15 if 'extended match length' is used.
+
+ Minimal match length is the same as LZ4, which means that 3 is added to the size - nibble 0000 is reserved!
+ If match length is equal to 'matchLim', then it is an extended match length and size is loaded
+ in the same way as for literals. Match length will be then equal to 'matchLim + 3 + exSize', where exSize is bit encoded extra size.
+
+ After the match is loaded, the next nibble is loaded and the process repeats.
+*/
+static __attribute__((noinline)) void lz4t_unpack(const uint8_t* restrict inbuf, int32_t nibbles, uint8_t* restrict dst, struct DMAContext* ctx)
 {
-    (void) xxx;
-    const uint8_t* dmaLimit = inbuf - 16; 
-    int32_t nibbles = *(int32_t*) (inbuf - 4);
-    while (1)
+#define LOAD_FRESH_NIBBLES() if (nibbles == 0) { nibbles = GET_UNALIGNED4S(inbuf); if (UNLIKELY(!nibbles)) { return; } inbuf += 4; }
+    // DMA checks is checking whether dmaLimit will be exceeded after reading the data.
+    // 'dma_read_ctx' will wait for the current DMA request and fire the next DMA request
+#define DMA_CHECK(v) if (UNLIKELY(v > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
+
+    const uint8_t* dmaLimit = inbuf - 16;
+    for (;; nibbles <<= 4)
     {
-        // we will need to read the data so might as well do it unconditionally from the start
-        if (UNLIKELY(inbuf > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
+        // we will need to read the data (literal or offset) so might as well do it unconditionally from the start
+        DMA_CHECK(inbuf);
 
-        if (UNLIKELY(nibbles == 0))
-        {
-            nibbles = GET_UNALIGNED4S(inbuf);
-            inbuf += 4;
-            if (UNLIKELY(!nibbles)) break;
-        }
+        // matchLim will define the max amount of size encoded in a single nibble
+        // If it is a match after guaranteed literal, it is 15, otherwise 7 (we checked for nibbles >= 0)
+        int matchLim = 7;
 
+        LOAD_FRESH_NIBBLES();
+
+        // Each nibble is either 0xxx or 1xxx, xxx is a length
+        int len = 7 & (nibbles >> 28);
+
+        // If highest bit of current nibble is set to 1, then it is a literal load
+        // Conveniently check for that using '<0' condition
+        // Condition for matches will fallthru this check
         if (nibbles < 0)
         {
-            // literal
-            int amount = 7 & (nibbles >> 28);
-            if (amount)
+            // If length is 0, it is an extended match which will be bit encoded
+            if (0 != len)
             {
-                // this a lie, data is actually 64bit register
-                register uint32_t data;
-                __asm__ volatile (
-                    "ldl %0, 0(%1)\n\t"
-                    "ldr %0, 7(%1)\n\t"
-                    : "=&r" (data)
-                    : "r" (inbuf)
-                    : "memory"
-                );
-                inbuf += amount;
-                __asm__ volatile (
-                    "sdl %1, 0(%0)\n\t"
-                    "sdr %1, 7(%0)\n\t"
-                    :
-                    : "r" (dst), "r" (data)
-                    : "memory"
-                );
-                dst += amount;
+                // Load full 8 byte literals, similar to LZ4 fast dec loop
+                // No need to check for DMA limit here, we are still within the range
+                const uint64_t data = GET_UNALIGNED8(inbuf);
+                inbuf += len;
+                PUT_UNALIGNED8(data, dst);
+                dst += len;
+
+                // It is unknown whether next nibble will be match or literal so continue
+                if (len == matchLim)
+                    continue;
+                
+                // ...otherwise fallthru to matches with extended matchLim
             }
             else
             {
+                // Load more than 8 byte literals with a bit encoding loop
+                len = 0;
                 int shift = 0;
                 while (1)
                 {
                     int8_t next = *(int8_t*) (inbuf);
                     inbuf++;
-                    amount |= (next & 0x7f) << shift;
+                    len |= (next & 0x7f) << shift;
                     shift += 7;
                     if (next >= 0)
                     {
@@ -779,88 +820,98 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
                     }
                 }
 
-                amount += 22;
+                len += 22;
                 const uint8_t* copySrc = inbuf;
-                inbuf += amount;
+                inbuf += len;
                 do
                 {
-                    if (UNLIKELY((uint8_t*) copySrc > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
-                    register uint32_t data;
-                    __asm__ volatile (
-                        "ldl %0, 0(%1)\n\t"
-                        "ldr %0, 7(%1)\n\t"
-                        : "=&r" (data)
-                        : "r" (copySrc)
-                        : "memory"
-                    );
+                    // TODO: This is unnecessary for the first loop, we are already in the range
+                    DMA_CHECK(copySrc);
+                    const uint64_t data = GET_UNALIGNED8(copySrc);
                     copySrc += 8;
+                    PUT_UNALIGNED8(data, dst);
                     dst += 8;
-                    __asm__ volatile (
-                        "sdl %1, -8(%0)\n\t"
-                        "sdr %1, -1(%0)\n\t"
-                        :
-                        : "r" (dst), "r" (data)
-                        : "memory"
-                    );
-                    amount -= 8;
-                } while (amount > 0);
-                dst += amount;
+                    len -= 8;
+                } while (len > 0);
+                dst += len;
+
+                // ... and fallthru to matches with extended limit
             }
         }
         else
         {
-            // match
-            uint16_t b1 = inbuf[1];
-            inbuf += 2;
-            uint16_t b0 = inbuf[-2];
-            b1 <<= 8;
-            uint16_t matchOffset = b0 | b1;
+            // This is ugly, but it is the easiest way to do it
+            goto matches;
+        }
 
-            int amount = 3 + (7 & (nibbles >> 28));
-            if (amount == 10)
+        // here is a fallthru for matches with extended limit so clear out the nibble
+        nibbles <<= 4;
+        LOAD_FRESH_NIBBLES();
+
+        // match limit is 15 because it is after guaranteed literal
+        matchLim = 15;
+        // we are here after a literal was loaded so check DMA before loading offset in
+        DMA_CHECK(inbuf);
+        // cast like this is valid - signed to unsigned will just properly overflow
+        len = (((uint32_t) nibbles) >> 28);
+
+matches:
+        // pull in offset and potentially the first size
+        uint32_t matchCombo = GET_UNALIGNED4(inbuf);
+        inbuf += 2;
+        // It is 16 bit valid offset that fits in 'int', no need to do casts
+        int matchOffset = matchCombo >> 16;
+        // If it is 'regular' match, len='7 & (nibbles >> 28)', otherwise extended match '(nibbles >> 28)'
+        // We need to start preparing the value for 'matchLen' which is 'matchLim + 3 + exSize'
+        int matchLen = 3 + len;
+        if (matchLim == len)
+        {
+            // we want extended matchLen so pull it from data
+            // conveniently we have the first 'next' already
+            // but I want a sign extended matchCombo 2nd byte so I am doing some ugly stuff
+            int8_t next = ((((int) (matchCombo >> 8)) << 24) >> 24);
+            int exLen = next & 0x7f;
+            int shift = 7;
+            inbuf++;
+            while (next < 0)
             {
-                amount = 0;
-                int shift = 0;
-                while (1)
-                {
-                    int8_t next = *(int8_t*) (inbuf);
-                    inbuf++;
-                    amount |= (next & 0x7f) << shift;
-                    shift += 7;
-                    if (next >= 0)
-                    {
-                        break;
-                    }
-                }
-
-                amount += 10;
+                next = *(int8_t*) (inbuf);
+                inbuf++;
+                exLen |= (next & 0x7f) << shift;
+                shift += 7;
             }
 
-            const uint8_t* copySrc = dst - matchOffset;
-            if (matchOffset > amount || matchOffset >= 8)
+            matchLen += exLen;
+        }
+
+        const uint8_t* copySrc = dst - matchOffset;
+        if (matchOffset > matchLen || matchOffset >= 8)
+        {
+            do
             {
+                const uint64_t data = GET_UNALIGNED8(copySrc);
+                copySrc += 8;
+                PUT_UNALIGNED8(data, dst);
+                dst += 8;
+                matchLen -= 8;
+            } while (matchLen > 0);
+            dst += matchLen;
+        }
+        else
+        {
+            if (1 == matchOffset)
+            {
+                uint64_t data = *copySrc;
+                data |= data << 8;
+                data |= data << 16;
+                data |= data << 32;
                 do
                 {
-                    register uint32_t data;
-                    __asm__ volatile (
-                        "ldl %0, 0(%1)\n\t"
-                        "ldr %0, 7(%1)\n\t"
-                        : "=&r" (data)
-                        : "r" (copySrc)
-                        : "memory"
-                    );
-                    copySrc += 8;
+                    PUT_UNALIGNED8(data, dst);
                     dst += 8;
-                    __asm__ volatile (
-                        "sdl %1, -8(%0)\n\t"
-                        "sdr %1, -1(%0)\n\t"
-                        :
-                        : "r" (dst), "r" (data)
-                        : "memory"
-                    );
-                    amount -= 8;
-                } while (amount > 0);
-                dst += amount;
+                    matchLen -= 8;
+                } while (matchLen > 0);
+                dst += matchLen;            
             }
             else
             {
@@ -870,13 +921,16 @@ static inline void lz4t_unpack(const uint8_t* inbuf, u32 xxx, uint8_t* dst, stru
                     copySrc++;
                     *dst = data;
                     dst++;
-                    amount--;
-                } while (amount > 0);
+                    matchLen--;
+                } while (matchLen > 0);
             }
         }
 
-        nibbles <<= 4;
+        // repeat the loop...
     }
+
+#undef DMA_CHECK
+#undef LOAD_FRESH_NIBBLES
 }
 #endif
 
@@ -984,8 +1038,8 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             u32 lz4CompSize = *(u32 *) (compressed + 8);
             dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
             extern int decompress_lz4t_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
-            // lz4t_unpack(compressed + 16, lz4CompSize, dest, &ctx);
-            decompress_lz4t_full_fast(compressed + 16, *(u32 *) (compressed + 12), dest, &ctx);
+            lz4t_unpack(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
+            // decompress_lz4t_full_fast(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;
