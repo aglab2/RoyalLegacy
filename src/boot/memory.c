@@ -759,6 +759,17 @@ Matches:
  in the same way as for literals. Match length will be then equal to 'matchLim + 3 + exSize', where exSize is bit encoded extra size.
 
  After the match is loaded, the next nibble is loaded and the process repeats.
+
+Examples:
+In the end the following sets of mibbles for literals+matches will be encoded based on literals count:
+literals 0    : 0MMM
+literals 1-6  : 1LLL MMMM
+literals 7    : 1LLL 0MMM
+literals 8-13 : 1111 1LLL 0MMM
+literals 14   : 1111 1LLL 0MMM
+literals 15-20: 1111 1111 1LLL 0MMM
+literals 21   : 1111 1111 1111 0MMM
+literals 22+  : 1000 MMMM
 */
 static __attribute__((noinline)) void lz4t_unpack(const uint8_t* restrict inbuf, int32_t nibbles, uint8_t* restrict dst, struct DMAContext* ctx)
 {
