@@ -130,7 +130,7 @@ int LZ4HC_encodeSequence (
     }
     assert(offset <= LZ4_DISTANCE_MAX );
     assert(offset > 0);
-    LZ4_writeLE16(op, (U16)(offset)); op += 2;
+    LZ4_write16(op, __builtin_bswap16((U16)(offset))); op += 2;
     LOG("Pushing offset: %d\n", offset);
 
     /* Encode MatchLength */
@@ -300,7 +300,7 @@ static void lz4t_handle_match(char** _out, const char** _in, int* _nibblesHandle
 
     LOG("%d: Handle match nibble 0x%x | 0x%x\n", nibblesHandled, ((uint32_t) nibbles) >> 28, tinyMatchLimit);
     matchesCounts++;
-    uint16_t offset = *(uint16_t*)in;
+    uint16_t offset = __builtin_bswap16(*(uint16_t*)in);
     in += 2;
 
     LOG("Offset: %d\n", offset);

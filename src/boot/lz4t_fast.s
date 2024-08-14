@@ -23,6 +23,7 @@
 #define len_add     $t8
 #define match_len   $t7
 #define match_off   $t6
+#define match_combo $t5
 
     .section .text.decompress_lz4t_full_fast
 	.p2align 5
@@ -131,16 +132,17 @@ decompress_lz4t_full_fast:
     srl len, nibbles, 28
 
 .Lmatches:
-    lbu match_off, 1(inbuf)                     # read 16-bit match offset (little endian)
-    lbu $t0, 0(inbuf)
+    lwl match_combo, 0(inbuf)
+    lwr match_combo, 3(inbuf)
     addiu inbuf, 2
-    sll match_off, 8
-    or match_off, $t0
+    srl match_off, match_combo, 16
 
     bne len, match_lim, .Lmatch
      add match_len, len, 3
 
-    lb len, 0(inbuf)
+    # len is sign extended match_combo[8:15]
+    sll match_combo, 16
+    sra len, match_combo, 24
     add inbuf, 1
     bltzal len, .Lread_large_amount
      andi len, 0x7f
