@@ -23,6 +23,8 @@
 #include "game/profiling.h"
 #include "game/emutest.h"
 
+#include "hacktice/savestate.h"
+
 // Message IDs
 enum MessageIDs {
     MESG_SP_COMPLETE = 100,
