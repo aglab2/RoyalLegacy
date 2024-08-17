@@ -3,6 +3,7 @@
 const GeoLayout ccm_area_1_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
+		GEO_DISPLAY_LIST(LAYER_FORCE, ccm_dl_a_skybox_mesh_layer_0),
 		GEO_CULL(-5000, 5000, -32000, 32000, -32000, 32000, 0),
 		GEO_OPEN_NODE(),
 			GEO_DISPLAY_LIST(LAYER_OPAQUE, ccm_dl_cactus_mesh_layer_1),
@@ -135,13 +136,6 @@ const GeoLayout ccm_area_1_geo[] = {
 const GeoLayout ccm_area_1[] = {
 	GEO_NODE_SCREEN_AREA(10, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
 	GEO_OPEN_NODE(),
-		GEO_ZBUFFER(0),
-		GEO_OPEN_NODE(),
-			GEO_NODE_ORTHO(100.0000),
-			GEO_OPEN_NODE(),
-				GEO_BACKGROUND_COLOR(0xB7BF),
-			GEO_CLOSE_NODE(),
-		GEO_CLOSE_NODE(),
 		GEO_ZBUFFER(1),
 		GEO_OPEN_NODE(),
 			GEO_CAMERA_FRUSTUM_WITH_FUNC(45.0000, 100, 40000, geo_camera_fov),
