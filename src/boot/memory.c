@@ -637,7 +637,7 @@ static int lz4_read_length(const uint8_t** inbuf, const uint8_t** dmaLimit, stru
         (*inbuf)++;
         size += byte;
     }
-    while (UNLIKELY(byte == 0xFF));
+    while (byte == 0xFF);
 
     return size;
 }
@@ -649,16 +649,35 @@ static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct
     while (1)
     {
         if (UNLIKELY(inbuf > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
-        uint8_t token = *inbuf;
+        int8_t token = *(int8_t*)inbuf;
         inbuf++;
 
         {
             int literalSize = token >> 4;
-            if (LIKELY(literalSize))
+            // literalSize == 0xf so sign extend it is -1
+            if (-1 != literalSize)
             {
-                if (UNLIKELY(literalSize == 0xF))
-                    literalSize += lz4_read_length(&inbuf, &dmaLimit, ctx);
-
+                if (literalSize < 0)
+                {
+                    // If literalSize < 0, hi bit is set so literalSize is 8 or higher
+                    // load 8 bytes and consume the hi bit
+                    literalSize &= 0x7;
+                    const uint64_t data = GET_UNALIGNED8(inbuf);
+                    inbuf += 8;
+                    PUT_UNALIGNED8(data, dst);
+                    dst += 8;
+                }
+                if (literalSize)
+                {
+                    const uint64_t data = GET_UNALIGNED8(inbuf);
+                    inbuf += literalSize;
+                    PUT_UNALIGNED8(data, dst);
+                    dst += literalSize;
+                }
+            }
+            else
+            {
+                literalSize = 0xf + lz4_read_length(&inbuf, &dmaLimit, ctx);
                 const uint8_t* copySrc = inbuf;
                 inbuf += literalSize;
                 do
@@ -685,7 +704,7 @@ static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct
             uint16_t matchOffset = b0 | b1;
             
             int matchSize = token & 0xF;
-            if (UNLIKELY(matchSize == 0xF))
+            if (matchSize == 0xF)
                 matchSize += lz4_read_length(&inbuf, &dmaLimit, ctx);
             
             matchSize += 4;
@@ -720,7 +739,7 @@ static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct
 
 #define LZ4T 1
 #ifdef LZ4T
-static __attribute__((noinline)) void lz4t_unpack(const uint8_t* restrict inbuf, int32_t nibbles, uint8_t* restrict dst, struct DMAContext* ctx)
+static __attribute__((optimize("O2"))) void lz4t_unpack(const uint8_t* inbuf, int32_t nibbles, uint8_t* dst, struct DMAContext* ctx)
 {
 #define LOAD_FRESH_NIBBLES() if (nibbles == 0) { nibbles = GET_UNALIGNED4S(inbuf); if (UNLIKELY(!nibbles)) { return; } inbuf += 4; }
     // DMA checks is checking whether dmaLimit will be exceeded after reading the data.
@@ -845,46 +864,30 @@ matches:
         }
 
         const uint8_t* copySrc = dst - matchOffset;
-        if (matchOffset > matchLen || matchOffset >= 8)
+        if (matchOffset <= matchLen && matchOffset < 8)
         {
-            do
-            {
-                const uint64_t data = GET_UNALIGNED8(copySrc);
-                copySrc += 8;
-                PUT_UNALIGNED8(data, dst);
-                dst += 8;
-                matchLen -= 8;
-            } while (matchLen > 0);
-            dst += matchLen;
+static const unsigned inc32table[8] = {0, 1, 2,  1,  0,  4, 4, 4};
+static const int      dec64table[8] = {0, 0, 0, -1, -4,  1, 2, 3};
+            for (int i = 0; i < 4; i++)
+                dst[i] = copySrc[i];
+
+            copySrc += inc32table[matchOffset];
+            uint32_t data = GET_UNALIGNED4(copySrc);
+            copySrc -= dec64table[matchOffset];
+            PUT_UNALIGNED4(data, dst + 4);
+            dst += 8;
+            matchLen -= 8;
         }
-        else
+    
+        while (matchLen > 0)
         {
-            if (1 == matchOffset)
-            {
-                uint64_t data = *copySrc;
-                data |= data << 8;
-                data |= data << 16;
-                data |= data << 32;
-                do
-                {
-                    PUT_UNALIGNED8(data, dst);
-                    dst += 8;
-                    matchLen -= 8;
-                } while (matchLen > 0);
-                dst += matchLen;            
-            }
-            else
-            {
-                do
-                {
-                    uint8_t data = *copySrc;
-                    copySrc++;
-                    *dst = data;
-                    dst++;
-                    matchLen--;
-                } while (matchLen > 0);
-            }
+            const uint64_t data = GET_UNALIGNED8(copySrc);
+            copySrc += 8;
+            PUT_UNALIGNED8(data, dst);
+            dst += 8;
+            matchLen -= 8;
         }
+        dst += matchLen;
 
         // repeat the loop...
     }
@@ -992,15 +995,15 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             u32 lz4CompSize = *(u32 *) (compressed + 8);
             dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
             extern int decompress_lz4_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
-            decompress_lz4_full_fast(compressed + 16, lz4CompSize, dest, &ctx);
+            lz4_unpack(compressed + 16, lz4CompSize, dest, &ctx);
 #elif LZ4T
             struct DMAContext ctx;
             u32 lz4CompSize = *(u32 *) (compressed + 8);
             dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
             extern int decompress_lz4t_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
-            if (LIKELY(gIsConsole))
-                decompress_lz4t_full_fast(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
-            else
+            //if (LIKELY(gIsConsole))
+            //    decompress_lz4t_full_fast(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
+            //else
                 lz4t_unpack(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
