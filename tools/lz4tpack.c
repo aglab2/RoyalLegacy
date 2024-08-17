@@ -340,6 +340,8 @@ static char* LZ4T_unpack(const char* in)
     int largeMatchesCounts = 0;
     int literalsCounts = 0;
     int matchesCounts = 0;
+    int exMatchesCounts = 0;
+    int exMatchesAfterLimLiterals = 0;
 
     char* dst = malloc(srcSize + 16);
     in = in + 12;
@@ -384,6 +386,8 @@ static char* LZ4T_unpack(const char* in)
                 out += amount;
                 in += amount;
                 loadExMatch = (7 != amount);
+                if (loadExMatch)
+                    exMatchesAfterLimLiterals++;
             }
 
             if (loadExMatch)
@@ -400,6 +404,7 @@ static char* LZ4T_unpack(const char* in)
                     }
                 }
                 nibblesHandled++;
+                exMatchesCounts++;
                 LZ4T_handle_match(&out, &in, &nibblesHandled, &matchesCounts, &largeMatchesCounts, &nibbles, TINY_MATCH_LIMIT_EX);
             }
         }
@@ -413,6 +418,7 @@ static char* LZ4T_unpack(const char* in)
 
     printf("Literals: %d (%d large)\n", literalsCounts, largeLiteralsCounts);
     printf("Matches: %d (%d large)\n", matchesCounts, largeMatchesCounts);
+    printf("Ex matches: %d (%d after !7)\n", exMatchesCounts, exMatchesAfterLimLiterals);
 
     return dst;
 }

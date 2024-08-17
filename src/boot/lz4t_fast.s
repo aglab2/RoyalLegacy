@@ -85,33 +85,6 @@ decompress_lz4t_full_fast:
     sdr $t0, 7(outbuf)
     beq len, match_lim, .Lloop
     add outbuf, len
-    b .Lmatches_ex
-    sll nibbles, 4
-
-.Llarge_literals:
-    lb len, 0(inbuf)
-    add inbuf, 1
-    bltzal len, .Lread_large_amount
-     andi len, 0x7f
-
-    move v0_st, inbuf                            # store start of literals into v0_st
-    addiu len, 22
-    add inbuf, len                        # advance inbuf to end of literals
-.Lcopy_lit:
-    sub $t0, v0_st, dma_ptr                     # check if all the literals have been DMA'd
-    bgezal $t0, dma_read_ctx                       # if not, wait for DMA
-     move $a0, dma_ctx
-    ldl $t0, 0(v0_st)                             # load 8 bytes of literals
-    ldr $t0, 7(v0_st)
-    addiu v0_st, 8
-    sdl $t0, 0(outbuf)                          # store 8 bytes of literals
-    sdr $t0, 7(outbuf)
-    addiu len, -8
-    bgez len, .Lcopy_lit                  # check if we went past the end of literals
-     addiu outbuf, 8
-    addu outbuf, len                      # adjust outbuf to roll back extra copied bytes
-
-# fallthru to matches - it works only for long matches.
     sll nibbles, 4
 
 .Lmatches_ex:
@@ -173,6 +146,32 @@ decompress_lz4t_full_fast:
      addiu outbuf, 1
     b .Lloop                                    # jump to main loop
      nop
+
+.Llarge_literals:
+    lb len, 0(inbuf)
+    add inbuf, 1
+    bltzal len, .Lread_large_amount
+     andi len, 0x7f
+
+    move v0_st, inbuf                            # store start of literals into v0_st
+    addiu len, 22
+    add inbuf, len                        # advance inbuf to end of literals
+.Lcopy_lit:
+    sub $t0, v0_st, dma_ptr                     # check if all the literals have been DMA'd
+    bgezal $t0, dma_read_ctx                       # if not, wait for DMA
+     move $a0, dma_ctx
+    ldl $t0, 0(v0_st)                             # load 8 bytes of literals
+    ldr $t0, 7(v0_st)
+    addiu v0_st, 8
+    sdl $t0, 0(outbuf)                          # store 8 bytes of literals
+    sdr $t0, 7(outbuf)
+    addiu len, -8
+    bgez len, .Lcopy_lit                  # check if we went past the end of literals
+     addiu outbuf, 8
+    addu outbuf, len                      # adjust outbuf to roll back extra copied bytes
+
+    b .Lmatches_ex
+    sll nibbles, 4
 
 .Lend:
     lw $ra, 0x14($sp)
