@@ -23,6 +23,7 @@ extern Lights1 ccm_dl_Marc_Shirt1_f3d_lights;
 extern Lights1 ccm_dl__1_1__f3d_lights;
 extern Lights1 ccm_dl_DiagonalFuckers_f3d_lights;
 extern Lights1 ccm_dl_f3dlite_material_004_lights;
+extern u8 ccm_dl_sky_plain_i8[];
 extern u8 ccm_dl_CACTUS2_ci4[];
 extern u8 ccm_dl_CACTUS2_pal_rgba16[];
 extern u8 ccm_dl_Slippery____ci4[];
