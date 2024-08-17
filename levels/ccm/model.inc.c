@@ -1,70 +1,19 @@
-Lights1 ccm_dl__44_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl_Nonsolid1_f3d_lights = gdSPDefLights1(
-	0x0, 0x6, 0x24,
-	0x0, 0x16, 0x51, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl____Nonsolid2_f3d_lights = gdSPDefLights1(
-	0x7F, 0x21, 0x0,
-	0xFF, 0x4B, 0x0, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__36_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7E, 0x7F,
-	0xFD, 0xFC, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__41_f3d_lights = gdSPDefLights1(
-	0x7F, 0x1B, 0x1B,
-	0xFF, 0x40, 0x40, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__42_f3d_lights = gdSPDefLights1(
-	0x37, 0x2D, 0x6A,
-	0x76, 0x62, 0xD7, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl_Marc_Pants_f3d_lights = gdSPDefLights1(
-	0x54, 0x51, 0x53,
-	0xAC, 0xA7, 0xAA, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__33_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__8_001_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl_f3dlite_material_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__40_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__39_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__2_001_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl_Marc_Shirt1_f3d_lights = gdSPDefLights1(
-	0x0, 0x3, 0x24,
-	0x0, 0xD, 0x51, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl__1_1__f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl_DiagonalFuckers_f3d_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
-Lights1 ccm_dl_f3dlite_material_004_lights = gdSPDefLights1(
-	0x7F, 0x7F, 0x7F,
-	0xFF, 0xFF, 0xFF, 0x49, 0x49, 0x49);
 
 Gfx ccm_dl_sky_plain_i8_aligner[] = {gsSPEndDisplayList()};
 u8 ccm_dl_sky_plain_i8[] = {
@@ -67048,7 +66997,8 @@ Gfx ccm_dl_cf_mesh_layer_4[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__44_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_RGBA16 | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -67125,7 +67075,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_001_mesh_layer_1[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl_Nonsolid1_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0x1651ff),
+    gsSPLightColor(LIGHT_2, 0x624ff),
 	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -67175,7 +67126,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_001_mesh_layer_1[] = {
 	gsSP2Triangles(18, 20, 14, 0, 18, 21, 20, 0),
 	gsSP2Triangles(21, 22, 20, 0, 20, 23, 14, 0),
 	gsSP2Triangles(24, 25, 26, 0, 25, 24, 27, 0),
-	gsSPSetLights1(ccm_dl____Nonsolid2_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xff4b00ff),
+    gsSPLightColor(LIGHT_2, 0x7f2100ff),
 	gsSPVertex(ccm_dl_Desert_Ruins_Definitive_Edition_001_mesh_layer_1_vtx_1 + 0, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 2, 3, 0, 0),
 	gsSP2Triangles(2, 4, 3, 0, 2, 5, 4, 0),
@@ -67405,7 +67357,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_003_mesh_layer_1[] = {
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__36_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xfdfcffff),
+    gsSPLightColor(LIGHT_2, 0x7f7e7fff),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -67443,7 +67396,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_003_mesh_layer_1[] = {
 	gsSP2Triangles(9, 11, 12, 0, 13, 14, 15, 0),
 	gsSP2Triangles(13, 15, 16, 0, 15, 17, 16, 0),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__41_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xff4040ff),
+    gsSPLightColor(LIGHT_2, 0x7f1b1bff),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPVertex(ccm_dl_Desert_Ruins_Definitive_Edition_003_mesh_layer_1_vtx_8 + 0, 24, 0),
@@ -67457,7 +67411,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_003_mesh_layer_1[] = {
 	gsSP2Triangles(14, 18, 17, 0, 16, 19, 15, 0),
 	gsSP2Triangles(16, 20, 19, 0, 16, 21, 20, 0),
 	gsSP2Triangles(19, 22, 15, 0, 22, 23, 15, 0),
-	gsSPSetLights1(ccm_dl__42_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0x7662d7ff),
+    gsSPLightColor(LIGHT_2, 0x372d6aff),
 	gsSPVertex(ccm_dl_Desert_Ruins_Definitive_Edition_003_mesh_layer_1_vtx_9 + 0, 30, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
 	gsSP2Triangles(6, 7, 8, 0, 9, 10, 11, 0),
@@ -67471,7 +67426,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_003_mesh_layer_1[] = {
 	gsSP2Triangles(18, 19, 20, 0, 18, 21, 19, 0),
 	gsSP2Triangles(22, 23, 24, 0, 22, 24, 25, 0),
 	gsSP2Triangles(26, 27, 28, 0, 26, 28, 29, 0),
-	gsSPSetLights1(ccm_dl_Marc_Pants_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xaca7aaff),
+    gsSPLightColor(LIGHT_2, 0x545153ff),
 	gsSPVertex(ccm_dl_Desert_Ruins_Definitive_Edition_003_mesh_layer_1_vtx_10 + 0, 30, 0),
 	gsSP2Triangles(0, 1, 2, 0, 3, 4, 5, 0),
 	gsSP2Triangles(6, 7, 8, 0, 9, 10, 11, 0),
@@ -67947,7 +67903,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_005_mesh_layer_5[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__33_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -68005,7 +67962,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_005_mesh_layer_4[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__8_001_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -68090,7 +68048,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_006_mesh_layer_5[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__33_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -68627,7 +68586,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_007_mesh_layer_1[] = {
 	gsSP2Triangles(4, 7, 8, 0, 4, 8, 9, 0),
 	gsSP1Triangle(8, 10, 9, 0),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__36_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xfdfcffff),
+    gsSPLightColor(LIGHT_2, 0x7f7e7fff),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPVertex(ccm_dl_Desert_Ruins_Definitive_Edition_007_mesh_layer_1_vtx_3 + 0, 32, 0),
@@ -69615,7 +69575,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_013_mesh_layer_5[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__33_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -69642,7 +69603,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_014_mesh_layer_5[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__33_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -69794,7 +69756,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_019_mesh_layer_5[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl_f3dlite_material_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_RGBA16 | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -69824,7 +69787,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_021_mesh_layer_5[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__33_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -69856,7 +69820,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_024_mesh_layer_5[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__33_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -69881,7 +69846,8 @@ Gfx ccm_dl_Desert_Ruins_Definitive_Edition_025_mesh_layer_5[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__33_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, PRIMITIVE, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -70538,7 +70504,8 @@ Gfx ccm_dl_e_mesh_layer_1[] = {
 	gsSP2Triangles(10, 11, 12, 0, 10, 12, 13, 0),
 	gsSP2Triangles(14, 15, 16, 0, 14, 16, 17, 0),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__40_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, ccm_dl__40_rgba16),
@@ -70552,7 +70519,8 @@ Gfx ccm_dl_e_mesh_layer_1[] = {
 	gsSP2Triangles(20, 17, 19, 0, 20, 21, 17, 0),
 	gsSP2Triangles(22, 23, 24, 0, 22, 25, 23, 0),
 	gsSP2Triangles(26, 27, 28, 0, 27, 26, 29, 0),
-	gsSPSetLights1(ccm_dl__39_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, ccm_dl__39_rgba16),
 	gsDPLoadBlock(7, 0, 0, 1023, 256),
 	gsSPVertex(ccm_dl_e_mesh_layer_1_vtx_18 + 0, 8, 0),
@@ -71948,7 +71916,8 @@ Gfx ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__2_001_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -72517,7 +72486,8 @@ Gfx ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1[] = {
 	gsSP2Triangles(18, 22, 21, 0, 21, 23, 20, 0),
 	gsSP1Triangle(20, 24, 19, 0),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl_Marc_Shirt1_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xd51ff),
+    gsSPLightColor(LIGHT_2, 0x324ff),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT, 0, 0, 0, SHADE, 0, 0, 0, ENVIRONMENT),
 	gsSPVertex(ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1_vtx_8 + 0, 3, 0),
@@ -73153,7 +73123,8 @@ Gfx ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1[] = {
 	gsSP2Triangles(12, 9, 11, 0, 12, 13, 9, 0),
 	gsSP2Triangles(14, 15, 16, 0, 14, 17, 15, 0),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl_DiagonalFuckers_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, ccm_dl_DiagonalFuckers_rgba16),
@@ -73275,7 +73246,8 @@ Gfx ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_1[] = {
 	gsSP2Triangles(5, 8, 9, 0, 5, 9, 10, 0),
 	gsSP1Triangle(5, 10, 11, 0),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl_f3dlite_material_004_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPPipeSync(),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
@@ -73317,7 +73289,8 @@ Gfx ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_4[] = {
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPLoadGeometryMode(G_ZBUFFER | G_SHADE | G_CULL_BACK | G_LIGHTING | G_SHADING_SMOOTH),
-	gsSPSetLights1(ccm_dl__8_001_f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0, TEXEL0, 0, SHADE, 0, TEXEL0, 0, ENVIRONMENT, 0),
 	gsSPSetOtherMode(G_SETOTHERMODE_H, 4, 20, G_AD_NOISE | G_CD_MAGICSQ | G_CK_NONE | G_TC_FILT | G_TF_BILERP | G_TT_NONE | G_TL_TILE | G_TD_CLAMP | G_TP_PERSP | G_CYC_1CYCLE | G_PM_1PRIMITIVE),
 	gsSPSetOtherMode(G_SETOTHERMODE_L, 0, 3, G_AC_NONE | G_ZS_PIXEL),
@@ -73339,7 +73312,8 @@ Gfx ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_4[] = {
 	gsSP2Triangles(22, 23, 24, 0, 25, 22, 24, 0),
 	gsSP2Triangles(24, 26, 25, 0, 24, 27, 26, 0),
 	gsSP2Triangles(24, 28, 27, 0, 26, 29, 25, 0),
-	gsSPSetLights1(ccm_dl__1_1__f3d_lights),
+    gsSPLightColor(LIGHT_1, 0xffffffff),
+    gsSPLightColor(LIGHT_2, 0x7f7f7fff),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b_LOAD_BLOCK, 1, ccm_dl__1_1__rgba16),
 	gsDPLoadBlock(7, 0, 0, 2047, 128),
 	gsSPVertex(ccm_dl_Desert_Ruins_2020_Area_2__1__mesh_layer_4_vtx_1 + 0, 4, 0),

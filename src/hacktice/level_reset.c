@@ -132,7 +132,8 @@ static inline bool isScroll(struct SpawnInfo* spawnInfo)
 s32 LevelReset_onSpawnObjectsFromInfoHook(struct SpawnInfo* spawnInfo)
 {
     if (sTimerRunningDeferred && !isScroll(spawnInfo))
-    {
+    {    
+        spawnInfo->respawnInfo = RESPAWN_INFO_NONE;
         spawnInfo->behaviorArg &= ~(RESPAWN_INFO_DONT_RESPAWN << 8);
         return true;
     }
