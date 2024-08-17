@@ -264,7 +264,7 @@ extern Vtx bob_dl_nzbg_001_mesh_layer_1_vtx_0[73];
 extern Vtx bob_dl_nzbg_001_mesh_layer_1_vtx_1[42];
 extern Vtx bob_dl_water_texture_mesh_layer_5_vtx_0[71];
 extern Vtx bob_dl_Cave_World1_mesh_layer_1_vtx_0[288];
-extern Vtx bob_dl_Cave_World1_mesh_layer_1_vtx_1[299];
+extern Vtx bob_dl_Cave_World1_mesh_layer_1_vtx_1[335];
 extern Vtx bob_dl_Cave_World1_mesh_layer_1_vtx_2[190];
 extern Vtx bob_dl_Cave_World1_mesh_layer_1_vtx_3[30];
 extern Vtx bob_dl_Cave_World1_mesh_layer_1_vtx_4[55];
