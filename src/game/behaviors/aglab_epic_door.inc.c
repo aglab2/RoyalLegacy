@@ -1,3 +1,5 @@
+#include "game/emutest.h"
+
 extern const Collision beta_door_r_collision[];
 extern const Collision beta_door_l_collision[];
 
@@ -178,4 +180,10 @@ void bhv_epic_door_loop()
     {
         checkWarp();
     }
+}
+
+void bhv_static_object_on_console_loop()
+{
+    if (gIsConsole)
+        o->activeFlags = 0;
 }

@@ -17,3 +17,4 @@
 
 #include "levels/castle_grounds/beta_door_l/geo.inc.c"
 #include "levels/castle_grounds/beta_door_r/geo.inc.c"
+#include "levels/castle_grounds/jabo/geo.inc.c"

@@ -17,16 +17,18 @@ void whomp_play_sfx_from_pound_animation(void) {
 }
 
 static f32 sWhompSpd = 20.0f;
+static struct Object* sWhompBowser = NULL;
 
 void whomp_init(void) {
     cur_obj_init_animation_with_accel_and_sound(0, 1.0f);
     cur_obj_set_pos_to_home();
     cur_obj_scale(1.2f);
 
-    if (o->oDistanceToMario < 1000.0f) {
+    if (o->oDistanceToMario < 1200.0f && o->oPosZ < gMarioStates->pos[2]) {
         sWhompSpd = 20.f;
         o->oAction = 2;
         cur_obj_play_sound_2(SOUND_OBJ2_WHOMP_SOUND_SHORT);
+        sWhompBowser = cur_obj_nearest_object_with_behavior(bhvBowser);
     }
 
     whomp_play_sfx_from_pound_animation();
@@ -94,6 +96,10 @@ void king_whomp_chase(void) {
             cur_obj_init_animation_with_accel_and_sound(0, 3.0f);
         }
         if (o->oDistanceToMario < 300.0f) {
+            o->oAction = 3;
+        }
+
+        if (dist_between_objects(o, sWhompBowser) < 600.0f) {
             o->oAction = 3;
         }
     }
@@ -270,7 +276,7 @@ void bhv_whomp_loop(void) {
         load_object_collision_model();
     }
 
-    if (o->oMoveFlags & OBJ_MOVE_HIT_EDGE)
+    if (sWhompSpd > 0 && o->oMoveFlags & OBJ_MOVE_HIT_EDGE)
     {
         cur_obj_play_sound_2(SOUND_OBJ2_WHOMP_SOUND_SHORT);
         sWhompSpd = -20.f;

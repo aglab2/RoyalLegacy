@@ -13,3 +13,4 @@
 #include "levels/castle_grounds/beta_door_l/model.inc.c"
 #include "levels/castle_grounds/beta_door_r/model.inc.c"
 #include "levels/castle_grounds/beta_door_r/collision.inc.c"
+#include "levels/castle_grounds/jabo/model.inc.c"

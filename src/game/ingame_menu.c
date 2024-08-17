@@ -1633,7 +1633,7 @@ void render_hacktice_setting(int x, int y)
         if (!Hacktice_gEnabled)
             print_generic_string(x, y, pressBToHacktice);
 
-        if (gPlayer3Controller->buttonPressed & B_BUTTON)
+        if (gPlayer1Controller->buttonPressed & B_BUTTON)
             Hacktice_gEnabled = !Hacktice_gEnabled;
     }
 }

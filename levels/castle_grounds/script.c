@@ -49,6 +49,7 @@ const LevelScript level_castle_grounds_entry[] = {
 	LOAD_MODEL_FROM_GEO(MODEL_GEM_GREEN, gem_green_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_GEM_PURPLE, gem_purple_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_GEM_RED, gem_red_geo), 
+	LOAD_MODEL_FROM_GEO(MODEL_CASTLE_JABO, jabo_geo),
 
 	/* Fast64 begin persistent block [level commands] */
 	/* Fast64 end persistent block [level commands] */
@@ -114,6 +115,7 @@ const LevelScript level_castle_grounds_entry[] = {
 		OBJECT(0, 3874, -645, -3791, 0, -90, 0, 0xd0000, bhvWarp),
 		OBJECT(0, 1040, 875, -5648, 0, 0, 0, 0x120000, bhvWarp),
 		OBJECT(0, 1037, -645, -4041, 0, 136, 0, (22 << 16), bhvDeathWarp),
+		OBJECT(MODEL_CASTLE_JABO, 0, 0, 0, 0, 0, 0, 0, bhvStaticObjectOnConsole),
 		TERRAIN(castle_grounds_area_1_collision),
 		MACRO_OBJECTS(castle_grounds_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, 0x2b),
