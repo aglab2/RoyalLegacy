@@ -829,7 +829,7 @@ matches:
             // we want extended matchLen so pull it from data
             // conveniently we have the first 'next' already
             // but I want a sign extended matchCombo 2nd byte so I am doing some ugly stuff
-            int8_t next = ((((int) (matchCombo >> 8)) << 24) >> 24);
+            int8_t next = ((((int) (matchCombo)) << 16) >> 24);
             int exLen = next & 0x7f;
             int shift = 7;
             inbuf++;
