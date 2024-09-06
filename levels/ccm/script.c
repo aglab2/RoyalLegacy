@@ -116,7 +116,6 @@ const LevelScript level_ccm_entry[] = {
 		OBJECT(0, 5787, 1560, -14028, 0, 0, 0, 0x0, bhvHiddenStarTrigger),
 		OBJECT(124, 6686, 4554, 10473, 0, 98, 0, 0x4e0000, bhvMessagePanel),
 		OBJECT(124, -13913, 244, 1055, 0, 90, 0, 0x360000, bhvMessagePanel),
-		OBJECT(124, 13011, 285, 2527, 0, -180, 0, 0x3d0000, bhvMessagePanel),
 		OBJECT(116, 6628, 240, -13655, 0, 68, 0, 0x0, bhvOneCoin),
 		OBJECT(116, 6444, 412, -14451, 0, 68, 0, 0x0, bhvOneCoin),
 		OBJECT(116, 5177, 600, -14449, 0, 68, 0, 0x0, bhvOneCoin),
