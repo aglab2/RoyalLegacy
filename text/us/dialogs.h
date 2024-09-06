@@ -1330,6 +1330,14 @@ after the cake screen \n\
 and go stand on top of \n\
 the sign in the castle \n\
 lobby. Just do it.\n\
+You may have gotten the\n\
+crown, but you'll never \n\
+unlock the gem door in \n\
+the basement. Don't \n\
+watch the credits \n\
+sequence to closely, \n\
+I wouldn't want you \n\
+to notice any hints...\n\
 Bahhhhh...any \n\
 more words are \n\
 meaningless at this \n\

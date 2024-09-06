@@ -5,6 +5,13 @@ const GeoLayout bob_area_3_geo[] = {
 	GEO_OPEN_NODE(),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, bob_dl_InsideRock__World1Area3__mesh_layer_1),
 		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bob_dl_InsideRock__World1Area3__001_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bob_dl_InsideRock__World1Area3__002_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bob_dl_InsideRock__World1Area3__003_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bob_dl_InsideRock__World1Area3__004_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bob_dl_InsideRock__World1Area3__005_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bob_dl_InsideRock__World1Area3__006_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bob_dl_InsideRock__World1Area3__007_mesh_layer_5),
+		GEO_DISPLAY_LIST(LAYER_TRANSPARENT, bob_dl_InsideRock__World1Area3__008_mesh_layer_5),
 	GEO_CLOSE_NODE(),
 	GEO_RETURN(),
 };
