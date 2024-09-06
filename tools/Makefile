@@ -32,8 +32,10 @@ default: all
 filesizer_SOURCES	:= filesizer.c
 
 lz4pack_SOURCES	:= lz4.c lz4hc.c lz4pack.c
-lz4tpack_SOURCES	:= lz4.c lz4hc.c lz4tpack.c
-lz4tpack_CFLAGS  := -DLZ4T -flto -DLZ4_DISTANCE_MAX=16834
+
+lz4tpack_SOURCES	:= lz4tpack.c
+lz4tpack_CFLAGS  := -DLZ4T -flto -O3 -fwhole-program
+
 rncpack_SOURCES	:= rncpack.c
 
 n64graphics_SOURCES := n64graphics.c utils.c

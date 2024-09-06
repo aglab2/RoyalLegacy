@@ -720,15 +720,20 @@ static void lz4_unpack(const uint8_t* inbuf, u32 inbufSize, uint8_t* dst, struct
 
 #define LZ4T 1
 #ifdef LZ4T
-static __attribute__((noinline)) void lz4t_unpack(const uint8_t* restrict inbuf, int32_t nibbles, uint8_t* restrict dst, struct DMAContext* ctx)
+static __attribute__((noinline)) void lz4t_unpack(const uint8_t* restrict inbuf, uint8_t* restrict dst, struct DMAContext* ctx)
 {
 #define LOAD_FRESH_NIBBLES() if (nibbles == 0) { nibbles = GET_UNALIGNED4S(inbuf); if (UNLIKELY(!nibbles)) { return; } inbuf += 4; }
     // DMA checks is checking whether dmaLimit will be exceeded after reading the data.
     // 'dma_read_ctx' will wait for the current DMA request and fire the next DMA request
 #define DMA_CHECK(v) if (UNLIKELY(v > dmaLimit)) { dmaLimit = dma_read_ctx(ctx); }
 
-    const uint8_t* dmaLimit = inbuf - 16;
-    for (;; nibbles <<= 4)
+    uint32_t shortOffsetMask = *(uint8_t*) (inbuf + 8);
+    shortOffsetMask <<= 28;
+    int matchMin = *(int8_t*) (inbuf + 9);
+    int32_t nibbles = *(int32_t*) (inbuf + 12);
+    const uint8_t* dmaLimit = inbuf;
+    inbuf += 16;
+    while (1)
     {
         // we will need to read the data (literal or offset) so might as well do it unconditionally from the start
         DMA_CHECK(inbuf);
@@ -759,8 +764,11 @@ static __attribute__((noinline)) void lz4t_unpack(const uint8_t* restrict inbuf,
 
                 // It is unknown whether next nibble will be match or literal so continue
                 if (len == matchLim)
+                {
+                    nibbles <<= 4;
                     continue;
-                
+                }
+
                 // ...otherwise fallthru to matches with extended matchLim
             }
             else
@@ -821,9 +829,22 @@ matches:
         inbuf += 2;
         // It is 16 bit valid offset that fits in 'int', no need to do casts
         int matchOffset = matchCombo >> 16;
+
+        if (shortOffsetMask)
+        {
+            matchOffset &= 0xfff;
+            nibbles &= ~0xf0000000;
+            nibbles |= (matchCombo & shortOffsetMask);
+        }
+        else
+        {
+            nibbles <<= 4;
+        }
+        matchOffset += 1;
+
         // If it is 'regular' match, len='7 & (nibbles >> 28)', otherwise extended match '(nibbles >> 28)'
         // We need to start preparing the value for 'matchLen' which is 'matchLim + 3 + exSize'
-        int matchLen = 3 + len;
+        int matchLen = matchMin + len;
         if (matchLim == len)
         {
             // we want extended matchLen so pull it from data
@@ -861,15 +882,15 @@ matches:
         {
             if (1 == matchOffset)
             {
-                uint64_t data = *copySrc;
+                // I could use 64 bit integer here but generated code is disgusting
+                uint32_t data = *copySrc;
                 data |= data << 8;
                 data |= data << 16;
-                data |= data << 32;
                 do
                 {
-                    PUT_UNALIGNED8(data, dst);
-                    dst += 8;
-                    matchLen -= 8;
+                    PUT_UNALIGNED4(data, dst);
+                    dst += 4;
+                    matchLen -= 4;
                 } while (matchLen > 0);
                 dst += matchLen;            
             }
@@ -995,13 +1016,12 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
             decompress_lz4_full_fast(compressed + 16, lz4CompSize, dest, &ctx);
 #elif LZ4T
             struct DMAContext ctx;
-            u32 lz4CompSize = *(u32 *) (compressed + 8);
-            dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcStart + 16 + lz4CompSize);
-            extern int decompress_lz4t_full_fast(const void *inbuf, int insize, void *outbuf, void* dmaCtx);
+            dma_ctx_init(&ctx, compressed + 16, srcStart + 16, srcEnd);
+            extern int lz4t_unpack_fast(const uint8_t* restrict inbuf, uint8_t* restrict dst, struct DMAContext* ctx);
             if (LIKELY(gIsConsole))
-                decompress_lz4t_full_fast(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
+                lz4t_unpack_fast(compressed, dest, &ctx);
             else
-                lz4t_unpack(compressed + 16, *(int32_t *) (compressed + 12), dest, &ctx);
+                lz4t_unpack(compressed, dest, &ctx);
 #endif
             osSyncPrintf("end decompress\n");
             set_segment_base_addr(segment, dest); sSegmentROMTable[segment] = (uintptr_t) srcStart;
