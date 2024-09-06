@@ -103,6 +103,7 @@ const LevelScript level_sa_entry[] = {
 		OBJECT(100, 413, 2741, 1610, 0, -180, 0, 0x0, bhvSwoop),
 		OBJECT(100, 617, 2807, -1431, 0, -180, 0, 0x0, bhvSwoop),
 		OBJECT(0, 4254, 912, -3304, 0, -180, 0, 0x0, bhvWaterfallSoundLoop),
+		OBJECT(MODEL_NONE, -6440, 5882, -5865, 0, 0, 0, (33 << 16), bhvWarp),
 		OBJECT(MODEL_BREAKWINDOW, 5023, 264, -3274, 0, 0, 0, 0x00000000, bhvbreakwindow),
 		OBJECT(MODEL_BREAKWINDOW, 3406, 264, -3274, 0, 0, 0, 0x00000000, bhvbreakwindow),
 		TERRAIN(sa_area_1_collision),
