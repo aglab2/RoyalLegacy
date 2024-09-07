@@ -144,6 +144,8 @@ void bhv_act_selector_init(void) {
     // If all stars have been collected, set the default selection to the last star.
     if (sObtainedStars == 6) {
         sInitSelectedActNum = sVisibleStars;
+        sSelectableStarIndex = 5;
+        sSelectedActIndex = 5;
     }
 
     //! Useless, since sInitSelectedActNum has already been set in this
