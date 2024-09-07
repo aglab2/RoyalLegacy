@@ -12,7 +12,8 @@
 #include "timer.h"
 
 static bool sTimerRunningDeferred = false;
-
+static u32 sReloadObjectsAreasMask = 0;
+static u32 sReloadObjectsFrame = 0;
 extern u8 sTransitionFadeTimer;
 
 #define container_of(ptr, type, member) ({ \
@@ -62,6 +63,7 @@ static void resetCommon()
 {
     miniResetCommon();
     sTimerRunningDeferred = true;
+    sReloadObjectsAreasMask = ~0;
 }
 
 void LevelReset_onNormal()
@@ -95,6 +97,7 @@ void LevelReset_onNormal()
         gHudDisplay.timer = 0;
         sTimerRunning = true;
         sTimerRunningDeferred = true;
+        sReloadObjectsAreasMask = ~0;
     }
 
     LevelConv_PlainLevels warp = Config_warpIdAndReset();
@@ -111,6 +114,7 @@ void LevelReset_onNormal()
         gHudDisplay.timer = 0;
         sTimerRunning = true;
         sTimerRunningDeferred = true;
+        sReloadObjectsAreasMask = ~0;
         Timer_reset();
         resetCamera();
     }
@@ -131,14 +135,25 @@ static inline bool isScroll(struct SpawnInfo* spawnInfo)
 
 s32 LevelReset_onSpawnObjectsFromInfoHook(struct SpawnInfo* spawnInfo)
 {
-    if (sTimerRunningDeferred && !isScroll(spawnInfo))
-    {    
+    u32 areaMask = 1 << gCurrAreaIndex;
+    if (((sReloadObjectsAreasMask & areaMask) || sReloadObjectsFrame == gGlobalTimer) && !isScroll(spawnInfo))
+    {
+        sReloadObjectsFrame = gGlobalTimer;
+        sReloadObjectsAreasMask &= ~areaMask;
+
+#ifndef BINARY
         spawnInfo->respawnInfo = RESPAWN_INFO_NONE;
+#endif
+
         spawnInfo->behaviorArg &= ~(RESPAWN_INFO_DONT_RESPAWN << 8);
         return true;
     }
 
+#ifndef BINARY
+    return (spawnInfo->respawnInfo & RESPAWN_INFO_DONT_RESPAWN) != RESPAWN_INFO_DONT_RESPAWN;
+#else
     return (spawnInfo->behaviorArg & (RESPAWN_INFO_DONT_RESPAWN << 8)) != (RESPAWN_INFO_DONT_RESPAWN << 8);
+#endif
 }
 
 #ifdef BINARY
