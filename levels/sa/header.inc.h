@@ -226,7 +226,7 @@ extern Vtx sa_dl_zone4_mesh_layer_1_vtx_11[418];
 extern Vtx sa_dl_zone4_mesh_layer_1_vtx_12[44];
 extern Vtx sa_dl_zone4_mesh_layer_5_vtx_cull[8];
 extern Vtx sa_dl_zone4_mesh_layer_5_vtx_0[72];
-extern Vtx sa_dl_zone4_mesh_layer_5_vtx_1[4];
+extern Vtx sa_dl_zone4_mesh_layer_5_vtx_1[6];
 extern Vtx sa_dl_zone4_door_mesh_layer_5_vtx_cull[8];
 extern Vtx sa_dl_zone4_door_mesh_layer_5_vtx_0[12];
 extern Vtx sa_dl_zone4_door_inside_mesh_layer_1_vtx_cull[8];
